@@ -119,7 +119,7 @@ A flask app is used to run the project locally. It will automatically recompile 
 
 ```
 workon musicgame
-python app.py
+python public_app.py
 ```
 
 Visit [localhost:8000](http://localhost:8000) in your browser.
