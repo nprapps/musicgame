@@ -17,6 +17,18 @@
 {% block content %}
 <h1>{{ PROJECT_NAME }}</h1>
 
+{% for year in top_singles_by_year %}
+    <form>
+        <h4>Which was the top single in {{ year.year }}?</h4>
+        {% for track in year.choices %}
+            <label>
+                <input name="{{ year.year }}" type="radio" data-value="{{ track['Yearly Rank'] }}"></input>
+                {{ track['Track'] }} by {{ track['Artist'] }}
+            </label><br/>
+        {% endfor %}
+    </form>
+{% endfor %}
+
 <p>Example preview url: <a href="/game/test/preview.html">/game/test/preview.html</a></p>
 
 <p>Example game url: <a href="/game/test/game.html">/game/test/game.html</a></p>

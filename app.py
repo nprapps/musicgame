@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 
 import argparse
+from glob import glob
+import json
+
 from flask import Flask, render_template
 
 import app_config
@@ -17,7 +20,23 @@ def index():
     """
     Example view demonstrating rendering a simple HTML page.
     """
-    return render_template('index.html', **make_context())
+
+    context = make_context()
+    context['top_singles_by_year'] = []
+
+    with open('www/assets/data/tracks-by-year.json', 'rb') as readfile:
+
+        tracks_by_year = json.loads(readfile.read())
+
+        for year, track_list in tracks_by_year.items():
+            year_dict = {}
+            year_dict['year'] = year
+            year_dict['choices'] = track_list
+            context['top_singles_by_year'].append(year_dict)
+
+    context['top_singles_by_year'] = sorted(context['top_singles_by_year'], key=lambda x: x['year'], reverse=True)
+
+    return render_template('index.html', **context)
 
 @app.route('/game/<string:slug>/preview.html')
 def preview(slug):
@@ -36,7 +55,7 @@ def game(slug):
 @app.route('/test/test.html')
 def test_dir():
     return render_template('index.html', **make_context())
-    
+
 app.register_blueprint(static.static)
 
 # Boilerplate
