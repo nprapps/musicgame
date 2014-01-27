@@ -520,6 +520,10 @@ def deploy(remote='origin'):
         _confirm("You are trying to deploy the '%s' branch to production.\nYou should really only deploy a stable branch.\nDo you know what you're doing?" % env.branch)
 
     if app_config.DEPLOY_TO_SERVERS:
+        fabcast('update_copy')
+        fabcast('assets_down')
+        fabcast('update_data')
+
         checkout_latest(remote)
 
         if app_config.DEPLOY_CRONTAB:
