@@ -48,6 +48,9 @@ class Includer(object):
         relative_path = path
         depth = len(request.path.split('/')) - 2
 
+        # HACK: Make urls work with public_app.py
+        depth -= 1
+
         while depth > 0:
             relative_path = '../%s' % relative_path
             depth -= 1
