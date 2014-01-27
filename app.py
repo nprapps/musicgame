@@ -19,6 +19,20 @@ def index():
     """
     return render_template('index.html', **make_context())
 
+@app.route('/game/<string:slug>/preview.html')
+def preview(slug):
+    context = make_context()
+    context['slug'] = slug
+
+    return render_template('preview.html', **context)
+
+@app.route('/game/<string:slug>/game.html')
+def game(slug):
+    context = make_context()
+    context['slug'] = slug
+
+    return render_template('game.html', **context)
+
 @app.route('/test/test.html')
 def test_dir():
     return render_template('index.html', **make_context())

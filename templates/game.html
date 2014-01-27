@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <title>{{ slug }} : NPR</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+
+    <!-- CSS -->
+    {{ CSS.push('less/game.less') }}
+    {% block extra_css %}{% endblock extra_css %}
+    {{ CSS.render('css/game.min.css') }}
+</head>
+
+<body>
+    <h1>Game goes here!</h1>
+
+    <!-- JS -->
+    {{ JS.push('js/lib/jquery.js') }}
+    {{ JS.push('js/lib/underscore.js') }}
+    {{ JS.push('js/lib/bootstrap.js') }}
+    {{ JS.push('js/lib/moment.js') }}
+    {{ JS.push('js/lib/child.js') }}
+    {{ JS.push('js/app_config.js') }}
+    {{ JS.push('js/copy.js') }}
+    {{ JS.push('js/console.js') }}
+    {{ JS.push('js/templates.js') }}
+    {{ JS.push('js/game.js') }}
+    {{ JS.render('js/game-footer.min.js') }}
+</body>
+
+</html>
