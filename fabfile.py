@@ -1,14 +1,17 @@
 #!/usr/bin/env python
 
-import copy
+import csv
 from glob import glob
+import json
 import os
+import uuid
 
 from fabric.api import *
 from jinja2 import Template
 
 import app
 import app_config
+import copy
 from etc import github
 from etc.gdocs import GoogleDoc
 
@@ -528,6 +531,55 @@ def deploy(remote='origin'):
     render()
     _gzip('www', '.gzip')
     _deploy_to_s3()
+
+
+"""
+App-specific jobs
+"""
+
+def generate_quiz():
+    """
+    ['', '10', '10th Week', '11th Week', '12th Week', '13th Week', '14th Week', '15th Week', '16th Week', '17th Week', '18th Week', '19th Week', '1st Week', '20th Week', '21st Week', '22nd Week', '23rd Week', '24th Week', '25th Week', '26th Week', '27th Week', '28th Week', '29th Week', '2nd Week', '30th Week', '31st Week', '32nd Week', '33rd Week', '34th Week', '35th Week', '36th Week', '37th Week', '38th Week', '39th Week', '3rd Week', '40', '40th Week', '41st Week', '42nd Week', '43rd Week', '44th Week', '45th Week', '46th Week', '47th Week', '48th Week', '49th Week', '4th Week', '50th Week', '51st Week', '52nd Week', '53rd Week', '54th Week', '55th Week', '56th Week', '57th Week', '58th Week', '59th Week', '5th Week', '60th Week', '61st Week', '62nd Week', '63rd Week', '64th Week', '65th Week', '66th Week', '67th Week', '68th Week', '69th Week', '6th Week', '70th Week', '71st Week', '72nd Week', '73rd Week', '74th Week', '75th Week', '76th Week', '7th Week', '8th Week', '9th Week', 'Album', 'Artist', 'Artist ID', 'Artist Inverted', 'B-Side', 'CH', 'Comments', 'Date Entered', 'Date Peaked', 'Featured', 'Genre', 'High', 'Label/Number', 'Media', 'PK', 'Pic Sleeve', 'Prefix', 'ReIssue', 'SYMBL', 'Source', 'Stereo (55-68)', 'Temp 1', 'Time', 'Time (Album)', 'Time Source', 'Track', 'UnFeatured', 'Verified', 'Written By', 'Year', 'Yearly Rank', 'explicit']
+    """
+    with open('www/assets/data/tracks-by-year.json', 'rb') as readfile:
+        tracks_by_year = dict(json.loads(readfile.read()))
+
+    years = list(sorted(tracks_by_year.keys()))
+
+    for year in years:
+        quiz_dict = {}
+        quiz_dict['guid'] = str(uuid.uuid4())
+        quiz_dict['year'] = year
+        quiz_dict['choices'] = []
+
+        for track in list(tracks_by_year[year]):
+            track_dict = {}
+            track_dict['rank'] = int(track['Yearly Rank'])
+            track_dict['track'] = track['Track']
+            track_dict['artist'] = track['Artist']
+            quiz_dict['choices'].append(track_dict)
+
+        with open('www/assets/data/quiz_top_singles_%s.json' % year, 'wb') as writefile:
+            writefile.write(json.dumps(quiz_dict))
+
+def write_tracks_by_year():
+    with open('www/assets/data/pop-1890-2014.csv', 'rb') as readfile:
+        tracks = list(csv.DictReader(readfile))
+
+    tracks_by_year = {}
+
+    for track in tracks:
+        try:
+            if int(track['Yearly Rank']) < 6:
+                if not tracks_by_year.get(track['Year'], None):
+                    tracks_by_year[track['Year']] = []
+                tracks_by_year[track['Year']].append(track)
+        except ValueError:
+            print track['Yearly Rank'], track['Track']
+
+    with open('www/assets/data/tracks-by-year.json', 'wb') as writefile:
+        writefile.write(json.dumps(tracks_by_year))
+
 
 """
 Cron jobs
