@@ -39,7 +39,7 @@ PRODUCTION_SERVERS = ['54.214.20.225']
 STAGING_SERVERS = ['54.214.20.232']
 
 # Should code be deployed to the web/cron servers?
-DEPLOY_TO_SERVERS = True 
+DEPLOY_TO_SERVERS = True
 
 SERVER_USER = 'ubuntu'
 SERVER_PYTHON = 'python2.7'
@@ -53,7 +53,7 @@ DEPLOY_CRONTAB = False
 
 # Should the service configurations be installed on the servers?
 # If True, DEPLOY_TO_SERVERS must also be True
-DEPLOY_SERVICES = True 
+DEPLOY_SERVICES = True
 
 UWSGI_SOCKET_PATH = '/tmp/%s.uwsgi.sock' % PROJECT_FILENAME
 UWSGI_LOG_PATH = '/var/log/%s.uwsgi.log' % PROJECT_FILENAME
@@ -121,14 +121,15 @@ def get_secrets():
     A method for accessing our secrets.
     """
     secrets = [
-        'EXAMPLE_SECRET'
+        'MUSIC_POSTGRES_USER',
+        'MUSIC_POSTGRES_PASS',
+        'MUSIC_POSTGRES_DB'
     ]
 
     secrets_dict = {}
 
     for secret in secrets:
-        name = '%s_%s' % (PROJECT_FILENAME, secret)
-        secrets_dict[secret] = os.environ.get(name, None)
+        secrets_dict[secret] = os.environ.get(secret, None)
 
     return secrets_dict
 
