@@ -8,6 +8,7 @@ import json
 from flask import Flask, redirect, render_template, url_for
 
 import app_config
+import games
 from render_utils import make_context, urlencode_filter
 import static
 
@@ -15,6 +16,7 @@ app = Flask(app_config.PROJECT_NAME)
 
 app.jinja_env.filters['urlencode'] = urlencode_filter
 
+app.register_blueprint(games.games, url_prefix='/%s/game' % app_config.PROJECT_SLUG)
 app.register_blueprint(static.static, url_prefix='/%s' % app_config.PROJECT_SLUG)
 
 app.config['PROPAGATE_EXCEPTIONS'] = True
@@ -47,7 +49,7 @@ def index():
 @app.route('/%s/game/<string:slug>/publish/' % app_config.PROJECT_SLUG)
 def _publish_game(slug):
     # TODO: kickoff render/deploy
-    return redirect(url_for('static._preview', slug=slug)) 
+    return redirect(url_for('games._preview', slug=slug)) 
 
 # Scout uptime test route
 @app.route('/%s/test/' % app_config.PROJECT_SLUG, methods=['GET'])
