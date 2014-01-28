@@ -210,6 +210,73 @@ def render():
         with open(filename, 'w') as f:
             f.write(content.encode('utf-8'))
 
+    # We choose a sample game to render so its JS/CSS will
+    # be rendered. We don't deploy it.
+    # TODO
+    #sample_game = get_games()
+    #render_games(sample_game)
+
+def render_games(games=None):
+    """
+    Render each game.
+
+    From playgrounds2:
+    https://github.com/nprapps/playgrounds2/blob/master/data.py#L163
+    """
+    from flask import g, url_for
+
+    update_copy()
+    assets_down()
+    update_data()
+    less()
+    jst()
+
+    app_config_js()
+    copy_js()
+
+    if not games:
+        # TODO
+        games = get_games()
+
+    slugs = [game.slug for game in games]
+
+    compiled_includes = []
+
+    updated_paths = []
+
+    for slug in slugs:
+        # Silly fix because url_for require a context
+        with app.app.test_request_context():
+            path = url_for('static._game', slug=slug)
+
+        with app.app.test_request_context(path=path):
+            print 'Rendering %s' % path
+
+            g.compile_includes = True
+            g.compiled_includes = compiled_includes
+
+            view = app.__dict__['_game']
+            content = view(slug)
+
+            compiled_includes = g.compiled_includes
+
+        path = '.games_html%s' % path
+
+        # Ensure path exists
+        head = os.path.split(path)[0]
+
+        try:
+            os.makedirs(head)
+        except OSError:
+            pass
+
+        with open(path, 'w') as f:
+            f.write(content.encode('utf-8'))
+
+        updated_paths.append(path)
+
+    return updated_paths
+
 def tests():
     """
     Run Python unit tests.

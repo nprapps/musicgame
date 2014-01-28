@@ -44,6 +44,11 @@ def index():
 
     return render_template('index.html', **context)
 
+@app.route('/%s/game/<string:slug>/publish/' % app_config.PROJECT_SLUG)
+def _publish_game(slug):
+    # TODO: kickoff render/deploy
+    return redirect(url_for('static._preview', slug=slug)) 
+
 # Scout uptime test route
 @app.route('/%s/test/' % app_config.PROJECT_SLUG, methods=['GET'])
 def _test_app():
