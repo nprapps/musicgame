@@ -247,7 +247,7 @@ def render_games(games=None):
     for slug in slugs:
         # Silly fix because url_for require a context
         with app.app.test_request_context():
-            path = url_for('static._game', slug=slug)
+            path = url_for('games._game', slug=slug)
 
         with app.app.test_request_context(path=path):
             print 'Rendering %s' % path

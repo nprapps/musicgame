@@ -26,9 +26,11 @@ app.config['PROPAGATE_EXCEPTIONS'] = True
 #app.logger.addHandler(file_handler)
 #app.logger.setLevel(logging.INFO)
 
-# Admin index
 @app.route('/%s/' % app_config.PROJECT_SLUG)
 def index():
+    """
+    Render the admin index.
+    """
     context = make_context()
     context['top_singles_by_year'] = []
 
