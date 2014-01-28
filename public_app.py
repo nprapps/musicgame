@@ -44,22 +44,6 @@ def index():
 
     return render_template('index.html', **context)
 
-# Preview a game
-@app.route('/%s/game/<string:slug>/preview.html' % app_config.PROJECT_SLUG)
-def preview(slug):
-    context = make_context()
-    context['slug'] = slug
-
-    return render_template('preview.html', **context)
-
-# The game page itself
-@app.route('/%s/game/<string:slug>/game.html' % app_config.PROJECT_SLUG)
-def game(slug):
-    context = make_context()
-    context['slug'] = slug
-
-    return render_template('game.html', **context)
-
 # Scout uptime test route
 @app.route('/%s/test/' % app_config.PROJECT_SLUG, methods=['GET'])
 def _test_app():
