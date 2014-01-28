@@ -38,12 +38,24 @@
 body {
 	background: @musicDark;
 	color: #fff;
+	-webkit-font-smoothing: antialiased;
 }
 
 #content {
 	max-width: 1125px;
 	margin: 0 auto;
-	padding: @grid-gutter-width / 2;
+	padding: 0 @grid-gutter-width / 2 @grid-gutter-width / 2;
+
+	.progress {
+		height: 10px;
+		background: fade(@musicMedium, 20%);
+		margin: 0 -@grid-gutter-width / 2 @line-height-computed;
+
+		.bar {
+			height: 10px;
+			background: fade(@secondaryControl, 20%);
+		}
+	}
 
 	.jp-controls {
 		font-size: @font-size-large * 1.5;
@@ -62,20 +74,31 @@ body {
 
 	h1 {
 		padding-left: 50px + @grid-gutter-width/2;
-		margin: 10px 0 0 0;
-		font-size: @font-size-base * 2;
+		margin: 15px 0 0 0;
+		font-size: @font-size-large;
+		font-weight: 400;
+		line-height: 1.2;
+
+		@media screen and (min-width: @screen-sm){
+			font-size: @font-size-large * 1.5;
+		}
+	}
+
+	h3 {
+		text-transform: uppercase;
+		font-size: @font-size-base;
+		color: lighten(@musicDark, 30%);
 	}
 
 	ul {
-		padding: 0;
+		padding: @line-height-computed 0 0 0;
 		clear: both;
-		margin-top: @line-height-computed;
 
 		li {
 			list-style: none;
 			background: fade(@gray-darker, 50%);
 			margin-bottom: 6px;
-			font-size: @font-size-large;
+			font-size: @font-size-base * 1.1;
 			color: @musicLight;
 
 			&:hover {
@@ -96,6 +119,8 @@ body {
 				width: 50%;
 				float: left;
 				border-right: 3px solid @musicDark;
+				font-size: @font-size-base * 1.5;
+				min-height: 100px;
 
 				&:nth-child(even){
 					border-right: none;
