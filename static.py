@@ -3,14 +3,30 @@
 import json
 from mimetypes import guess_type
 
-from flask import abort
+from flask import abort, render_template
 
 import copytext
 import envoy
 from flask import Blueprint
-from render_utils import flatten_app_config
+from render_utils import flatten_app_config, make_context
 
 static = Blueprint('static', __name__)
+
+# Preview a game
+@static.route('/game/<string:slug>/preview.html')
+def _preview(slug):
+    context = make_context()
+    context['slug'] = slug
+
+    return render_template('preview.html', **context)
+
+# The game page itself
+@static.route('/game/<string:slug>/game.html')
+def _game(slug):
+    context = make_context()
+    context['slug'] = slug
+
+    return render_template('game.html', **context)
 
 # Render JST templates on-demand
 @static.route('/js/templates.js')
