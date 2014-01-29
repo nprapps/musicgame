@@ -11,11 +11,14 @@ cssmin==0.1.4
 docutils==0.11
 dulwich==0.9.4
 envoy==0.0.2
+freebase==1.0.8
+ipython==1.1.0
 jmespath==0.2.1
 nose==1.2.1
 odict==1.5.1
 peewee==2.1.7
 ply==3.4
+psycopg2==2.5.2
 pyasn1==0.1.7
 pycrypto==2.6
 python-dateutil==2.2
