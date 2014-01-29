@@ -1,0 +1,100 @@
+<html>
+<head>
+    <title>URL test</title>
+</head>
+
+<body>
+    <h1>URL test</h1>
+
+    <button type="button" id="change">Change</input>
+
+    <script type="text/javascript" src="js/lib/jquery.js"></script>
+
+    <script type="text/javascript">
+        var test_data = {
+            'total_score': 8,
+            'questions': [{
+                'id': 7,
+                'time': 7,
+                'score': 3
+            }, {
+                'id': 9,
+                'time': 5,
+                'score': 5
+            }],
+        };
+
+        function encodeNumber(n) {
+            return String.fromCharCode(parseInt(n.toString(26)) + 97);
+        }
+
+        function decodeNumber(s) {
+            return parseInt((s.charCodeAt(0) - 97).toString(), 26);
+        }
+
+        function serializeResults(data) {
+            var results = '';
+
+            results += encodeNumber(data['total_score']);
+
+            for (var i = 0; i < data['questions'].length; i++) {
+                var q = data['questions'][i];
+
+                results += encodeNumber(q.id) + encodeNumber(q.time) + encodeNumber(q.score);
+            };
+
+            console.log(results);
+
+            return results;
+        }
+
+        function deserializeResults(s) {
+            var data = {};
+
+            data['total_score'] = decodeNumber(s[0]);
+            data['questions'] = [];
+
+            for (var i = 1; i < s.length; i += 3) {
+                data['questions'].push({
+                    'id': decodeNumber(s[i]),
+                    'time': decodeNumber(s[i + 1]),
+                    'score': decodeNumber(s[i + 2])
+                });
+            }
+            
+            return data;
+        }
+
+        var $change = $('#change');
+
+        // Via http://stackoverflow.com/a/3855394/24608
+        var qs = (function(a) {
+            if (a == "") return {};
+            var b = {};
+            for (var i = 0; i < a.length; ++i)
+            {
+                var p=a[i].split('=');
+                if (p.length != 2) continue;
+                b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
+            }
+            return b;
+        })(window.location.search.substr(1).split('&'));       
+
+        var param = qs['test'];
+
+        if (param) {
+            var data = deserializeResults(param);
+            console.log(data);
+
+            console.log(JSON.stringify(data) == JSON.stringify(test_data));
+        }
+
+        $change.click(function() {
+            var param = encodeURIComponent(serializeResults(test_data));
+            console.log(param);
+            console.log(deserializeResults(param));
+            //window.location.href = 'urltest.html?test=' + param;
+        });
+    </script>
+</body>
+</html>
