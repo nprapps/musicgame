@@ -8,6 +8,7 @@ import json
 from flask import Flask, redirect, render_template, url_for
 
 import app_config
+import games
 from render_utils import make_context, urlencode_filter
 import static
 
@@ -15,6 +16,7 @@ app = Flask(app_config.PROJECT_NAME)
 
 app.jinja_env.filters['urlencode'] = urlencode_filter
 
+app.register_blueprint(games.games, url_prefix='/%s/game' % app_config.PROJECT_SLUG)
 app.register_blueprint(static.static, url_prefix='/%s' % app_config.PROJECT_SLUG)
 
 app.config['PROPAGATE_EXCEPTIONS'] = True
@@ -24,9 +26,11 @@ app.config['PROPAGATE_EXCEPTIONS'] = True
 #app.logger.addHandler(file_handler)
 #app.logger.setLevel(logging.INFO)
 
-# Admin index
 @app.route('/%s/' % app_config.PROJECT_SLUG)
 def index():
+    """
+    Render the admin index.
+    """
     context = make_context()
     context['top_singles_by_year'] = []
 
@@ -44,21 +48,10 @@ def index():
 
     return render_template('index.html', **context)
 
-# Preview a game
-@app.route('/%s/game/<string:slug>/preview.html' % app_config.PROJECT_SLUG)
-def preview(slug):
-    context = make_context()
-    context['slug'] = slug
-
-    return render_template('preview.html', **context)
-
-# The game page itself
-@app.route('/%s/game/<string:slug>/game.html' % app_config.PROJECT_SLUG)
-def game(slug):
-    context = make_context()
-    context['slug'] = slug
-
-    return render_template('game.html', **context)
+@app.route('/%s/game/<string:slug>/publish/' % app_config.PROJECT_SLUG)
+def _publish_game(slug):
+    # TODO: kickoff render/deploy
+    return redirect(url_for('games._preview', slug=slug)) 
 
 # Scout uptime test route
 @app.route('/%s/test/' % app_config.PROJECT_SLUG, methods=['GET'])

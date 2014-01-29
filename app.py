@@ -5,6 +5,7 @@ import argparse
 from flask import Flask, render_template
 
 import app_config
+import games
 from render_utils import make_context, urlencode_filter
 import static
 
@@ -16,6 +17,7 @@ app.jinja_env.filters['urlencode'] = urlencode_filter
 def test_dir():
     return render_template('index.html', **make_context())
 
+app.register_blueprint(games.games, url_prefix='/game')
 app.register_blueprint(static.static)
 
 # Boilerplate

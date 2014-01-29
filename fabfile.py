@@ -18,6 +18,7 @@ import app_config
 import copy
 from etc import github
 from etc.gdocs import GoogleDoc
+import games
 import models
 
 """
@@ -182,9 +183,11 @@ def render():
 
     for rule in app.app.url_map.iter_rules():
         rule_string = rule.rule
-        name = rule.endpoint
+        name = rule.endpoint.split('.')[-1]
 
-        if name == 'static' or name.startswith('_'):
+        print name
+
+        if name.startswith('_'):
             print 'Skipping %s' % name
             continue
 
@@ -214,6 +217,18 @@ def render():
 
         with open(filename, 'w') as f:
             f.write(content.encode('utf-8'))
+
+    # We choose a sample game to render so its JS/CSS will
+    # be rendered. We don't deploy it.
+    # TODO
+    sample_game = [{ 'slug': 'test' }]
+    games.render_games(sample_game)
+
+def render_games():
+    """
+    Render all games.
+    """
+    games.render_games()
 
 def tests():
     """
