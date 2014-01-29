@@ -4,6 +4,7 @@ Jinja2==2.6
 Werkzeug==0.8.3
 awscli==1.2.11
 bcdoc==0.12.0
+beautifulsoup4==4.3.2
 botocore==0.31.0
 colorama==0.2.5
 cssmin==0.1.4
@@ -13,6 +14,7 @@ envoy==0.0.2
 jmespath==0.2.1
 nose==1.2.1
 odict==1.5.1
+peewee==2.1.7
 ply==3.4
 pyasn1==0.1.7
 pycrypto==2.6
