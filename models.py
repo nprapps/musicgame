@@ -1,12 +1,7 @@
-
 from peewee import *
-
 import app_config
 
-secrets = app_config.get_secrets()
-
-db = PostgresqlDatabase(secrets['MUSIC_POSTGRES_DB'], user=secrets['MUSIC_POSTGRES_USER'], password=secrets['MUSIC_POSTGRES_PASS'])
-db.connect()
+db = PostgresqlDatabase(None)
 
 class PSQLMODEL(Model):
     class Meta:

@@ -562,22 +562,46 @@ App-specific jobs
 """
 def bootstrap_data():
     """
-    Copies the sql from our assets folder.
+    Sets up the app from scratch.
     """
     local('pip install -r requirements.txt')
     assets_down()
+    init_db()
     init_tables()
-    local('psql -U %s %s < www/assets/data/initial_db.sql' % (os.environ.get('MUSIC_POSTGRES_USER'), os.environ.get('MUSIC_POSTGRES_DB')))
+    local('psql -U %s %s < www/assets/data/initial_db.sql' % (app_config.PROJECT_SLUG, app_config.PROJECT_SLUG))
+
+def init_db():
+    """
+    Prepares a user and db for the project.
+    """
+    local('dropdb %s' % app_config.PROJECT_SLUG)
+
+    with settings(warn_only=True):
+        local('createuser -s %s' % app_config.PROJECT_SLUG)
+        local('createdb %s' % app_config.PROJECT_SLUG)
 
 def init_tables():
+    """
+    Uses the ORM to create tables.
+    """
+    models.db.init(app_config.PROJECT_SLUG, user=app_config.PROJECT_SLUG)
+
     with settings(warn_only=True):
         models.Album.create_table()
 
-def kill_tables():
-    models.Album.drop_table()
+def drop_tables():
+    """
+    Uses the ORM to drop tables.
+    """
+    models.db.init(app_config.PROJECT_SLUG, user=app_config.PROJECT_SLUG)
+
+    with settings(warn_only=True):
+        models.Album.drop_table()
 
 
 def load_albums():
+    models.db.init(app_config.PROJECT_SLUG, user=app_config.PROJECT_SLUG)
+
     genres = [('rock', 1950), ('pop', 1950), ('jazz', 1940), ('country', 1940), ('hip-hop', 1980)]
     decades = [1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010]
 

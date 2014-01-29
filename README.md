@@ -89,25 +89,8 @@ fab bootstrap
 
 Last, bootstrap your database:
 
-First, create a user and a DB for local development. If prompted, it's totally cool to make this user a superuser.
-
 ```
-createuser {{ database username }}
-createdb {{ database name }}
-```
-
-Next, export your user, db and password (intentionally left blank).
-
-```
-export MUSIC_POSTGRES_USER = {{ database username }}
-export MUSIC_POSTGRES_PASS =
-export MUSIC_POSTGRES_DB = {{ database name }}
-```
-
-Finally, initialize the database:
-
-```
-fab bootstrap_database
+fab bootstrap_data
 ```
 
 Hide project secrets
