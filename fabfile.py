@@ -574,9 +574,8 @@ def init_db():
     """
     Prepares a user and db for the project.
     """
-    local('dropdb %s' % app_config.PROJECT_SLUG)
-
     with settings(warn_only=True):
+        local('dropdb %s' % app_config.PROJECT_SLUG)
         local('createuser -s %s' % app_config.PROJECT_SLUG)
         local('createdb %s' % app_config.PROJECT_SLUG)
 
