@@ -87,6 +87,12 @@ pip install -r requirements.txt
 fab bootstrap
 ```
 
+Last, bootstrap your database:
+
+```
+fab bootstrap_data
+```
+
 Hide project secrets
 --------------------
 

@@ -4,16 +4,22 @@ import csv
 from glob import glob
 import json
 import os
+import time
 import uuid
 
+from bs4 import BeautifulSoup
 from fabric.api import *
 from jinja2 import Template
+import random
+import requests
 
 import app
 import app_config
 import copy
 from etc import github
 from etc.gdocs import GoogleDoc
+import games
+import models
 
 """
 Base configuration
@@ -177,9 +183,11 @@ def render():
 
     for rule in app.app.url_map.iter_rules():
         rule_string = rule.rule
-        name = rule.endpoint
+        name = rule.endpoint.split('.')[-1]
 
-        if name == 'static' or name.startswith('_'):
+        print name
+
+        if name.startswith('_'):
             print 'Skipping %s' % name
             continue
 
@@ -209,6 +217,18 @@ def render():
 
         with open(filename, 'w') as f:
             f.write(content.encode('utf-8'))
+
+    # We choose a sample game to render so its JS/CSS will
+    # be rendered. We don't deploy it.
+    # TODO
+    sample_game = [{ 'slug': 'test' }]
+    games.render_games(sample_game)
+
+def render_games():
+    """
+    Render all games.
+    """
+    games.render_games()
 
 def tests():
     """
@@ -540,6 +560,163 @@ def deploy(remote='origin'):
 """
 App-specific jobs
 """
+def bootstrap_data():
+    """
+    Sets up the app from scratch.
+    """
+    local('pip install -r requirements.txt')
+    assets_down()
+    init_db()
+    init_tables()
+    local('psql -U %s %s < www/assets/data/initial_db.sql' % (app_config.PROJECT_SLUG, app_config.PROJECT_SLUG))
+
+def init_db():
+    """
+    Prepares a user and db for the project.
+    """
+    with settings(warn_only=True):
+        local('dropdb %s' % app_config.PROJECT_SLUG)
+        local('createuser -s %s' % app_config.PROJECT_SLUG)
+        local('createdb %s' % app_config.PROJECT_SLUG)
+
+def init_tables():
+    """
+    Uses the ORM to create tables.
+    """
+    models.db.init(app_config.PROJECT_SLUG, user=app_config.PROJECT_SLUG)
+
+    with settings(warn_only=True):
+        models.Album.create_table()
+
+def drop_tables():
+    """
+    Uses the ORM to drop tables.
+    """
+    models.db.init(app_config.PROJECT_SLUG, user=app_config.PROJECT_SLUG)
+
+    with settings(warn_only=True):
+        models.Album.drop_table()
+
+
+def load_albums():
+    models.db.init(app_config.PROJECT_SLUG, user=app_config.PROJECT_SLUG)
+
+    genres = [('rock', 1950), ('pop', 1950), ('jazz', 1940), ('country', 1940), ('hip-hop', 1980)]
+    decades = [1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010]
+
+    for genre, starting_year in genres:
+        for decade in decades:
+            if starting_year <= decade:
+
+                print "Opening www/assets/data/albums-%s-%s.json" % (genre, '%ss' % decade)
+
+                with open('www/assets/data/albums-%s-%s.json' % (genre, '%ss' % decade), 'rb') as readfile:
+                    albums = list(json.loads(readfile.read()))
+
+                for album in albums:
+
+                    a = models.Album(**album)
+                    a.save()
+                    print a
+
+
+def get_track_list():
+
+    headers = {}
+    headers['user-agent'] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.77 Safari/537.36"
+
+    base_url = "https://www.googleapis.com/freebase/v1/mqlread?query="
+    query = [{"type": "/music/album", "mid": None, "name": None, "releases": {"track": [],"limit": 1},"artist": {"name": None,"type": "/music/artist"}}]
+
+    albums = models.Album.select().where(models.Album.tracks >> None)
+
+    print "Loading tracks for %s albums." % albums.count()
+
+    for album in albums:
+
+        rand_time = random.randrange(4,9)
+
+        print "Waiting for %ss because of evil." % rand_time
+
+        time.sleep(rand_time)
+
+        r = requests.get('http://rateyourmusic.com' + album.url, headers=headers)
+
+        if r.status_code == 200:
+
+            tracks = []
+
+            soup = BeautifulSoup(r.content)
+
+            try:
+                for track in soup.select('ul#tracks li.track span.tracklist_title span')[0]:
+                    tracks.append(track.strip().encode('utf-8'))
+
+                if len(tracks) > 0:
+                    album.tracks = json.dumps(tracks)
+
+                    album.save()
+                    print album
+
+            except IndexError:
+                # No track list!
+                pass
+
+            except TypeError:
+                # Blank?
+                pass
+
+def get_album_list():
+    """
+    Writes a series of album lists (max 100) to files by
+    decade and genre.
+    """
+    url = "http://rateyourmusic.com/customchart?page=1&chart_type=top&type=album&year=%s&genre_include=1&include_child_genres=1&genres=%s&include_child_genres_chk=1&include=both&origin_countries=&limit=none&countries="
+    genres = [('rock', 1950), ('pop', 1950), ('jazz', 1940), ('country', 1940), ('hip-hop', 1980)]
+    decades = [1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010]
+
+    for genre, starting_year in genres:
+        for decade in decades:
+
+            payload = []
+            if starting_year <= decade:
+                r = requests.get(url % ('%ss' % decade, genre.replace('-', ' ')))
+                if r.status_code == 200:
+                    soup = BeautifulSoup(r.content)
+                    for album in soup.select('table.mbgen tr'):
+                        try:
+                            album_dict = {}
+                            album_dict['decade'] = '%ss' % decade
+                            album_dict['genre'] = genre
+
+                            base_markup = album.select('td')[2].select('div')[0]
+
+                            if len(album.select('.credited_list')) > 0:
+                                album_dict['name'] = base_markup.select('span')[0].select('a.album')[0].text.strip().encode('utf-8')
+                                album_dict['url'] = base_markup.select('span')[0].select('a.album')[0]['href'].strip()
+                                album_dict['artist'] = base_markup.select('span')[0].select('span.credited_name')[0].contents[0]
+                                album_dict['year'] = int(base_markup.select('span')[2].text.strip().replace('(', '').replace(')', ''))
+                            else:
+                                album_dict['name'] = base_markup.select('span')[0].select('a.album')[0].text.strip().encode('utf-8')
+                                album_dict['url'] = base_markup.select('span')[0].select('a.album')[0]['href'].strip()
+                                album_dict['artist'] = base_markup.select('span')[0].select('a.artist')[0].text.strip().encode('utf-8')
+                                album_dict['year'] = int(base_markup.select('span')[1].text.strip().replace('(', '').replace(')', ''))
+
+                            payload.append(album_dict)
+
+                        except IndexError:
+                            # This is an ad.
+                            pass
+
+                        except ValueError, e:
+                            # This is an album with a translated title. Punt.
+                            pass
+
+                with open('www/assets/data/albums-%s-%s.json' % (genre, '%ss' % decade), 'wb') as writefile:
+                    writefile.write(json.dumps(payload))
+                    print "Wrote www/assets/data/albums-%s-%s.json" % (genre, '%ss' % decade)
+
+
 
 def generate_quiz():
     """
