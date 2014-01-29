@@ -100,6 +100,8 @@ body {
 			margin-bottom: 6px;
 			font-size: @font-size-base * 1.1;
 			color: @musicLight;
+			min-height: 60px;
+			overflow: hidden;
 
 			&:hover {
 				background: fade(@gray-darker, 30%);
@@ -112,6 +114,18 @@ body {
 
 				&:hover {
 					text-decoration: none;
+				}
+
+				img {
+					float: left;
+					height: 60px;
+					margin-top: -20px;
+					margin-left: -20px;
+					margin-right: 20px;
+
+					@media screen and (min-width: @screen-sm){
+						height: 100px;
+					}
 				}
 			}
 
