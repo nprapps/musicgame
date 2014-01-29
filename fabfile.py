@@ -549,6 +549,7 @@ def bootstrap_data():
     """
     Copies the sql from our assets folder.
     """
+    local('pip install -r requirements.txt')
     assets_down()
     init_tables()
     local('psql -U %s %s < www/assets/data/initial_db.sql' % (os.environ.get('MUSIC_POSTGRES_USER'), os.environ.get('MUSIC_POSTGRES_DB')))
