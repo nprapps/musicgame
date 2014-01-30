@@ -3,7 +3,7 @@
 import argparse
 import datetime
 import json
-#import logging
+import logging
 
 from flask import Flask, redirect, render_template, url_for
 
@@ -21,10 +21,10 @@ app.register_blueprint(static.static, url_prefix='/%s' % app_config.PROJECT_SLUG
 
 app.config['PROPAGATE_EXCEPTIONS'] = True
 
-#file_handler = logging.FileHandler(app_config.APP_LOG_PATH)
-#file_handler.setLevel(logging.INFO)
-#app.logger.addHandler(file_handler)
-#app.logger.setLevel(logging.INFO)
+file_handler = logging.FileHandler(app_config.APP_LOG_PATH)
+file_handler.setLevel(logging.INFO)
+app.logger.addHandler(file_handler)
+app.logger.setLevel(logging.INFO)
 
 @app.route('/%s/' % app_config.PROJECT_SLUG)
 def index():
