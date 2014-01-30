@@ -2,7 +2,7 @@
 
 <html lang="en">
 <head>
-    <title>{{ slug }} : NPR</title>
+    <title>{{ PROJECT_NAME }} : NPR</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
 
     <!-- Fonts -->
@@ -43,6 +43,7 @@
     {{ JS.push('js/copy.js') }}
     {{ JS.push('js/console.js') }}
     {{ JS.push('js/templates.js') }}
+    {{ JS.push('js/utils.js') }}
     {{ JS.push('js/game.js') }}
     {{ JS.render('js/game-footer.min.js') }}
 </body>

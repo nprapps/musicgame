@@ -183,9 +183,7 @@ def render():
 
     for rule in app.app.url_map.iter_rules():
         rule_string = rule.rule
-        name = rule.endpoint.split('.')[-1]
-
-        print name
+        name = rule.endpoint
 
         if name.startswith('_'):
             print 'Skipping %s' % name
@@ -204,30 +202,27 @@ def render():
         if not (os.path.exists(dirname)):
             os.makedirs(dirname)
 
-        print 'Rendering %s' % (filename)
+        print 'Rendering %s to %s' % (name, filename)
 
         with app.app.test_request_context(path=rule_string):
             g.compile_includes = True
             g.compiled_includes = compiled_includes
 
-            view = app.__dict__[name]
+            bits = name.split('.')
+
+            # Determine which module the view resides in
+            if len(bits) > 1:
+                module, name = bits
+            else:
+                module = 'app'
+
+            view = globals()[module].__dict__[name]
             content = view()
 
             compiled_includes = g.compiled_includes
 
         with open(filename, 'w') as f:
             f.write(content.encode('utf-8'))
-
-    # We choose a sample game to render so its JS/CSS will
-    # be rendered. We don't deploy it.
-    # TODO
-    games.render_games(['test'])
-
-def render_games():
-    """
-    Render all games.
-    """
-    games.render_games()
 
 def tests():
     """

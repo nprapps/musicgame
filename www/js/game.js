@@ -113,6 +113,14 @@ var onDocumentReady = function() {
     $questionPlayButton.on('click', onQuestionPlayButtonClick);
     $questionStopButton.on('click', onQuestionStopButtonClick);
 
+    var slug = getParameterByName('quiz');
+
+    if (!slug) {
+        alert('No quiz slug specified!');
+    }
+
+    // TODO: fetch JSON config for quiz slug
+
     // Set up the STORY NARRATION player.
     $questionPlayer.jPlayer({
         ready: function () {

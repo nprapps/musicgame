@@ -17,7 +17,7 @@ app.jinja_env.filters['urlencode'] = urlencode_filter
 def test_dir():
     return render_template('index.html', **make_context())
 
-app.register_blueprint(games.games, url_prefix='/game')
+app.register_blueprint(games.games)
 app.register_blueprint(static.static)
 
 # Boilerplate

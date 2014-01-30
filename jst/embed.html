@@ -1,0 +1,10 @@
+<div id="game-embed-<%= slug %>">
+</div>
+<script src="<%= urlRoot %>/js/lib/parent.js" type="text/javascript"></script>
+<script type="text/javascript">
+$(function() {
+    $('#game-embed-<%= slug %>').responsiveIframe({
+src: '<%= urlRoot %>/game.html?quiz=<%= slug %>'
+    });
+});
+</script>

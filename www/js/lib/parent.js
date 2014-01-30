@@ -70,9 +70,18 @@
             $this.attr('data-child-id', nextChildId);
 
             var width = $this.width().toString();
+            var url = settings.src;
+
+            if (url.indexOf('?') < 0) {
+                url += '?';
+            } else {
+                url += '&';
+            }
+            
+            url += 'initialWidth=' + width + '&childId=' + nextChildId;
 
             // Send the initial width as a querystring parameter
-            $this.append('<iframe src="' + settings.src + '?initialWidth=' + width + '&childId=' + nextChildId + '" style="width: 100%;" scrolling="no" marginheight="0" marginwidth="0" frameborder="0"></iframe>')
+            $this.append('<iframe src="' + url + '" style="width: 100%;" scrolling="no" marginheight="0" marginwidth="0" frameborder="0"></iframe>')
 
             nextChildId += 1;
 
