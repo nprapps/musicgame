@@ -4,8 +4,10 @@ import argparse
 import datetime
 import json
 import logging
+import os
 
-from flask import Flask, redirect, render_template, url_for
+import envoy
+from flask import Flask, redirect, request, render_template, url_for
 
 import app_config
 import games
@@ -48,10 +50,17 @@ def index():
 
     return render_template('index.html', **context)
 
-@app.route('/%s/game/<string:slug>/publish/' % app_config.PROJECT_SLUG)
-def _publish_game(slug):
-    games.render_games([slug])
-    games.deploy_games([slug])
+@app.route('/%s/publish/' % app_config.PROJECT_SLUG)
+def _publish_game():
+    """
+    Publish game JSON to S3.
+    """
+    slug = request.GET['quiz']
+
+    # TODO:
+    # 1. get correct JSON blob from filesystem
+    # 2. gzipify JSON
+    # 3. set JSON to S3 key with gzip headers
 
     return redirect(url_for('games._preview', slug=slug)) 
 
