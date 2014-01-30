@@ -57,6 +57,13 @@ body {
 		}
 	}
 
+	.timer-container {
+		.pull-right;
+	}
+
+	#timer { fill: @primaryControl; }
+	#timer-bg { fill: @musicDark; }
+
 	.jp-controls {
 		font-size: @font-size-large * 1.5;
 		background: @primaryControl;
@@ -102,9 +109,14 @@ body {
 			color: @musicLight;
 			min-height: 60px;
 			overflow: hidden;
+			.transition(opacity .5s ease-in);
 
 			&:hover {
 				background: fade(@gray-darker, 30%);
+			}
+
+			&.fade {
+				opacity: 0.2;
 			}
 
 			a {
