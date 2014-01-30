@@ -2,7 +2,9 @@
 
 import os
 
+import envoy
 from flask import Blueprint, render_template, url_for
+
 from render_utils import make_context
 
 games = Blueprint('games', __name__)
@@ -27,7 +29,7 @@ def _game(slug):
 
     return render_template('game.html', **context)
 
-def render_games(which_games=None):
+def render_games(slugs=None):
     """
     Render each game.
 
@@ -38,11 +40,9 @@ def render_games(which_games=None):
 
     import app
 
-    if not which_games:
+    if not slugs:
         # TODO
-        which_games = get_games()
-
-    slugs = [game['slug'] for game in which_games]
+        slugs = get_games()
 
     compiled_includes = []
 
@@ -74,3 +74,23 @@ def render_games(which_games=None):
         with open(file_path, 'w') as f:
             f.write(content.encode('utf-8'))
 
+def deploy_games(slugs):
+    """
+    Deploy games to S3.
+    """
+    for slug in slugs:
+        path = '.games/game/%s' % slug
+        gzip_path = '.games.gzip/game/%s' % slug
+
+        if not os.path.exists(path):
+            print 'Path does not exist: %s' % path
+
+        if not os.path.exists(gzip_path):
+            os.makedirs(gzip_path)
+
+        r = envoy.run('python gzip_assets.py %s %s' % (path, gzip_path))
+
+        if r.status_code != 0:
+            print 'Error gzipping game!'
+
+        

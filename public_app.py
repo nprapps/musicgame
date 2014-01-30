@@ -50,7 +50,9 @@ def index():
 
 @app.route('/%s/game/<string:slug>/publish/' % app_config.PROJECT_SLUG)
 def _publish_game(slug):
-    # TODO: kickoff render/deploy
+    games.render_games([slug])
+    games.deploy_games([slug])
+
     return redirect(url_for('games._preview', slug=slug)) 
 
 # Scout uptime test route

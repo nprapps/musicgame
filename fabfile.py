@@ -221,8 +221,7 @@ def render():
     # We choose a sample game to render so its JS/CSS will
     # be rendered. We don't deploy it.
     # TODO
-    sample_game = [{ 'slug': 'test' }]
-    games.render_games(sample_game)
+    games.render_games(['test'])
 
 def render_games():
     """
