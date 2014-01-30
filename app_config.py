@@ -35,8 +35,8 @@ PRODUCTION_S3_BUCKETS = ['apps.npr.org', 'apps2.npr.org']
 STAGING_S3_BUCKETS = ['stage-apps.npr.org']
 ASSETS_S3_BUCKET = 'assets.apps.npr.org'
 
-PRODUCTION_SERVERS = ['54.214.20.225']
-STAGING_SERVERS = ['54.214.20.232']
+PRODUCTION_SERVERS = ['public.nprapps.org']
+STAGING_SERVERS = ['public-staging.nprapps.org']
 
 # Should code be deployed to the web/cron servers?
 DEPLOY_TO_SERVERS = True
