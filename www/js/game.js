@@ -30,6 +30,8 @@ var renderStart = function() {
     $startQuizButton.on('click', function(){
         renderQuestion(currentQuestion);
     });
+    
+    sendHeightToParent();
 };
 
 /*
@@ -88,6 +90,8 @@ var renderQuestion = function(question) {
     if (QUIZ.quiz_type === 'text'){
         runTimer();
     }
+    
+    sendHeightToParent();
 };
 
 /*
@@ -101,6 +105,8 @@ var renderGameOver = function() {
     var html = JST.gameover(context);
 
     $content.html(html);
+    
+    sendHeightToParent();
 };
 
 /*
@@ -140,6 +146,8 @@ var onQuestionComplete = function(){
     } else {
         $showScoreButton.addClass('show');
     }
+
+    sendHeightToParent();
 };
 
 /*
