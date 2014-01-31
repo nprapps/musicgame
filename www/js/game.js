@@ -26,9 +26,12 @@ var renderStart = function() {
 
     $quiz.html(html);
 
+    $content.addClass('start').css('height', $(window).height());
+
     $startQuizButton = $content.find('#start-quiz');
     $startQuizButton.on('click', function(){
         renderQuestion(currentQuestion);
+        $content.removeClass('start');
     });
     
     sendHeightToParent();
@@ -90,7 +93,7 @@ var renderQuestion = function(question) {
     if (QUIZ.quiz_type === 'text'){
         runTimer();
     }
-    
+
     sendHeightToParent();
 };
 
@@ -104,8 +107,9 @@ var renderGameOver = function() {
 
     var html = JST.gameover(context);
 
-    $content.html(html);
-    
+    $quiz.html(html);
+    $content.addClass('end').css('height', $(window).height());;
+
     sendHeightToParent();
 };
 
@@ -133,10 +137,10 @@ var onQuestionStopButtonClick = function(){
 */
 var onQuestionComplete = function(){
     $answers.each(function(){
-        $this = $(this).find('a');
+        $this = $(this).find('a .answer');
 
         if ($this.text() === QUIZ.questions[currentQuestion].answer){
-            $this.parent().addClass('correct');
+            $this.parent().parent().addClass('correct');
         }
     });
     $content.find('.answers li:not(.correct, .incorrect)').addClass('fade');

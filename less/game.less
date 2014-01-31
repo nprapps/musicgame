@@ -36,6 +36,14 @@
 @musicMedium: #e6ebf2;
 @musicLight: #dbe0e6;
 
+.vertical-align {
+  position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
 body {
 	background: @musicDark;
 	color: #fff;
@@ -99,6 +107,17 @@ body {
 		&.question-text {
 			.audio& {
 				padding-left: 50px + @grid-gutter-width/2;
+			}
+		}
+
+		.start&,
+		.end& {
+			text-align: center;
+			a {
+				font-size: 150%;
+				text-transform: uppercase;
+				font-weight: bold;
+				margin: 0 auto;
 			}
 		}
 	}
@@ -227,6 +246,34 @@ body {
 
 		&.show {
 			display: block;
+		}
+	}
+
+	&.start,
+	&.end {
+		#quiz {
+			.vertical-align;
+		}
+	}
+
+	&.end {
+		h1 {
+			text-transform: uppercase;
+			font-weight: bold;
+			font-size: 300%;
+		}
+
+		p {
+			text-align: center;
+			font-size: 150%;
+
+			a {
+				text-transform: uppercase;
+			}
+		}
+
+		#show-score {
+			.hide;
 		}
 	}
 }
