@@ -20,9 +20,18 @@
 <ul class="answers">
 <% for (var i=0; i < choices.length; i++) { %>
 	<% if (choices[i].text) { %>
-		<li><a href="#"><%= choices[i].text %></a></li>
+		<li<% if (choices[i].cover !== null) { %> class="has-cover"<% } %>>
+			<a href="#">
+			<% if (choices[i].cover !== null) { %>
+				<div class="cover">
+					<img class="img-responsive" src="/musicgame/img/<%= choices[i].cover %>">
+				</div>
+			<% } %>
+				<div class="answer"><%= choices[i].text %></div>
+			</a>
+		</li>
 	<% } else { %>
-		<li><a href="#"><%= choices[i] %></a></li>
+		<li><a href="#"><div class="answer"><%= choices[i] %></div></a></li>
 	<% } %>
 <% } %>
 </ul>

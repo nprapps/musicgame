@@ -155,19 +155,19 @@ var onQuestionComplete = function(){
 */
 var onAnswerClick = function(){
     var answer = QUIZ.questions[currentQuestion].answer;
-    $this = $(this).find('a');
+    $this = $(this).find('a .answer');
 
     // Stop the timer
     stopTimer = true;
     $timerContainer.attr('class', 'timer-container fade');
 
     if ($this.text() === answer){
-        $this.parent().addClass('correct');
+        $this.parent().parent().addClass('correct');
 
         // TODO: more elegant scoring
         score += Math.round(100 / QUIZ.questions.length);
     } else {
-        $this.parent().addClass('incorrect');
+        $this.parent().parent().addClass('incorrect');
     }
 
     onQuestionComplete();
