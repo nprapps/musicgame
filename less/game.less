@@ -109,29 +109,31 @@ body {
 
 		li {
 			list-style: none;
-			background: fade(@gray-darker, 50%);
 			margin-bottom: 6px;
 			font-size: @font-size-base * 1.1;
 			color: @musicLight;
-			min-height: 60px;
-			overflow: hidden;
+
 			.transition(opacity .5s ease-in);
 
-			&:hover {
-				background: fade(@gray-darker, 30%);
-			}
+
 
 			&.fade {
 				opacity: 0.2;
 			}
 
 			a {
-				color: @musicLight;
+				position: relative;
 				display: block;
-				padding: @line-height-computed;
+				overflow: hidden;
+				padding: @line-height-computed @line-height-computed + 30 @line-height-computed @line-height-computed;
+				min-height: 60px;
+				border-left: 10px solid fade(@gray-darker, 50%);
+				background: fade(@gray-darker, 50%);
+				color: @musicLight;
 
 				&:hover {
 					text-decoration: none;
+					background: fade(@gray-darker, 30%);
 				}
 
 				img {
@@ -145,18 +147,47 @@ body {
 						height: 100px;
 					}
 				}
+
+				&:after {
+					font-family: FontAwesome;
+					font-size: 200%;
+					position: absolute;
+					right: 10px;
+					-webkit-font-smoothing: antialiased;
+				}
+			}
+
+			&.correct a {
+				border-color: fade(@brand-success, 80%);
+
+				&:after {
+					content: "\f00c";
+					color: fade(@brand-success, 80%);
+				}
+			}
+
+			&.incorrect a {
+				border-color: fade(@brand-danger, 80%);
+
+				&:after {
+					content: "\f00d";
+					color: fade(@brand-danger, 80%);
+				}
 			}
 
 			@media screen and (min-width: @screen-sm){
 				width: 50%;
 				float: left;
-				border-right: 3px solid @musicDark;
-				font-size: @font-size-base * 1.5;
-				min-height: 100px;
+				padding-right: 3px;
+
 
 				&:nth-child(even){
-					border-right: none;
-					border-left: 3px solid @musicDark;
+					padding-left: 3px;
+				}
+
+				a {
+					font-size: @font-size-base * 1.5;
+					min-height: 100px;
 				}
 			}
 		}
@@ -164,12 +195,10 @@ body {
 
 	#next-question,
 	#show-score {
-		display: block;
-		opacity: 0;
-		.transition(opacity .5s ease-in);
+		display: none;
 
 		&.show {
-			opacity: 1;
+			display: block;
 		}
 	}
 }

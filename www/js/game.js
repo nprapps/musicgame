@@ -58,6 +58,7 @@ var renderQuestion = function(question) {
     $nextQuestionButton.on('click', onNextQuestionClick);
     $showScoreButton.on('click', renderGameOver);
 
+    $nextQuestionButton.removeClass('show');
     $progressBar.css('width', progress + '%');
 };
 
@@ -101,7 +102,7 @@ var onQuestionComplete = function(){
             $this.parent().addClass('correct');
         }
     });
-    $content.find('.answers li:not(.correct)').addClass('fade');
+    $content.find('.answers li:not(.correct, .incorrect)').addClass('fade');
 
     if (currentQuestion + 1 < QUIZ.questions.length){
         $nextQuestionButton.addClass('show');
@@ -117,8 +118,10 @@ var onAnswerClick = function(){
     var answer = QUIZ.questions[currentQuestion].answer;
     $this = $(this).find('a');
     if ($this.text() === answer){
+        $this.parent().addClass('correct');
         // TODO: calculate score
     } else {
+        $this.parent().addClass('incorrect');
         // TODO: calculate score
     }
 
