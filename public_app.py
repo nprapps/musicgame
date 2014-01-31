@@ -2,9 +2,13 @@
 
 import argparse
 import datetime
+import gzip
 import json
 import logging
+from StringIO import StringIO
 
+import boto
+from boto.s3.key import Key
 from flask import Flask, redirect, request, render_template, url_for
 
 import app_config
@@ -53,15 +57,32 @@ def _publish_game():
     """
     Publish game JSON to S3.
     """
-    slug = request.GET['quiz']
+    slug = request.args.get('quiz', '')
 
-    # TODO:
-    # 1. get quiz data from filesystem/database
-    # 2. convert to JSON interchange format
-    # 3. gzipify JSON
-    # 4. set JSON to S3 key with gzip headers
+    # TODO: get real quiz data from filesystem/database
+    data = '{ "placeholder": "TKTK" }'
 
-    return redirect(url_for('games._preview', slug=slug)) 
+    gzip_buffer = StringIO()
+    
+    with gzip.GzipFile(fileobj=gzip_buffer, mode='w') as f:
+        f.write(data)
+
+    data = gzip_buffer.getvalue()
+
+    s3 = boto.connect_s3()
+
+    for bucket_name in app_config.S3_BUCKETS:
+        bucket = s3.get_bucket(bucket_name)
+
+        k = Key(bucket, '%s/live-data/games/%s' % (app_config.PROJECT_SLUG, slug))
+        k.set_contents_from_string(data, headers={
+            'Content-Type': 'application/json',
+            'Content-Encoding': 'gzip',
+            'Cache-Control': 'max-age=5'
+        })
+        k.set_acl('public-read')
+
+    return redirect(url_for('games.preview')) 
 
 # Scout uptime test route
 @app.route('/%s/test/' % app_config.PROJECT_SLUG, methods=['GET'])
@@ -72,15 +93,6 @@ def _test_app():
     app.logger.info('Test URL requested.')
 
     return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
-# Server arbitrary static files on-demand
-@app.route('/<path:path>')
-def _static(path):
-    try:
-        with open('www/%s' % path) as f:
-            return f.read(), 200, { 'Content-Type': guess_type(path)[0] }
-    except IOError:
-        abort(404)
 
 # Local testing bare domain redirect
 if app_config.DEPLOYMENT_TARGET is None:
