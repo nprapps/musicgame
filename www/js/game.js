@@ -1,13 +1,18 @@
 var $content = null;
+var $quiz = null;
 var $answers = null;
 var $questionPlayer = null;
 var $questionPlayButton = null;
 var $questionStopButton = null;
 var $timerBg = null;
 var $timer = null;
+var $nextQuestionButton = null;
+var $showScoreButton = null;
+var $startQuizButton = null;
+var $progressBar = null;
 var angle = 0;
-var pi = Math.PI;
 var interval = 30;
+var currentQuestion = 0;
 
 /*
  * Render the start screen.
@@ -16,17 +21,44 @@ var renderStart = function() {
     var context = {};
     var html = JST.start(context);
 
-    $content.html(html);
+    $quiz.html(html);
+
+    $startQuizButton = $content.find('#start-quiz');
+    $startQuizButton.on('click', function(){
+        renderQuestion(currentQuestion);
+    });
 };
 
 /*
  * Render the question screen.
  */
-var renderQuestion = function() {
-    var context = {};
+var renderQuestion = function(question) {
+    $content.removeClass().addClass(QUIZ.quiz_type);
+    var context = QUIZ.questions[question];
+    context.quizLength = QUIZ.questions.length;
+    context.questionNumber = question + 1;
     var html = JST.question(context);
+    var progress = context.questionNumber / context.quizLength * 100;
 
-    $content.html(html);
+    $quiz.html(html);
+
+    $answers = $content.find('.answers li');
+    $questionPlayer = $content.find('#player');
+    $questionPlayButton = $content.find('.jp-play');
+    $questionStopButton = $content.find('.jp-stop');
+    $timerBg = $content.find('#timer-bg');
+    $timer = $content.find('#timer');
+    $nextQuestionButton = $content.find('#next-question');
+    $showScoreButton = $content.find('#show-score');
+    
+
+    $questionPlayButton.on('click', onQuestionPlayButtonClick);
+    $questionStopButton.on('click', onQuestionStopButtonClick);
+    $answers.on('click', onAnswerClick);
+    $nextQuestionButton.on('click', onNextQuestionClick);
+    $showScoreButton.on('click', renderGameOver);
+
+    $progressBar.css('width', progress + '%');
 };
 
 /*
@@ -59,17 +91,45 @@ var onQuestionStopButtonClick = function(){
 };
 
 /*
+* Answer clicked or timer ran out
+*/
+var onQuestionComplete = function(){
+    $answers.each(function(){
+        $this = $(this).find('a');
+
+        if ($this.text() === QUIZ.questions[currentQuestion].answer){
+            $this.parent().addClass('correct');
+        }
+    });
+    $content.find('.answers li:not(.correct)').addClass('fade');
+
+    if (currentQuestion + 1 < QUIZ.questions.length){
+        $nextQuestionButton.addClass('show');
+    } else {
+        $showScoreButton.addClass('show');
+    }
+};
+
+/*
 * You ran out of time
 */
-var onTimerComplete = _.once(function(){
-    $content.find('.answers li:not(.correct)').addClass('fade');
-});
+var onAnswerClick = function(){
+    var answer = QUIZ.questions[currentQuestion].answer;
+    $this = $(this).find('a');
+    if ($this.text() === answer){
+        // TODO: calculate score
+    } else {
+        // TODO: calculate score
+    }
+
+    onQuestionComplete();
+};
 
 /*
 * Draw the timer
 */
 var drawTimer = function(){
-    var r = ( angle * pi / 180 );
+    var r = ( angle * Math.PI / 180 );
     var x = Math.sin( r ) * 25;
     var y = Math.cos( r ) * - 25;
     var mid = ( angle > 180 ) ? 1 : 0;
@@ -92,32 +152,34 @@ var runTimer = function() {
   } else {
     angle = 360 * .9999;
     drawTimer();
-    onTimerComplete();
+    onQuestionComplete();
   };
 };
+
+/*
+* Go to the next question
+*/
+var onNextQuestionClick = function(event) {
+    event.stopImmediatePropagation();
+    currentQuestion++;
+    console.log(currentQuestion);
+    renderQuestion(currentQuestion);
+}
 
 /*
  * On browser ready.
  */
 var onDocumentReady = function() {
     $content = $('#content');
-    renderQuestion();
-
-    $answers = $content.find('.answers li');
-    $questionPlayer = $content.find('#player');
-    $questionPlayButton = $content.find('.jp-play');
-    $questionStopButton = $content.find('.jp-stop');
-    $timerBg = $content.find('#timer-bg');
-    $timer = $content.find('#timer');
-
-    $questionPlayButton.on('click', onQuestionPlayButtonClick);
-    $questionStopButton.on('click', onQuestionStopButtonClick);
+    $quiz = $('#quiz');
+    $progressBar = $('.progress .bar');
+    renderStart();
 
     var slug = getParameterByName('quiz');
 
-    if (!slug) {
-        alert('No quiz slug specified!');
-    }
+    //if (!slug) {
+    //    alert('No quiz slug specified!');
+    //}
 
     // TODO: fetch JSON config for quiz slug
 

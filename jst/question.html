@@ -1,9 +1,9 @@
-<div class="progress"><div class="bar" style="width: 40%;"></div></div>
-<h3 class="progress-header">Question 4/10</h3>
+<h3 class="progress-header">Question <%= questionNumber %>/<%= quizLength %></h3>
 <svg class="timer-container" width="50" height="50" viewbox="0 0 50 50" preserveAspectRatio="xMinYMin meet">
   <circle id="timer-bg" cx="25" cy="25" r="25" />
   <path id="timer" transform="translate(25, 25)"/>
 </svg>
+<% if (QUIZ.quiz_type === "audio"){ %>
 <div id="player" class="jp-player"></div>
 <div id="jp_container_1" class="jp-audio">
     <div class="jp-type-single">
@@ -15,10 +15,12 @@
         </div>
     </div>
 </div> <!-- end .jp-audio -->
-<h1>Which artist performed this fill?</h1>
+<% } %>
+<h1><%= text %></h1>
 <ul class="answers">
-	<li class="correct"><a href="#"><img class="img-responsive" src="img/aja-600.jpg">Steely Dan</a></li>
-	<li><a href="#"><img class="img-responsive" src="img/southern-accents-600.jpg">Tom Petty And The Heartbreakers</a></li>
-	<li><a href="#"><img class="img-responsive" src="img/digital-ash-600.jpg">Bright Eyes</a></li>
-	<li class="incorrect"><a href="#"><img class="img-responsive" src="img/weezer-600.jpg">Weezer</a></li>
+<% for (var i=0; i < choices.length; i++) { %>
+	<li><a href="#"><%= choices[i] %></a></li>
+<% } %>
 </ul>
+
+

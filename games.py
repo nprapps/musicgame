@@ -14,7 +14,14 @@ def game():
     """
     Render the game itself.
     """
-    return render_template('game.html', **make_context())
+    # Set up standard page context.
+    context = make_context()
+
+    # Read the books JSON into the page.
+    with open('www/assets/data/michael_jackson_quiz.json', 'rb') as readfile:
+        context['quiz_js'] = readfile.read()
+
+    return render_template('game.html', **context)
 
 @games.route('/preview.html')
 def preview():

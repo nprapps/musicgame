@@ -74,6 +74,15 @@ def _test_app():
 
     return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
+# Server arbitrary static files on-demand
+@app.route('/<path:path>')
+def _static(path):
+    try:
+        with open('www/%s' % path) as f:
+            return f.read(), 200, { 'Content-Type': guess_type(path)[0] }
+    except IOError:
+        abort(404)
+
 # Local testing bare domain redirect
 if app_config.DEPLOYMENT_TARGET is None:
     @app.route('/')
