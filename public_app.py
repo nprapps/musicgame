@@ -4,9 +4,7 @@ import argparse
 import datetime
 import json
 import logging
-import os
 
-import envoy
 from flask import Flask, redirect, request, render_template, url_for
 
 import app_config
@@ -58,9 +56,10 @@ def _publish_game():
     slug = request.GET['quiz']
 
     # TODO:
-    # 1. get correct JSON blob from filesystem
-    # 2. gzipify JSON
-    # 3. set JSON to S3 key with gzip headers
+    # 1. get quiz data from filesystem/database
+    # 2. convert to JSON interchange format
+    # 3. gzipify JSON
+    # 4. set JSON to S3 key with gzip headers
 
     return redirect(url_for('games._preview', slug=slug)) 
 
