@@ -61,6 +61,11 @@ body {
 
 	.timer-container {
 		.pull-right;
+		.transition(opacity .5s ease-in);
+
+		&.fade {
+			opacity: 0;
+		}
 	}
 
 	#timer { fill: @primaryControl; }

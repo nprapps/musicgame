@@ -4,6 +4,7 @@ var $answers = null;
 var $questionPlayer = null;
 var $questionPlayButton = null;
 var $questionStopButton = null;
+var $timerContainer = null;
 var $timerBg = null;
 var $timer = null;
 var $nextQuestionButton = null;
@@ -13,6 +14,8 @@ var $progressBar = null;
 var angle = 0;
 var interval = 30;
 var currentQuestion = 0;
+var stopTimer = false;
+var score = 0;
 
 /*
  * Render the start screen.
@@ -39,6 +42,8 @@ var renderQuestion = function(question) {
     context.questionNumber = question + 1;
     var html = JST.question(context);
     var progress = context.questionNumber / context.quizLength * 100;
+    angle = 0;
+    stopTimer = false;
 
     $quiz.html(html);
 
@@ -46,11 +51,12 @@ var renderQuestion = function(question) {
     $questionPlayer = $content.find('#player');
     $questionPlayButton = $content.find('.jp-play');
     $questionStopButton = $content.find('.jp-stop');
+    $timerContainer = $content.find('.timer-container');
     $timerBg = $content.find('#timer-bg');
     $timer = $content.find('#timer');
     $nextQuestionButton = $content.find('#next-question');
     $showScoreButton = $content.find('#show-score');
-    
+
 
     $questionPlayButton.on('click', onQuestionPlayButtonClick);
     $questionStopButton.on('click', onQuestionStopButtonClick);
@@ -60,13 +66,38 @@ var renderQuestion = function(question) {
 
     $nextQuestionButton.removeClass('show');
     $progressBar.css('width', progress + '%');
+
+    // Set up the STORY NARRATION player.
+    if (QUIZ.quiz_type === 'audio'){
+        $questionPlayer.jPlayer({
+            ready: function () {
+                $(this).jPlayer('setMedia', {
+                    mp3: 'http://pd.npr.org/anon.npr-mp3/npr/asc/2011/07/20110726_asc_hh.mp3',
+                    oga: 'http://s.npr.org/news/specials/2014/wolves/wolf-ambient-draft.ogg'
+                }).jPlayer('stop');
+            },
+            ended: function() {
+                onQuestionStopButtonClick();
+            },
+            swfPath: 'js/lib',
+            supplied: 'mp3, oga',
+            loop: false
+        });
+    }
+
+    if (QUIZ.quiz_type === 'text'){
+        runTimer();
+    }
 };
 
 /*
  * Render the game over screen.
  */
 var renderGameOver = function() {
-    var context = {};
+    var context = {
+        'score': score + '%'
+    };
+
     var html = JST.gameover(context);
 
     $content.html(html);
@@ -117,12 +148,18 @@ var onQuestionComplete = function(){
 var onAnswerClick = function(){
     var answer = QUIZ.questions[currentQuestion].answer;
     $this = $(this).find('a');
+
+    // Stop the timer
+    stopTimer = true;
+    $timerContainer.attr('class', 'timer-container fade');
+
     if ($this.text() === answer){
         $this.parent().addClass('correct');
-        // TODO: calculate score
+
+        // TODO: more elegant scoring
+        score += 10;
     } else {
         $this.parent().addClass('incorrect');
-        // TODO: calculate score
     }
 
     onQuestionComplete();
@@ -148,15 +185,19 @@ var drawTimer = function(){
 * Animate our question timer
 */
 var runTimer = function() {
-  if (angle < 359){
-    drawTimer();
-    setTimeout(runTimer, interval);
-    angle++;
-  } else {
-    angle = 360 * .9999;
-    drawTimer();
-    onQuestionComplete();
-  };
+    if (stopTimer === true){
+        return;
+    }
+
+    if (angle < 359){
+        drawTimer();
+        var timer = setTimeout(runTimer, interval);
+        angle++;
+    } else {
+        angle = 360 * .9999;
+        drawTimer();
+        onQuestionComplete();
+    };
 };
 
 /*
@@ -185,22 +226,6 @@ var onDocumentReady = function() {
     //}
 
     // TODO: fetch JSON config for quiz slug
-
-    // Set up the STORY NARRATION player.
-    $questionPlayer.jPlayer({
-        ready: function () {
-            $(this).jPlayer('setMedia', {
-                mp3: 'http://pd.npr.org/anon.npr-mp3/npr/asc/2011/07/20110726_asc_hh.mp3',
-                oga: 'http://s.npr.org/news/specials/2014/wolves/wolf-ambient-draft.ogg'
-            }).jPlayer('stop');
-        },
-        ended: function() {
-            onQuestionStopButtonClick();
-        },
-        swfPath: 'js/lib',
-        supplied: 'mp3, oga',
-        loop: false
-    });
 };
 
 /*
