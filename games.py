@@ -15,7 +15,7 @@ def game():
     context = make_context()
 
     # Read the books JSON into the page.
-    with open('www/assets/data/michael_jackson_quiz.json', 'rb') as readfile:
+    with open('www/assets/data/drum_fill_friday.json', 'rb') as readfile:
         context['quiz_js'] = readfile.read()
 
     return render_template('game.html', **context)

@@ -72,7 +72,7 @@ var renderQuestion = function(question) {
         $questionPlayer.jPlayer({
             ready: function () {
                 $(this).jPlayer('setMedia', {
-                    mp3: 'http://pd.npr.org/anon.npr-mp3/npr/asc/2011/07/20110726_asc_hh.mp3',
+                    mp3: QUIZ.questions[currentQuestion].audio,
                     oga: 'http://s.npr.org/news/specials/2014/wolves/wolf-ambient-draft.ogg'
                 }).jPlayer('stop');
             },
@@ -157,7 +157,7 @@ var onAnswerClick = function(){
         $this.parent().addClass('correct');
 
         // TODO: more elegant scoring
-        score += 10;
+        score += Math.round(100 / QUIZ.questions.length);
     } else {
         $this.parent().addClass('incorrect');
     }
@@ -217,15 +217,27 @@ var onDocumentReady = function() {
     $content = $('#content');
     $quiz = $('#quiz');
     $progressBar = $('.progress .bar');
-    renderStart();
 
     var slug = getParameterByName('quiz');
 
-    //if (!slug) {
-    //    alert('No quiz slug specified!');
-    //}
-
-    // TODO: fetch JSON config for quiz slug
+    if (slug !== null) {
+        $.ajax({
+            url: '/musicgame/assets/data/' + slug + '.json',
+            dataType: 'json',
+            async: false,
+            crossDomain: false,
+            jsonp: false,
+            success: function(data){
+                window.QUIZ = data;
+                renderStart();
+            },
+            error: function(error){
+                debugger;
+            }
+        })
+    } else {
+        renderStart();
+    }
 };
 
 /*

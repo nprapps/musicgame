@@ -96,8 +96,10 @@ body {
 			font-size: @font-size-large * 1.5;
 		}
 
-		.audio & {
-			padding-left: 50px + @grid-gutter-width/2;
+		&.question-text {
+			.audio& {
+				padding-left: 50px + @grid-gutter-width/2;
+			}
 		}
 	}
 
@@ -157,6 +159,8 @@ body {
 					font-family: FontAwesome;
 					font-size: 200%;
 					position: absolute;
+					margin-top: -25px;
+					top: 50%;
 					right: 10px;
 					-webkit-font-smoothing: antialiased;
 				}

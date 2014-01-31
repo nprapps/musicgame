@@ -16,10 +16,14 @@
     </div>
 </div> <!-- end .jp-audio -->
 <% } %>
-<h1><%= text %></h1>
+<h1 class="question-text"><%= text %></h1>
 <ul class="answers">
 <% for (var i=0; i < choices.length; i++) { %>
-	<li><a href="#"><%= choices[i] %></a></li>
+	<% if (choices[i].text) { %>
+		<li><a href="#"><%= choices[i].text %></a></li>
+	<% } else { %>
+		<li><a href="#"><%= choices[i] %></a></li>
+	<% } %>
 <% } %>
 </ul>
 
