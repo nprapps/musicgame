@@ -79,7 +79,8 @@ var renderQuestion = function(question) {
                 $(this).jPlayer('setMedia', {
                     mp3: QUIZ.questions[currentQuestion].audio,
                     oga: 'http://s.npr.org/news/specials/2014/wolves/wolf-ambient-draft.ogg'
-                }).jPlayer('stop');
+                }).jPlayer('play');
+                runTimer();
             },
             ended: function() {
                 onQuestionStopButtonClick();
@@ -88,11 +89,14 @@ var renderQuestion = function(question) {
             supplied: 'mp3, oga',
             loop: false
         });
-    }
 
-    if (QUIZ.quiz_type === 'text'){
+        $content.find('.jp-play').hide();
+        $content.find('.jp-stop').show();
+    } else { // Start the timer immediately if no audio.
         runTimer();
     }
+
+
 
     sendHeightToParent();
 };
@@ -120,7 +124,6 @@ var onQuestionPlayButtonClick = function(){
     $questionPlayer.jPlayer('play', 0);
     $content.find('.jp-play').hide();
     $content.find('.jp-stop').show();
-    runTimer();
 };
 
 /*
