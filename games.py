@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 
-import os
-
-import envoy
 from flask import Blueprint, render_template
 
 from render_utils import make_context
