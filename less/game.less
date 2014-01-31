@@ -136,7 +136,6 @@ body {
 		li {
 			list-style: none;
 			margin-bottom: 6px;
-			font-size: @font-size-base * 1.1;
 			color: @musicLight;
 
 			.transition(opacity .5s ease-in);
@@ -168,7 +167,8 @@ body {
 				}
 
 				.cover {
-					width: 60px;
+					width: 80px;
+					vertical-align: middle;
 
 					@media screen and (min-width: @screen-sm){
 						width: 120px;
@@ -176,18 +176,13 @@ body {
 				}
 
 				.answer {
-					padding: @line-height-computed @line-height-computed + 30 @line-height-computed @line-height-computed;
+					padding: 10px 40px 0 10px;
 					border-left: 10px solid fade(@gray-darker, 50%);
-				}
-
-				img {
-					height: 60px;
 
 					@media screen and (min-width: @screen-sm){
-						height: 120px;
+						padding: @line-height-computed @line-height-computed + 30 @line-height-computed @line-height-computed;
 					}
 				}
-
 
 				.answer:after {
 					font-family: FontAwesome;
@@ -233,7 +228,7 @@ body {
 				}
 
 				a {
-					font-size: @font-size-base * 1.5;
+					font-size: @font-size-base * 1.1;
 					min-height: 120px;
 				}
 			}
