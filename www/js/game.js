@@ -232,11 +232,9 @@ var onDocumentReady = function() {
                 renderStart();
             },
             error: function(error){
-                debugger;
+                alert('No quiz data');
             }
         })
-    } else {
-        renderStart();
     }
 };
 
