@@ -146,7 +146,7 @@ var onQuestionComplete = function(){
             $this.parent().parent().addClass('correct');
         }
     });
-    $content.find('.answers li:not(.correct, .incorrect)').addClass('fade');
+    $content.find('.answers li:not(.correct, .incorrect)').addClass('fade').off("click");
 
     if (currentQuestion + 1 < QUIZ.questions.length){
         $nextQuestionButton.addClass('show');

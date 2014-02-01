@@ -29,4 +29,4 @@ slimit==0.7.4
 ssh==1.7.14
 wsgiref==0.1.2
 xlrd==0.9.0
-boto=2.24.0
+boto==2.24.0
