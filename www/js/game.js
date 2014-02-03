@@ -16,6 +16,7 @@ var interval = 30;
 var currentQuestion = 0;
 var stopTimer = false;
 var score = 0;
+var answers = [];
 
 /*
  * Render the start screen.
@@ -106,7 +107,9 @@ var renderQuestion = function(question) {
  */
 var renderGameOver = function() {
     var context = {
-        'score': score + '%'
+        'score': score + '%',
+        'answers': answers,
+        'questions': QUIZ.questions
     };
 
     var html = JST.gameover(context);
@@ -167,6 +170,9 @@ var onAnswerClick = function(){
     // Stop the timer
     stopTimer = true;
     $timerContainer.attr('class', 'timer-container fade');
+
+    // Push the selected answer to our answer array
+    answers.push($this.text());
 
     if ($this.text() === answer){
         $this.parent().parent().addClass('correct');

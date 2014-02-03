@@ -18,22 +18,22 @@
 <% } %>
 <h1 class="question-text"><%= text %></h1>
 <ul class="answers">
-<% for (var i=0; i < choices.length; i++) { %>
-	<% if (choices[i].text) { %>
-		<li<% if (choices[i].cover !== null) { %> class="has-cover"<% } %>>
+<% _.each(choices, function(choice){ %>
+	<% if (choice.text) { %>
+		<li<% if (choice.cover !== null) { %> class="has-cover"<% } %>>
 			<a href="#">
-			<% if (choices[i].cover !== null) { %>
+			<% if (choice.cover !== null) { %>
 				<div class="cover">
-					<img class="img-responsive" src="/musicgame/assets/cover_art/<%= choices[i].cover %>">
+					<img class="img-responsive" src="/musicgame/assets/cover_art/<%= choice.cover %>">
 				</div>
 			<% } %>
-				<div class="answer"><%= choices[i].text %></div>
+				<div class="answer"><%= choice.text %></div>
 			</a>
 		</li>
 	<% } else { %>
-		<li><a href="#"><div class="answer"><%= choices[i] %></div></a></li>
+		<li><a href="#"><div class="answer"><%= choice %></div></a></li>
 	<% } %>
-<% } %>
+<% }); %>
 </ul>
 
 

@@ -3,3 +3,16 @@
 <p>You got <%= score %> right.</p>
 
 <p><a class="btn btn-large btn-primary" href="./game.html?quiz=michael_jackson_quiz">Play Another Quiz</a></p>
+
+
+<ol class="responses">
+<% _.each(questions, function(question, index){ %>
+	<li>
+		<h2><%= question.text %></h2>
+		<p class="your-answer<% if (answers[index] !== question.answer){ %> correct<% } else { %> incorrect<% }%>"><%= answers[index] %></p>
+		<% if (answers[index] !== question.answer){ %>
+			<p class="correct-answer">Correct answer: <%= question.answer %></p>
+		<% }%>
+	</li>
+<% }); %>
+</ul>
