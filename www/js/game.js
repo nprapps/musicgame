@@ -12,7 +12,8 @@ var $showScoreButton = null;
 var $startQuizButton = null;
 var $progressBar = null;
 var angle = 0;
-var interval = 30;
+var timerLength = 15; // Seconds allowed to answer per question
+var interval = (timerLength / 360) * 1000; // Timout interval
 var currentQuestion = 0;
 var stopTimer = false;
 var score = 0;
@@ -35,7 +36,7 @@ var renderStart = function() {
         renderQuestion(currentQuestion);
         $content.removeClass('start');
     });
-    
+
     sendHeightToParent();
 };
 
@@ -223,6 +224,9 @@ var trimAnswers = function(){
 * Animate our question timer
 */
 var runTimer = function() {
+    var answerAngle = 360 / QUIZ.questions[currentQuestion].choices.length;
+    var angleInterval = (360 - answerAngle) / (QUIZ.questions[currentQuestion].choices.length - 2);
+
     if (stopTimer === true){
         return;
     }
@@ -230,7 +234,7 @@ var runTimer = function() {
     if (angle < 359){
         drawTimer();
 
-        if (angle > 90 && angle % 135 === 0){
+        if (angle > answerAngle && angle % angleInterval === 0){
             trimAnswers();
         }
 
