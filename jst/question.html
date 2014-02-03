@@ -18,7 +18,7 @@
 <% } %>
 <h1 class="question-text"><%= text %></h1>
 <ul class="answers">
-<% _.each(choices, function(choice){ %>
+<% _.each(_.shuffle(choices), function(choice){ %>
 	<% if (choice.text) { %>
 		<li<% if (choice.cover !== null) { %> class="has-cover"<% } %>>
 			<a href="#">
