@@ -17,6 +17,7 @@ var currentQuestion = 0;
 var stopTimer = false;
 var score = 0;
 var answers = [];
+var incorrectAnswers = null;
 
 /*
  * Render the start screen.
@@ -42,16 +43,20 @@ var renderStart = function() {
  * Render the question screen.
  */
 var renderQuestion = function(question) {
-    $content.removeClass().addClass(QUIZ.quiz_type);
     var context = QUIZ.questions[question];
     context.quizLength = QUIZ.questions.length;
     context.questionNumber = question + 1;
     var html = JST.question(context);
     var progress = context.questionNumber / context.quizLength * 100;
+    incorrectAnswers = _(QUIZ.questions[currentQuestion].choices)
+        .without(QUIZ.questions[currentQuestion].answer);
+
+
     angle = 0;
     stopTimer = false;
 
     $quiz.html(html);
+    $content.removeClass().addClass(QUIZ.quiz_type);
 
     $answers = $content.find('.answers li');
     $questionPlayer = $content.find('#player');
@@ -202,6 +207,18 @@ var drawTimer = function(){
     $timer.attr( 'd', anim );
 }
 
+var trimAnswers = function(){
+    var wrongAnswer = incorrectAnswers.pop();
+
+    $answers.each(function(){
+        $this = $(this).find('a .answer');
+
+        if ($this.text() === wrongAnswer && !$this.parent().parent().hasClass('fade')){
+            $this.parent().parent().addClass('fade').off("click");
+        }
+    });
+}
+
 /*
 * Animate our question timer
 */
@@ -212,6 +229,11 @@ var runTimer = function() {
 
     if (angle < 359){
         drawTimer();
+
+        if (angle > 90 && angle % 135 === 0){
+            trimAnswers();
+        }
+
         var timer = setTimeout(runTimer, interval);
         angle++;
     } else {
@@ -227,7 +249,6 @@ var runTimer = function() {
 var onNextQuestionClick = function(event) {
     event.stopImmediatePropagation();
     currentQuestion++;
-    console.log(currentQuestion);
     renderQuestion(currentQuestion);
 }
 

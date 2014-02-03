@@ -36,6 +36,10 @@
 @musicMedium: #e6ebf2;
 @musicLight: #dbe0e6;
 
+// Game colors
+@correct: fade(@brand-success, 80%);
+@incorrect: fade(@brand-danger, 80%);
+
 .vertical-align {
   position: relative;
   top: 50%;
@@ -114,8 +118,8 @@ body {
 		.end& {
 			text-align: center;
 			a {
-				font-size: 150%;
 				text-transform: uppercase;
+				font-size: @font-size-base * 2;
 				font-weight: bold;
 				margin: 0 auto;
 			}
@@ -128,7 +132,7 @@ body {
 		color: lighten(@musicDark, 30%);
 	}
 
-	ul {
+	.answers {
 		padding: @line-height-computed 0 0 0;
 		overflow: hidden;
 		clear: both;
@@ -197,22 +201,22 @@ body {
 
 			&.correct {
 				.answer {
-					border-color: fade(@brand-success, 80%);
+					border-color: @correct;
 
 					&:after {
 						content: "\f00c";
-						color: fade(@brand-success, 80%);
+						color: @correct;
 					}
 				}
 			}
 
 			&.incorrect {
 				.answer {
-					border-color: fade(@brand-danger, 80%);
+					border-color: @incorrect;
 
 					&:after {
 						content: "\f00d";
-						color: fade(@brand-danger, 80%);
+						color: @incorrect;
 					}
 				}
 			}
@@ -228,7 +232,6 @@ body {
 				}
 
 				a {
-					font-size: @font-size-base * 1.1;
 					min-height: 120px;
 				}
 			}
@@ -244,7 +247,7 @@ body {
 			margin: 0 auto;
 
 			text-transform: uppercase;
-			font-size: 150%;
+			font-size: @font-size-base * 1.2;
 		}
 	}
 
@@ -258,15 +261,60 @@ body {
 		h1 {
 			text-transform: uppercase;
 			font-weight: bold;
-			font-size: 300%;
 		}
 
 		p {
 			text-align: center;
-			font-size: 150%;
 
 			a {
 				text-transform: uppercase;
+			}
+		}
+
+		ul {
+			text-align: left;
+			list-style: none;
+
+			li {
+				.make-row();
+			}
+
+			h2,p {
+				.make-md-column(8);
+				.make-md-column-offset(2);
+			}
+
+			h2 {
+				font-size: @font-size-large;
+				font-weight: bold;
+			}
+
+			p {
+				text-align: left;
+
+				&.your-answer {
+					&:before {
+						font-family: FontAwesome;
+						font-weight: bold;
+						margin-right: 10px;
+					}
+
+					&.correct {
+						color: @correct;
+
+						&:before {
+							content: '\f00c';
+						}
+					}
+
+					&.incorrect {
+						color: @incorrect;
+
+						&:before {
+							content: '\f00d';
+						}
+					}
+				}
 			}
 		}
 
