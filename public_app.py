@@ -11,6 +11,7 @@ import boto
 from boto.s3.key import Key
 from flask import Flask, redirect, request, render_template, url_for
 
+import admin
 import app_config
 import games
 from render_utils import make_context, urlencode_filter
@@ -20,6 +21,7 @@ app = Flask(app_config.PROJECT_NAME)
 
 app.jinja_env.filters['urlencode'] = urlencode_filter
 
+app.register_blueprint(admin.admin, url_prefix='/%s' % app_config.PROJECT_SLUG)
 app.register_blueprint(games.games, url_prefix='/%s' % app_config.PROJECT_SLUG)
 app.register_blueprint(static.static, url_prefix='/%s' % app_config.PROJECT_SLUG)
 
@@ -63,7 +65,7 @@ def _publish_game():
     data = '{ "placeholder": "TKTK" }'
 
     gzip_buffer = StringIO()
-    
+
     with gzip.GzipFile(fileobj=gzip_buffer, mode='w') as f:
         f.write(data)
 
@@ -82,7 +84,7 @@ def _publish_game():
         })
         k.set_acl('public-read')
 
-    return redirect(url_for('games.preview')) 
+    return redirect(url_for('games.preview'))
 
 # Scout uptime test route
 @app.route('/%s/test/' % app_config.PROJECT_SLUG, methods=['GET'])

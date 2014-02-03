@@ -7,17 +7,41 @@ class PSQLMODEL(Model):
     class Meta:
         database = db
 
-class Album(PSQLMODEL):
-    name = TextField()
-    artist = TextField()
-    url = TextField()
-    year = IntegerField()
-    decade = TextField()
-    genre = TextField()
-    tracks = TextField(blank=True, null=True) # JSON for tracks.
-
-    def get_tracks(self):
-        return json.loads(tracks)
+class Quiz(PSQLMODEL):
+    title = TextField()
+    text = TextField()
+    tags = TextField(null=True)
+    created = DateTimeField()
+    updated = DateTimeField()
+    byline = TextField(null=True)
+    image = TextField(null=True)
 
     def __unicode__(self):
-        return "%s - %s (%s)" % (self.name, self.artist, self.year)
+        return self.title
+
+    # TODO:
+    # 1. Handle serializing/deserializing tags.
+    # 2. Handle auto-stamping updated/created fields.
+    # 3. Handle the image field save.
+
+class Question(PSQLMODEL):
+    quiz = ForeignKeyField(Quiz)
+    text = TextField()
+    order = IntegerField()
+    after_text = TextField(null=True)
+    audio = TextField(null=True)
+    image = TextField(null=True)
+
+    def __unicode__(self):
+        return "%s.) %s" % (self.quiz, self.order, self.question)
+
+class Choice(PSQLMODEL):
+    question = ForeignKeyField(Question)
+    text = TextField()
+    order = IntegerField()
+    correct_answer = BooleanField(default=False)
+    audio = TextField()
+    image = TextField()
+
+    def __unicode__(self):
+        return self.text
