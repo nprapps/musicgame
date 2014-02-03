@@ -385,11 +385,112 @@ def _deploy_to_s3(path='.gzip'):
         local(sync_gzip % (path, 's3://%s/%s/' % (bucket, app_config.PROJECT_SLUG)))
         local(sync_assets % ('www/assets/', 's3://%s/%s/assets/' % (bucket, app_config.PROJECT_SLUG)))
 
+def assets_sync(path='www/assets'):
+    """
+    Intelligently synchronize assets between S3 and local folder.
+    """
+    import boto
+    import hashlib
+
+    local_paths = []
+
+    for local_path, subdirs, filenames in os.walk(path):
+        for name in filenames:
+            local_paths.append(os.path.join(path, name))
+
+    prefix = '%s' % app_config.PROJECT_SLUG
+
+    s3 = boto.connect_s3()
+    bucket = s3.get_bucket(app_config.ASSETS_S3_BUCKET)
+    keys = bucket.list(prefix)
+
+    which = None
+    always = False
+
+    for key in keys:
+        download = False
+        upload = False
+
+        local_path = key.name.replace(prefix, '%s' % path, 1)
+
+        if local_path in local_paths:
+            # A file can only exist once, this speeds up future checks
+            # and provides a list of non-existing files when complete
+            local_paths.remove(local_path)
+
+            local_last_modified = os.stat(local_path).st_mtime
+
+            # Timestamps are different
+            if key.last_modified != local_last_modified:
+                with open(local_path, 'rb') as f:
+                    local_md5 = hashlib.md5(f.read()).hexdigest()
+
+                # Hashes are different
+                if local_md5 != key.etag:
+                    if not always:
+                        # Ask user which file to take
+                        which, always = _assets_confirm(local_path)
+
+                    if not which:
+                        print 'Cancelling!'
+
+                        return
+
+                    if which == 'remote':
+                        download = True
+                    elif which == 'local':
+                        upload = True
+        else:
+            download = True
+            
+        if download:
+            _assets_download(key.name, local_path)
+
+        if upload:
+            _assets_upload(local_path, key.name)
+
+    # Iterate over files that didn't exist on S3
+    for local_path in local_paths:
+        key_name = local_path.replace('%s' % path, prefix, 1)
+
+        _assets_upload(local_path, key_name)
+
+def _assets_confirm(local_path):
+    """
+    Check with user about whether to keep local or remote file.
+    """
+    answer = prompt('The file "%s" has been changed both on your filesystem and on S3. Which is correct? [r] Take remote [l] Take local [ra] Take all remote, [la] Take all local, [c] cancel' % local_path, default="c")
+
+    if answer == 'r':
+        return ('remote', False)
+    elif answer == 'l':
+        return ('local', False)
+    elif answer == 'ra':
+        return ('remote', True)
+    elif answer == 'la':
+        return ('local', True)
+        
+    return (None, False)
+
+def _assets_download(remote_path, local_path):
+    """
+    Utility method to download a single asset from S3.
+    """
+    # TODO
+    print 'Downloading %s' % local_path 
+
+def _assets_upload(local_path, remote_path):
+    """
+    Utility method to upload a single asset to S3.
+    """
+    # TODO
+    print 'Uploading %s' % local_path
+
 def assets_down(path='www/assets'):
     """
     Download assets folder from s3 to www/assets
     """
-    local('aws s3 sync s3://%s/%s/ %s/ --acl "public-read" --cache-control "max-age=5" --region "us-east-1"' % (app_config.ASSETS_S3_BUCKET, app_config.PROJECT_SLUG, path))
+    #local('aws s3 sync s3://%s/%s/ %s/ --acl "public-read" --cache-control "max-age=5" --region "us-east-1"' % (app_config.ASSETS_S3_BUCKET, app_config.PROJECT_SLUG, path))
 
 def assets_up(path='www/assets'):
     """
