@@ -30,6 +30,6 @@ def quiz_detail(quiz_id):
 
     context = make_context()
 
-    context['quiz'] = models.Quiz.select().where(models.Quiz.id == int(quiz_id))
+    context['quiz'] = models.Quiz.get(models.Quiz.id == int(quiz_id))
 
     return render_template('admin/quiz_detail.html', **context)

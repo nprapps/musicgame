@@ -38,19 +38,6 @@ def index():
     Render the admin index.
     """
     context = make_context()
-    context['top_singles_by_year'] = []
-
-    with open('www/assets/data/tracks-by-year.json', 'rb') as readfile:
-
-        tracks_by_year = json.loads(readfile.read())
-
-        for year, track_list in tracks_by_year.items():
-            year_dict = {}
-            year_dict['year'] = year
-            year_dict['choices'] = track_list
-            context['top_singles_by_year'].append(year_dict)
-
-    context['top_singles_by_year'] = sorted(context['top_singles_by_year'], key=lambda x: x['year'], reverse=True)
 
     return render_template('index.html', **context)
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import csv
+import datetime
 from glob import glob
 import json
 import os
@@ -580,7 +581,9 @@ def init_tables():
     models.db.init(app_config.PROJECT_SLUG, user=app_config.PROJECT_SLUG)
 
     with settings(warn_only=True):
-        models.Album.create_table()
+        models.Quiz.create_table()
+        models.Question.create_table()
+        models.Choice.create_table()
 
 def drop_tables():
     """
@@ -588,172 +591,79 @@ def drop_tables():
     """
     models.db.init(app_config.PROJECT_SLUG, user=app_config.PROJECT_SLUG)
 
-    with settings(warn_only=True):
-        models.Album.drop_table()
+    if models.Choice.table_exists():
+        models.Choice.drop_table()
 
+    if models.Question.table_exists():
+        models.Question.drop_table()
 
-def load_albums():
+    if models.Quiz.table_exists():
+        models.Quiz.drop_table()
+
+def load_quizzes():
+    """
+    You know, some sample data.
+    """
+    drop_tables()
+    init_tables()
+
     models.db.init(app_config.PROJECT_SLUG, user=app_config.PROJECT_SLUG)
 
-    genres = [('rock', 1950), ('pop', 1950), ('jazz', 1940), ('country', 1940), ('hip-hop', 1980)]
-    decades = [1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010]
+    quiz_list = [
+        'drum_fill_friday.json'
+    ]
 
-    for genre, starting_year in genres:
-        for decade in decades:
-            if starting_year <= decade:
+    for quiz in quiz_list:
 
-                print "Opening www/assets/data/albums-%s-%s.json" % (genre, '%ss' % decade)
+        with open('www/assets/data/%s' % quiz, 'rb') as readfile:
+            quiz_json = dict(json.loads(readfile.read()))
 
-                with open('www/assets/data/albums-%s-%s.json' % (genre, '%ss' % decade), 'rb') as readfile:
-                    albums = list(json.loads(readfile.read()))
-
-                for album in albums:
-
-                    a = models.Album(**album)
-                    a.save()
-                    print a
-
-
-def get_track_list():
-
-    headers = {}
-    headers['user-agent'] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.77 Safari/537.36"
-
-    base_url = "https://www.googleapis.com/freebase/v1/mqlread?query="
-    query = [{"type": "/music/album", "mid": None, "name": None, "releases": {"track": [],"limit": 1},"artist": {"name": None,"type": "/music/artist"}}]
-
-    albums = models.Album.select().where(models.Album.tracks >> None)
-
-    print "Loading tracks for %s albums." % albums.count()
-
-    for album in albums:
-
-        rand_time = random.randrange(4,9)
-
-        print "Waiting for %ss because of evil." % rand_time
-
-        time.sleep(rand_time)
-
-        r = requests.get('http://rateyourmusic.com' + album.url, headers=headers)
-
-        if r.status_code == 200:
-
-            tracks = []
-
-            soup = BeautifulSoup(r.content)
-
-            try:
-                for track in soup.select('ul#tracks li.track span.tracklist_title span')[0]:
-                    tracks.append(track.strip().encode('utf-8'))
-
-                if len(tracks) > 0:
-                    album.tracks = json.dumps(tracks)
-
-                    album.save()
-                    print album
-
-            except IndexError:
-                # No track list!
-                pass
-
-            except TypeError:
-                # Blank?
-                pass
-
-def get_album_list():
-    """
-    Writes a series of album lists (max 100) to files by
-    decade and genre.
-    """
-    url = "http://rateyourmusic.com/customchart?page=1&chart_type=top&type=album&year=%s&genre_include=1&include_child_genres=1&genres=%s&include_child_genres_chk=1&include=both&origin_countries=&limit=none&countries="
-    genres = [('rock', 1950), ('pop', 1950), ('jazz', 1940), ('country', 1940), ('hip-hop', 1980)]
-    decades = [1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010]
-
-    for genre, starting_year in genres:
-        for decade in decades:
-
-            payload = []
-            if starting_year <= decade:
-                r = requests.get(url % ('%ss' % decade, genre.replace('-', ' ')))
-                if r.status_code == 200:
-                    soup = BeautifulSoup(r.content)
-                    for album in soup.select('table.mbgen tr'):
-                        try:
-                            album_dict = {}
-                            album_dict['decade'] = '%ss' % decade
-                            album_dict['genre'] = genre
-
-                            base_markup = album.select('td')[2].select('div')[0]
-
-                            if len(album.select('.credited_list')) > 0:
-                                album_dict['name'] = base_markup.select('span')[0].select('a.album')[0].text.strip().encode('utf-8')
-                                album_dict['url'] = base_markup.select('span')[0].select('a.album')[0]['href'].strip()
-                                album_dict['artist'] = base_markup.select('span')[0].select('span.credited_name')[0].contents[0]
-                                album_dict['year'] = int(base_markup.select('span')[2].text.strip().replace('(', '').replace(')', ''))
-                            else:
-                                album_dict['name'] = base_markup.select('span')[0].select('a.album')[0].text.strip().encode('utf-8')
-                                album_dict['url'] = base_markup.select('span')[0].select('a.album')[0]['href'].strip()
-                                album_dict['artist'] = base_markup.select('span')[0].select('a.artist')[0].text.strip().encode('utf-8')
-                                album_dict['year'] = int(base_markup.select('span')[1].text.strip().replace('(', '').replace(')', ''))
-
-                            payload.append(album_dict)
-
-                        except IndexError:
-                            # This is an ad.
-                            pass
-
-                        except ValueError, e:
-                            # This is an album with a translated title. Punt.
-                            pass
-
-                with open('www/assets/data/albums-%s-%s.json' % (genre, '%ss' % decade), 'wb') as writefile:
-                    writefile.write(json.dumps(payload))
-                    print "Wrote www/assets/data/albums-%s-%s.json" % (genre, '%ss' % decade)
-
-
-
-def generate_quiz():
-    """
-    ['', '10', '10th Week', '11th Week', '12th Week', '13th Week', '14th Week', '15th Week', '16th Week', '17th Week', '18th Week', '19th Week', '1st Week', '20th Week', '21st Week', '22nd Week', '23rd Week', '24th Week', '25th Week', '26th Week', '27th Week', '28th Week', '29th Week', '2nd Week', '30th Week', '31st Week', '32nd Week', '33rd Week', '34th Week', '35th Week', '36th Week', '37th Week', '38th Week', '39th Week', '3rd Week', '40', '40th Week', '41st Week', '42nd Week', '43rd Week', '44th Week', '45th Week', '46th Week', '47th Week', '48th Week', '49th Week', '4th Week', '50th Week', '51st Week', '52nd Week', '53rd Week', '54th Week', '55th Week', '56th Week', '57th Week', '58th Week', '59th Week', '5th Week', '60th Week', '61st Week', '62nd Week', '63rd Week', '64th Week', '65th Week', '66th Week', '67th Week', '68th Week', '69th Week', '6th Week', '70th Week', '71st Week', '72nd Week', '73rd Week', '74th Week', '75th Week', '76th Week', '7th Week', '8th Week', '9th Week', 'Album', 'Artist', 'Artist ID', 'Artist Inverted', 'B-Side', 'CH', 'Comments', 'Date Entered', 'Date Peaked', 'Featured', 'Genre', 'High', 'Label/Number', 'Media', 'PK', 'Pic Sleeve', 'Prefix', 'ReIssue', 'SYMBL', 'Source', 'Stereo (55-68)', 'Temp 1', 'Time', 'Time (Album)', 'Time Source', 'Track', 'UnFeatured', 'Verified', 'Written By', 'Year', 'Yearly Rank', 'explicit']
-    """
-    with open('www/assets/data/tracks-by-year.json', 'rb') as readfile:
-        tracks_by_year = dict(json.loads(readfile.read()))
-
-    years = list(sorted(tracks_by_year.keys()))
-
-    for year in years:
         quiz_dict = {}
-        quiz_dict['guid'] = str(uuid.uuid4())
-        quiz_dict['year'] = year
-        quiz_dict['choices'] = []
+        quiz_dict['title'] = quiz_json['title']
+        quiz_dict['text'] = 'This is some faked out text because this isn\'t in the json yet.'
+        quiz_dict['created'] = datetime.datetime.now()
+        quiz_dict['updated'] = datetime.datetime.now()
 
-        for track in list(tracks_by_year[year]):
-            track_dict = {}
-            track_dict['rank'] = int(track['Yearly Rank'])
-            track_dict['track'] = track['Track']
-            track_dict['artist'] = track['Artist']
-            quiz_dict['choices'].append(track_dict)
+        quiz_dict['tags'] = []
+        quiz_dict['tags'].append({ "origin": quiz_json['origin'] })
+        quiz_dict['tags'].append({ "genre": quiz_json['genre'] })
+        quiz_dict['tags'].append({ "quiz_type": quiz_json['quiz_type'] })
 
-        with open('www/assets/data/quiz_top_singles_%s.json' % year, 'wb') as writefile:
-            writefile.write(json.dumps(quiz_dict))
+        quiz_dict['tags'] = json.dumps(quiz_dict['tags'])
 
-def write_tracks_by_year():
-    with open('www/assets/data/pop-1890-2014.csv', 'rb') as readfile:
-        tracks = list(csv.DictReader(readfile))
+        qz = models.Quiz(**quiz_dict)
+        qz.save()
 
-    tracks_by_year = {}
+        print "Saved quiz: %s" % qz
 
-    for track in tracks:
-        try:
-            if int(track['Yearly Rank']) < 6:
-                if not tracks_by_year.get(track['Year'], None):
-                    tracks_by_year[track['Year']] = []
-                tracks_by_year[track['Year']].append(track)
-        except ValueError:
-            print track['Yearly Rank'], track['Track']
+        for question_index, question in enumerate(quiz_json['questions']):
 
-    with open('www/assets/data/tracks-by-year.json', 'wb') as writefile:
-        writefile.write(json.dumps(tracks_by_year))
+            question_dict = {}
+            question_dict['order'] = question_index + 1
+            question_dict['quiz'] = qz
+            question_dict['audio'] = question['audio']
+            question_dict['text'] = question['text']
+
+            qn = models.Question(**question_dict)
+            qn.save()
+
+            print "Saved question: %s" % qn
+
+            for choice_index, choice in enumerate(question['choices']):
+
+                choice_dict = {}
+                choice_dict['order'] = choice_index + 1
+                choice_dict['question'] = qn
+                choice_dict['image'] = choice['cover']
+                choice_dict['text'] = choice['text']
+
+                if choice_dict['text'] == question['answer']:
+                    choice_dict['correct_answer'] = True
+
+                ch = models.Choice(**choice_dict)
+                ch.save()
+
+                print "Saved choice: %s" % ch
 
 
 """
