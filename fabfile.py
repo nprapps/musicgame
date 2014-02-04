@@ -683,8 +683,6 @@ def load_quizzes():
 
                 print "Saved choice: %s" % ch
 
-
-
 """
 Cron jobs
 """
