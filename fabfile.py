@@ -31,7 +31,7 @@ env.forward_agent = True
 env.hosts = []
 env.settings = None
 
-model_names = ['Quiz', 'Question', 'Choice', 'Audio', 'Image']
+model_names = ['Image', 'Audio', 'Choice', 'Question', 'Quiz', 'QuizCategory']
 
 """
 Environments
@@ -583,7 +583,7 @@ def init_tables():
     models.db.init(app_config.PROJECT_SLUG, user=app_config.PROJECT_SLUG)
 
     with settings(warn_only=True):
-        for model_name in model_names:
+        for model_name in reversed(model_names):
             model = getattr(models, model_name)
             model.create_table()
 
@@ -612,12 +612,16 @@ def load_quizzes():
         'drum_fill_friday.json'
     ]
 
+    qc = models.QuizCategory(name="Drum Fill Friday")
+    qc.save()
+
     for quiz in quiz_list:
 
         with open('www/assets/data/%s' % quiz, 'rb') as readfile:
             quiz_json = dict(json.loads(readfile.read()))
 
         quiz_dict = {}
+        quiz_dict['quiz_category'] = qc
         quiz_dict['title'] = quiz_json['title']
         quiz_dict['text'] = 'This is some faked out text because this isn\'t in the json yet.'
         quiz_dict['created'] = datetime.datetime.now()

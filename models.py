@@ -7,7 +7,14 @@ class PSQLMODEL(Model):
     class Meta:
         database = db
 
+class QuizCategory(PSQLMODEL):
+    name = TextField()
+
+    def __unicode__(self):
+        return self.name
+
 class Quiz(PSQLMODEL):
+    quiz_category = ForeignKeyField(QuizCategory, null=True, blank=True)
     title = TextField()
     text = TextField()
     tags = TextField(null=True, blank=True)
