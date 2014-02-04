@@ -1,7 +1,8 @@
 var $questions = null;
 var $choices = null;
 var $lastChoice = null;
-var $newQuestionButton = null;
+var $addQuestionButton = null;
+var $rmQuestionButton = null;
 var $addChoiceButton = null;
 var $rmChoiceButton = null;
 
@@ -11,12 +12,24 @@ var addQuestion = function() {
 
     $questions.append(html);
 
+    $rmQuestionButton = $('.rm-question');
     $addChoiceButton = $('.add-choice');
     $rmChoiceButton = $('.rm-choice');
 
-
+    $rmQuestionButton.last().on('click', rmQuestion);
     $addChoiceButton.last().on('click', addChoice);
     $rmChoiceButton.last().on('click', rmChoice);
+}
+
+var rmQuestion = function() {
+   var $el = $(this);
+   var parent = $el.parents('.question');
+
+   console.log(parent)
+
+   if ($questions.find('.question').length > 1) {
+        parent.remove();
+   }
 }
 
 var addChoice = function() {
@@ -45,13 +58,10 @@ var rmChoice = function() {
 var onDocumentReady = function() {
     $questions = $('.questions');
     $choices = $('.choices');
-    $newQuestionButton = $('#add-question');
-    $addChoiceButton = $('.add-choice');
-    $rmChoiceButton = $('.rm-choice');
 
-    $newQuestionButton.on('click', addQuestion);
-    $addChoiceButton.on('click', addChoice);
-    $rmChoiceButton.on('click', rmChoice);
+    $addQuestionButton = $('#add-question');
+    $addQuestionButton.on('click', addQuestion);
+
 
     addQuestion();
 }
