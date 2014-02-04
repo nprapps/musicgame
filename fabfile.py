@@ -31,6 +31,8 @@ env.forward_agent = True
 env.hosts = []
 env.settings = None
 
+model_names = ['Quiz', 'Question', 'Choice', 'Audio', 'Image']
+
 """
 Environments
 
@@ -581,9 +583,9 @@ def init_tables():
     models.db.init(app_config.PROJECT_SLUG, user=app_config.PROJECT_SLUG)
 
     with settings(warn_only=True):
-        models.Quiz.create_table()
-        models.Question.create_table()
-        models.Choice.create_table()
+        for model_name in model_names:
+            model = getattr(models, model_name)
+            model.create_table()
 
 def drop_tables():
     """
@@ -591,14 +593,11 @@ def drop_tables():
     """
     models.db.init(app_config.PROJECT_SLUG, user=app_config.PROJECT_SLUG)
 
-    if models.Choice.table_exists():
-        models.Choice.drop_table()
+    for model_name in model_names:
+        model = getattr(models, model_name)
 
-    if models.Question.table_exists():
-        models.Question.drop_table()
-
-    if models.Quiz.table_exists():
-        models.Quiz.drop_table()
+        if model.table_exists():
+            model.drop_table()
 
 def load_quizzes():
     """
@@ -624,13 +623,6 @@ def load_quizzes():
         quiz_dict['created'] = datetime.datetime.now()
         quiz_dict['updated'] = datetime.datetime.now()
 
-        quiz_dict['tags'] = []
-        quiz_dict['tags'].append({ "origin": quiz_json['origin'] })
-        quiz_dict['tags'].append({ "genre": quiz_json['genre'] })
-        quiz_dict['tags'].append({ "quiz_type": quiz_json['quiz_type'] })
-
-        quiz_dict['tags'] = json.dumps(quiz_dict['tags'])
-
         qz = models.Quiz(**quiz_dict)
         qz.save()
 
@@ -641,11 +633,22 @@ def load_quizzes():
             question_dict = {}
             question_dict['order'] = question_index + 1
             question_dict['quiz'] = qz
-            question_dict['audio'] = question['audio']
             question_dict['text'] = question['text']
 
             qn = models.Question(**question_dict)
             qn.save()
+
+            audio_dict = {}
+            audio_dict['file_path'] = question['audio']
+            audio_dict['rendered_mp3_path'] = question['audio']
+            audio_dict['question'] = qn
+            audio_dict['caption'] = "Audio clip"
+            audio_dict['credit'] = "The internet"
+
+            audio = models.Audio(**audio_dict)
+            audio.save()
+
+            print "Saved audio: %s" % audio
 
             print "Saved question: %s" % qn
 
@@ -654,7 +657,6 @@ def load_quizzes():
                 choice_dict = {}
                 choice_dict['order'] = choice_index + 1
                 choice_dict['question'] = qn
-                choice_dict['image'] = choice['cover']
                 choice_dict['text'] = choice['text']
 
                 if choice_dict['text'] == question['answer']:
@@ -663,7 +665,20 @@ def load_quizzes():
                 ch = models.Choice(**choice_dict)
                 ch.save()
 
+                image_dict = {}
+                image_dict['file_path'] = choice['cover']
+                image_dict['rendered_file_path'] = choice['cover']
+                image_dict['choice'] = ch
+                image_dict['caption'] = choice_dict['text']
+                image_dict['credit'] = "The internet"
+
+                img = models.Image(**image_dict)
+                img.save()
+
+                print "Saved image: %s" % img
+
                 print "Saved choice: %s" % ch
+
 
 
 """

@@ -8,8 +8,8 @@ from render_utils import make_context
 
 admin = Blueprint('admin', __name__)
 
-@admin.route('/admin/quiz/')
-def quiz_list():
+@admin.route('/admin/<model_name>/')
+def admin_quiz_list(model_name):
     """
     List view of quizzes in the DB, sorted by insertion order.
     """
@@ -17,12 +17,14 @@ def quiz_list():
 
     context = make_context()
 
-    context['quizzes'] = models.Quiz.select()
+    model = getattr(models, model_name.title())
 
-    return render_template('admin/quiz_list.html', **context)
+    context['obj_list'] = model.select()
 
-@admin.route('/admin/quiz/<quiz_id>/')
-def quiz_detail(quiz_id):
+    return render_template('admin/%s_list.html' % model_name, **context)
+
+@admin.route('/admin/<model_name>/<obj_id>/')
+def admin_quiz_detail(model_name, obj_id):
     """
     A detail view of a single quiz.
     """
@@ -30,6 +32,8 @@ def quiz_detail(quiz_id):
 
     context = make_context()
 
-    context['quiz'] = models.Quiz.get(models.Quiz.id == int(quiz_id))
+    model = getattr(models, model_name.title())
 
-    return render_template('admin/quiz_detail.html', **context)
+    context['obj'] = model.get(model.id == int(obj_id))
+
+    return render_template('admin/%s_detail.html' % model_name, **context)

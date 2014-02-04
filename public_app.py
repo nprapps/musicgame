@@ -10,10 +10,12 @@ from StringIO import StringIO
 import boto
 from boto.s3.key import Key
 from flask import Flask, redirect, request, render_template, url_for
+from flask_peewee.rest import RestAPI
 
 import admin
 import app_config
 import games
+import models
 from render_utils import make_context, urlencode_filter
 import static
 
@@ -31,6 +33,18 @@ file_handler = logging.FileHandler(app_config.APP_LOG_PATH)
 file_handler.setLevel(logging.INFO)
 app.logger.addHandler(file_handler)
 app.logger.setLevel(logging.INFO)
+
+api = RestAPI(app, default_auth=None)
+
+api.register(models.Quiz)
+api.register(models.Question)
+api.register(models.Choice)
+api.register(models.Image)
+api.register(models.Audio)
+
+models.db.init(app_config.PROJECT_SLUG, user=app_config.PROJECT_SLUG)
+
+api.setup()
 
 @app.route('/%s/' % app_config.PROJECT_SLUG)
 def index():
