@@ -1,1 +1,155 @@
-{{ obj.title }}
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <title>{{ PROJECT_NAME }} : NPR</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+
+    <!-- Fonts -->
+    <script src="//ajax.googleapis.com/ajax/libs/webfont/1.4.10/webfont.js"></script>
+    <script>
+        WebFont.load({
+             custom: {
+                 families: [
+                     'Gotham SSm:n4,n7',
+                     'Gotham:n4,n7'
+                 ],
+                 urls: [
+                     'http://s.npr.org/templates/css/fonts/GothamSSm.css',
+                     'http://s.npr.org/templates/css/fonts/Gotham.css'
+                 ]
+             },
+             timeout: 10000
+         });
+    </script>
+
+    <!-- CSS -->
+    {{ CSS.push('less/admin.less') }}
+    {% block extra_css %}{% endblock extra_css %}
+    {{ CSS.render('css/admin.min.css') }}
+</head>
+
+<body>
+
+<div id="quiz-creation">
+    <form id="quiz-form">
+        <div class="title row">
+            <h1 class="col-lg-8 col-md-offset-2">
+                Title: <span contenteditable="true">Neil Peart's Favorite Drum Fills</span>
+            </h1>
+        </div>
+        <div class="desc row">
+            <h4 class="col-lg-8 col-md-offset-2 col-s-12">Description: <span contenteditable="true">These are also Brian Boyer's favorite drum fills.</span></h4>
+        </div>
+        <div class="tags row">
+            <div class="col-lg-8 col-md-offset-2 col-s-12">
+                <div class="input-group">
+                    <span class="input-group-addon">Category:</span> <input type="text" class="form-control" placeholder="Drum Fill Friday">
+                </div>
+            </div>
+        </div>
+
+        <div class="questions">
+            <div class="question">
+                <div class="question-title row">
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <h3>
+                            <span contenteditable="true">What does your soul look like?</span>
+                            <div class="btn-group media">
+                              <button type="button" class="btn btn-default"><i class="fa fa-camera"></i></button>
+                              <button type="button" class="btn btn-default"><i class="fa fa-music"></i></button>
+                            </div>
+                        </h3>
+                    </div>
+                </div>
+                <div class="choices">
+                    <div class="choice row">
+                        <div class="col-lg-8 col-md-offset-2 col-s-12">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <input type="radio" name="q1-answers"></input>
+                                </span>
+                                <input type="text" class="form-control" placeholder="Choice">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button"><i class="fa fa-camera"></i></button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="choice row">
+                        <div class="col-lg-8 col-md-offset-2 col-s-12">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <input type="radio" name="q1-answers"></input>
+                                </span>
+                                <input type="text" class="form-control" placeholder="Choice">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button"><i class="fa fa-camera"></i></button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="choice row">
+                        <div class="col-lg-8 col-md-offset-2 col-s-12">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <input type="radio" name="q1-answers"></input>
+                                </span>
+                                <input type="text" class="form-control" placeholder="Choice">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button"><i class="fa fa-camera"></i></button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="choice row">
+                        <div class="col-lg-8 col-md-offset-2 col-s-12">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <input type="radio" name="q1-answers"></input>
+                                </span>
+                                <input type="text" class="form-control" placeholder="Choice">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button"><i class="fa fa-camera"></i></button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="choice-btns row">
+                        <div class="col-lg-8 col-md-offset-2 col-s-12">
+                            <div class="pull-right">
+                                <a class="btn btn-success add-choice"><i class="fa fa-plus"></i></a>
+                                <a class="btn btn-danger rm-choice"><i class="fa fa-minus"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="add-question row">
+            <div class="col-lg-8 col-md-offset-2 col-s-12">
+                <a class="btn btn-success" id="add-question"><i class="fa fa-plus"></i> Add question</a>
+                <a class="btn btn-primary" id="add-question">Save quiz</a>
+
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- JS -->
+{{ JS.push('js/lib/jquery.js') }}
+{{ JS.push('js/lib/underscore.js') }}
+{{ JS.push('js/lib/bootstrap.js') }}
+{{ JS.push('js/lib/moment.js') }}
+{{ JS.push('js/lib/child.js') }}
+{{ JS.push('js/lib/jquery.jplayer.js') }}
+{{ JS.push('js/app_config.js') }}
+{{ JS.push('js/copy.js') }}
+{{ JS.push('js/console.js') }}
+{{ JS.push('js/templates.js') }}
+{{ JS.push('js/utils.js') }}
+{{ JS.push('js/admin.js') }}
+{{ JS.render('js/admin-footer.min.js') }}
+</body>
+</html>
