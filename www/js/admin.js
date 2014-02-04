@@ -52,6 +52,8 @@ var onDocumentReady = function() {
     $newQuestionButton.on('click', addQuestion);
     $addChoiceButton.on('click', addChoice);
     $rmChoiceButton.on('click', rmChoice);
+
+    addQuestion();
 }
 
 $(document).ready(onDocumentReady);
