@@ -13,6 +13,10 @@ var addQuestion = function() {
 
     $addChoiceButton = $('.add-choice');
     $rmChoiceButton = $('.rm-choice');
+
+
+    $addChoiceButton.last().on('click', addChoice);
+    $rmChoiceButton.last().on('click', rmChoice);
 }
 
 var addChoice = function() {
