@@ -32,30 +32,38 @@
 <body>
 <div id="list-view" class="container">
     <div class="header row">
-        <div class="col-md-6 search">
-            <div class="input-group">
-                <input type="text" class="form-control input-lg" placeholder="Search">
-                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <input type="text" class="form-control input-lg" placeholder="Search">
+                        <span class="input-group-btn">
+                            <a class="btn btn-default btn-lg"><i class="fa fa-search"></i></a>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <a class="btn btn-success add-quiz-btn btn-lg"><i class="fa fa-plus"></i> Add quiz</a>
+                </div>
             </div>
-        </div>
-        <div class="col-md-6">
-            <a class="btn btn-success pull-right"><i class="fa fa-plus"></i> Add quiz</a>
         </div>
     </div>
     <div class="row">
-        <div class="table-responsive">
+        <div class="table-responsive col-md-8">
             <table class="quiz-list table table-bordered">
             <caption>Quizzes</caption>
             <thead>
-                <td>Quiz Name</td>
-                <td>Quiz Date</td>
+                <td>Name</td>
+                <td>Created on</td>
+                <td>Category</td>
                 <td>Actions</td>
                 {% for quiz in obj_list %}
                     <tr class="quiz">
                         <td><a href="{{ quiz.id }}/">{{ quiz }}</a></td>
                         <td><a href="{{ quiz.id }}/">{{ quiz.created.strftime('%m-%d-%Y') }}</a></td>
-                        <td><a href="{{ quiz.id }}/" class="btn btn-primary"><i class="fa fa-pencil"></i> Edit quiz</a>
-                        <a class="btn btn-danger"><i class="fa fa-times"></i> Delete quiz</a></td>
+                        <td><a href="#">{{ quiz.tags }}</a></td>
+                        <td><a class="btn btn-xs btn-primary"><i class="fa fa-share"></i> Embed quiz</a>
+                        <a class="btn btn-xs btn-danger"><i class="fa fa-times"></i> Delete quiz</a></td>
                     </tr>
                 {% endfor %}
             </table>
