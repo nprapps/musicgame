@@ -168,6 +168,10 @@ body {
 					background: fade(@gray-darker, 30%);
 				}
 
+				&:focus {
+					outline: none;
+				}
+
 				.cover,
 				.answer {
 					display: table-cell;
@@ -176,7 +180,10 @@ body {
 
 				.cover {
 					width: 80px;
+					overflow: hidden;
 					vertical-align: middle;
+
+					img { width: 100%; }
 
 					@media screen and (min-width: @screen-sm){
 						width: 120px;
@@ -306,7 +313,6 @@ body {
 				&.your-answer {
 					&:before {
 						font-family: FontAwesome;
-						font-weight: bold;
 						margin-right: 10px;
 					}
 
@@ -325,6 +331,10 @@ body {
 							content: '\f00d';
 						}
 					}
+				}
+
+				&.correct-answer {
+					color: fade(@musicMedium, 50%);
 				}
 			}
 		}
