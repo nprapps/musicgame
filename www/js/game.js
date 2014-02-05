@@ -157,10 +157,13 @@ var onQuestionStopButtonClick = function(){
 /*
 * Answer clicked or timer ran out
 */
-var onQuestionComplete = function(points){
+var onQuestionComplete = function(points, selectedAnswer){
     granularPoints.push(points);
 
     $score.text('+' + points).addClass('fade-in');
+
+    // Push the selected answer to our answer array
+    answers.push(selectedAnswer);
 
     $answers.each(function(){
         $this = $(this).find('a .answer');
@@ -193,9 +196,6 @@ var onAnswerClick = function(){
     stopTimer = true;
     $timerContainer.attr('class', 'timer-container fade');
 
-    // Push the selected answer to our answer array
-    answers.push($this.text());
-
     if ($this.text() === answer){
         $this.parent().parent().addClass('correct');
         points = Math.round(100 / QUIZ.questions.length * ((360 - angle) / 360));
@@ -204,7 +204,7 @@ var onAnswerClick = function(){
         $this.parent().parent().addClass('incorrect');
     }
 
-    onQuestionComplete(points);
+    onQuestionComplete(points, $this.text());
 };
 
 /*
@@ -258,7 +258,7 @@ var runTimer = function() {
     } else {
         angle = 360 * .9999;
         drawTimer();
-        onQuestionComplete(0);
+        onQuestionComplete(0, '');
     };
 };
 
