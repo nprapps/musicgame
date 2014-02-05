@@ -1,3 +1,81 @@
-{% for quiz in obj_list %}
-    <a href="{{ quiz.id }}/">{{ quiz }}</a>
-{% endfor %}
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <title>{{ PROJECT_NAME }} : NPR</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+
+    <!-- Fonts -->
+    <script src="//ajax.googleapis.com/ajax/libs/webfont/1.4.10/webfont.js"></script>
+    <script>
+        WebFont.load({
+             custom: {
+                 families: [
+                     'Gotham SSm:n4,n7',
+                     'Gotham:n4,n7'
+                 ],
+                 urls: [
+                     'http://s.npr.org/templates/css/fonts/GothamSSm.css',
+                     'http://s.npr.org/templates/css/fonts/Gotham.css'
+                 ]
+             },
+             timeout: 10000
+         });
+    </script>
+
+    <!-- CSS -->
+    {{ CSS.push('less/admin.less') }}
+    {% block extra_css %}{% endblock extra_css %}
+    {{ CSS.render('css/admin.min.css') }}
+</head>
+
+<body>
+<div id="list-view" class="container">
+    <div class="header row">
+        <div class="col-md-6 search">
+            <div class="input-group">
+                <input type="text" class="form-control input-lg" placeholder="Search">
+                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <a class="btn btn-success pull-right"><i class="fa fa-plus"></i> Add quiz</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="table-responsive">
+            <table class="quiz-list table table-bordered table-condensed">
+            <caption>Quizzes</caption>
+            <thead>
+                <td>Quiz Name</td>
+                <td>Quiz Date</td>
+                <td>Actions</td>
+                {% for quiz in obj_list %}
+                    <tr class="quiz">
+                        <td><a href="{{ quiz.id }}/">{{ quiz }}</a></td>
+                        <td><a href="{{ quiz.id }}/">{{ quiz.created }}</a></td>
+                        <td><a href="{{ quiz.id }}/" class="btn btn-primary"><i class="fa fa-pencil"></i> Edit quiz</a>
+                        <a class="btn btn-danger"><i class="fa fa-times"></i> Delete quiz</a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+
+{{ JS.push('js/lib/jquery.js') }}
+{{ JS.push('js/lib/underscore.js') }}
+{{ JS.push('js/lib/bootstrap.js') }}
+{{ JS.push('js/lib/moment.js') }}
+{{ JS.push('js/lib/child.js') }}
+{{ JS.push('js/lib/jquery.jplayer.js') }}
+{{ JS.push('js/app_config.js') }}
+{{ JS.push('js/copy.js') }}
+{{ JS.push('js/console.js') }}
+{{ JS.push('js/templates.js') }}
+{{ JS.push('js/utils.js') }}
+{{ JS.push('js/admin.js') }}
+{{ JS.render('js/admin-footer.min.js') }}
+</body>
+
+</html>
