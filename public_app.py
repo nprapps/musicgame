@@ -10,7 +10,7 @@ from StringIO import StringIO
 import boto
 from boto.s3.key import Key
 from flask import Flask, redirect, request, render_template, url_for
-from flask_peewee.rest import RestAPI
+from flask_peewee.rest import RestAPI, Authentication
 
 import admin
 import app_config
@@ -34,13 +34,31 @@ file_handler.setLevel(logging.INFO)
 app.logger.addHandler(file_handler)
 app.logger.setLevel(logging.INFO)
 
-api = RestAPI(app, default_auth=None)
+class AuthorizeEveryone(Authentication):
+    """
+    Authorize any single person to POST/PUT/DELETE because this is running internally.
+    """
+    def __init__(self):
+        """
+        Gotta super.
+        """
+        super(AuthorizeEveryone, self).__init__()
 
-api.register(models.Quiz)
-api.register(models.Question)
-api.register(models.Choice)
-api.register(models.Image)
-api.register(models.Audio)
+    def authorize(self):
+        """
+        Like I said, authorize everyone.
+        """
+        return True
+
+authorize_everyone = AuthorizeEveryone()
+
+api = RestAPI(app, default_auth=authorize_everyone, prefix="/%s/api" % app_config.PROJECT_SLUG)
+
+api.register(models.Quiz, allowed_methods=['GET', 'POST', 'PUT', 'DELETE'])
+api.register(models.Question, allowed_methods=['GET', 'POST', 'PUT', 'DELETE'])
+api.register(models.Choice, allowed_methods=['GET', 'POST', 'PUT', 'DELETE'])
+api.register(models.Image, allowed_methods=['GET', 'POST', 'PUT', 'DELETE'])
+api.register(models.Audio, allowed_methods=['GET', 'POST', 'PUT', 'DELETE'])
 
 models.db.init(app_config.PROJECT_SLUG, user=app_config.PROJECT_SLUG)
 
