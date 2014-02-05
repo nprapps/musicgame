@@ -271,7 +271,6 @@ body {
 	&.end {
 		h1 {
 			text-transform: uppercase;
-			font-weight: bold;
 		}
 
 		p {
@@ -285,26 +284,87 @@ body {
 		ul {
 			text-align: left;
 			list-style: none;
+			.make-row();
 
 			li {
-				.make-row();
+				.make-sm-column(8);
+				.make-sm-column-offset(2);
+				margin-bottom: @line-height-computed / 2;
+
+
+				.answer {
+					background: fade(@gray-darker, 50%);
+					color: @musicLight;
+					position: relative;
+					min-height: 60px;
+					display: table;
+					width: 100%;
+
+					// @media screen and (min-width: @screen-sm){
+					// 	padding: @line-height-computed @line-height-computed + 30 @line-height-computed @line-height-computed;
+					// }
+
+					.points,
+					.choices {
+						display: table-cell;
+						vertical-align: top;
+					}
+
+					.choices {
+						padding: @line-height-computed / 2 10px 0;
+					}
+
+					.points {
+						font-size: 200%;
+						text-align: right;
+						padding: @line-height-computed / 2 10px;
+					}
+
+					.your-answer,
+					.correct-answer {
+						&:before {
+							font-family: FontAwesome;
+							-webkit-font-smoothing: antialiased;
+						}
+					}
+
+					&.correct {
+						border-left: 10px solid @correct;
+
+						.your-answer {
+							color: @correct;
+
+							&:before {
+								content: '\f00c';
+							}
+						}
+
+						.points {
+							color: @correct;
+						}
+					}
+
+					&.incorrect {
+						border-left: 10px solid @incorrect;
+
+						.your-answer {
+							color: @incorrect;
+
+							&:before {
+								content: '\f00d';
+							}
+						}
+
+						.points {
+							color: @incorrect;
+						}
+					}
+				}
 			}
 
-			h2,p {
-				.make-md-column(8);
-				.make-md-column-offset(2);
-			}
 
 			h2 {
 				font-size: @font-size-large;
-				font-weight: bold;
-
-				&:before {
-					display: block;
-					border-top: 1px solid fade(@musicMedium, 20%);
-					padding-top: @line-height-computed;
-					content: ' ';
-				}
 			}
 
 			p {
@@ -314,22 +374,6 @@ body {
 					&:before {
 						font-family: FontAwesome;
 						margin-right: 10px;
-					}
-
-					&.correct {
-						color: @correct;
-
-						&:before {
-							content: '\f00c';
-						}
-					}
-
-					&.incorrect {
-						color: @incorrect;
-
-						&:before {
-							content: '\f00d';
-						}
 					}
 				}
 
