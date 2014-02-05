@@ -105,13 +105,14 @@ Large media assets (images, videos, audio) are synced with an Amazon S3 bucket c
 
 Syncing these assets requires running a couple different commands at the right times. When you create new assets or make changes to current assets that need to get uploaded to the server, run ```fab assets_sync```. This will do a few things:
 
-* If there is a new asset on the server it will be downloaded.
-* If there is a new asset on your local machine it will be uploaded.
+* If there is an asset on S3 that does not exist on your local filesystem it will be downloaded.
+* If there is an asset on that exists on your local filesystem but not on S3, you will be prompted to either upload (type "u") OR delete (type "d") your local copy.
+* You can also upload all local files (type "la") or delete all local files (type "da"). Type "c" to cancel if you aren't sure what to do.
 * If both you and the server have an asset and they are the same, it will be skipped.
-* If both you and the server have an asset and they are different, you will be prompted to take either the remote version (hit "r") or the local version (hit "l").
-* You can also take all remote versions (type "ra") or all local versions (hit "la"). Press "c" to cancel if you aren't sure what to do.
+* If both you and the server have an asset and they are different, you will be prompted to take either the remote version (type "r") or the local version (type "l").
+* You can also take all remote versions (type "ra") or all local versions (type "la"). Type "c" to cancel if you aren't sure what to do.
 
-Unfortunantely, there is no automatic way to know when a file has been intentionally deleted from the server or your local directory. When you want to remove a file from the server and your local environment (i.e. it is not needed in the project any longer), run ```fab assets_rm:"www/assets/file_name_here.jpg"```
+Unfortunantely, there is no automatic way to know when a file has been intentionally deleted from the server or your local directory. When you want to simultaneously remove a file from the server and your local environment (i.e. it is not needed in the project any longer), run ```fab assets_rm:"www/assets/file_name_here.jpg"```
 
 Adding a page to the site
 -------------------------
