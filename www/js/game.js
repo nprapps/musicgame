@@ -1,3 +1,8 @@
+// Constants
+var TIMERLENGTH = 15; // Seconds allowed to answer per question
+var INTERVAL = (TIMERLENGTH / 360) * 1000; // Timout interval
+
+// DOM Refs
 var $content = null;
 var $quiz = null;
 var $answers = null;
@@ -11,10 +16,10 @@ var $nextQuestionButton = null;
 var $showScoreButton = null;
 var $startQuizButton = null;
 var $progressBar = null;
-var angle = 0;
-var timerLength = 15; // Seconds allowed to answer per question
-var interval = (timerLength / 360) * 1000; // Timout interval
+
+// Game state
 var currentQuestion = 0;
+var angle = 0;
 var stopTimer = false;
 var score = 0;
 var answers = [];
@@ -238,7 +243,7 @@ var runTimer = function() {
             trimAnswers();
         }
 
-        var timer = setTimeout(runTimer, interval);
+        var timer = setTimeout(runTimer, INTERVAL);
         angle++;
     } else {
         angle = 360 * .9999;
