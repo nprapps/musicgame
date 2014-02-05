@@ -287,6 +287,13 @@ body {
 			h2 {
 				font-size: @font-size-large;
 				font-weight: bold;
+
+				&:before {
+					display: block;
+					border-top: 1px solid fade(@musicMedium, 20%);
+					padding-top: @line-height-computed;
+					content: ' ';
+				}
 			}
 
 			p {

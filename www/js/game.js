@@ -21,7 +21,8 @@ var $progressBar = null;
 var currentQuestion = 0;
 var angle = 0;
 var stopTimer = false;
-var score = 0;
+var totalScore = 0;
+var granularPoints = [];
 var answers = [];
 var incorrectAnswers = null;
 
@@ -118,9 +119,10 @@ var renderQuestion = function(question) {
  */
 var renderGameOver = function() {
     var context = {
-        'score': score + '%',
+        'score': totalScore,
         'answers': answers,
-        'questions': QUIZ.questions
+        'questions': QUIZ.questions,
+        'points': granularPoints
     };
 
     var html = JST.gameover(context);
@@ -152,7 +154,9 @@ var onQuestionStopButtonClick = function(){
 /*
 * Answer clicked or timer ran out
 */
-var onQuestionComplete = function(){
+var onQuestionComplete = function(points){
+    granularPoints.push(points);
+
     $answers.each(function(){
         $this = $(this).find('a .answer');
 
@@ -160,6 +164,7 @@ var onQuestionComplete = function(){
             $this.parent().parent().addClass('correct');
         }
     });
+
     $content.find('.answers li:not(.correct, .incorrect)').addClass('fade').off("click");
 
     if (currentQuestion + 1 < QUIZ.questions.length){
@@ -175,6 +180,7 @@ var onQuestionComplete = function(){
 * You ran out of time
 */
 var onAnswerClick = function(){
+    var points = 0;
     var answer = QUIZ.questions[currentQuestion].answer;
     $this = $(this).find('a .answer');
 
@@ -187,14 +193,13 @@ var onAnswerClick = function(){
 
     if ($this.text() === answer){
         $this.parent().parent().addClass('correct');
-
-        // TODO: more elegant scoring
-        score += Math.round(100 / QUIZ.questions.length);
+        points = Math.round(100 / QUIZ.questions.length * ((360 - angle) / 360));
+        totalScore += points;
     } else {
         $this.parent().parent().addClass('incorrect');
     }
 
-    onQuestionComplete();
+    onQuestionComplete(points);
 };
 
 /*
