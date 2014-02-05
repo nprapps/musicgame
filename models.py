@@ -209,9 +209,8 @@ class Audio(PSQLMODEL):
 
         except:
 
-            # If we blow up, don't change the render_audio flag and set the rendered paths to blank.
-
             # NOTE: THIS MIGHT NEED TO BE RETHOUGHT.
+            # Put some mind grapes on this.
             self.rendered_oga_path = None
             self.rendered_mp3_path = None
 
