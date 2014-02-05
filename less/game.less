@@ -40,6 +40,7 @@
 @correct: fade(@brand-success, 80%);
 @incorrect: fade(@brand-danger, 80%);
 
+// Mixins
 .vertical-align {
   position: relative;
   top: 50%;
@@ -48,6 +49,9 @@
   transform: translateY(-50%);
 }
 
+
+
+// Styles
 body {
 	background: @musicDark;
 	color: #fff;
@@ -330,3 +334,120 @@ body {
 		}
 	}
 }
+
+#score {
+	position: absolute;
+	top: 0;
+	-webkit-transform: translateY(-50%);
+	-ms-transform: translateY(-50%);
+	transform: translateY(-50%);
+	text-transform: uppercase;
+	text-align: center;
+	width: 100%;
+	opacity: 0;
+	font-size: @font-size-base * 10;
+	.scale(0);
+	.transition(all 0.2s ease-in-out);
+
+	&.fade-in {
+		-webkit-animation: fromAbove 1000ms both, toAbove 500ms ease forwards 650ms;
+		  -o-animation: fromAbove 1000ms both, toAbove 500ms ease forwards 650ms;
+		  animation: fromAbove 1000ms both, toAbove 500ms ease forwards 650ms;
+	}
+}
+
+@-webkit-keyframes fromAbove {
+  0% {
+    opacity: 0;
+    -webkit-transform: scale(3);
+    transform: scale(3);
+  }
+
+  100% {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+@-o-keyframes fromAbove {
+  0% {
+    opacity: 0;
+    -o-transform: scale(3);
+    transform: scale(3);
+  }
+
+  100% {
+    opacity: 1;
+    -o-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+@keyframes fromAbove {
+  0% {
+    opacity: 0;
+    -webkit-transform: scale(3);
+    -ms-transform: scale(3);
+    -o-transform: scale(3);
+    transform: scale(3);
+  }
+
+  100% {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    -ms-transform: scale(1);
+    -o-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+
+@-webkit-keyframes toAbove {
+  0% {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  }
+}
+
+@-o-keyframes toAbove {
+  0% {
+    opacity: 1;
+    -o-transform: scale(1);
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    -o-transform: scale(0);
+    transform: scale(0);
+  }
+}
+
+@keyframes toAbove {
+  0% {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    -ms-transform: scale(1);
+    -o-transform: scale(1);
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    -webkit-transform: scale(0);
+    -ms-transform: scale(0);
+    -o-transform: scale(0);
+    transform: scale(0);
+  }
+}
+
+
+

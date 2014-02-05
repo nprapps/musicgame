@@ -6,6 +6,7 @@ var INTERVAL = (TIMERLENGTH / 360) * 1000; // Timout interval
 var $content = null;
 var $quiz = null;
 var $answers = null;
+var $answersContainer = null;
 var $questionPlayer = null;
 var $questionPlayButton = null;
 var $questionStopButton = null;
@@ -16,6 +17,7 @@ var $nextQuestionButton = null;
 var $showScoreButton = null;
 var $startQuizButton = null;
 var $progressBar = null;
+var $score = null;
 
 // Game state
 var currentQuestion = 0;
@@ -66,6 +68,7 @@ var renderQuestion = function(question) {
     $content.removeClass().addClass(QUIZ.quiz_type);
 
     $answers = $content.find('.answers li');
+    $answersContainer = $content.find('.answers');
     $questionPlayer = $content.find('#player');
     $questionPlayButton = $content.find('.jp-play');
     $questionStopButton = $content.find('.jp-stop');
@@ -75,7 +78,6 @@ var renderQuestion = function(question) {
     $nextQuestionButton = $content.find('#next-question');
     $showScoreButton = $content.find('#show-score');
 
-
     $questionPlayButton.on('click', onQuestionPlayButtonClick);
     $questionStopButton.on('click', onQuestionStopButtonClick);
     $answers.on('click', onAnswerClick);
@@ -83,6 +85,7 @@ var renderQuestion = function(question) {
     $showScoreButton.on('click', renderGameOver);
 
     $nextQuestionButton.removeClass('show');
+    $score.removeClass('fade-in').css('top', $answersContainer.offset().top);
     $progressBar.css('width', progress + '%');
 
     // Set up the STORY NARRATION player.
@@ -156,6 +159,8 @@ var onQuestionStopButtonClick = function(){
 */
 var onQuestionComplete = function(points){
     granularPoints.push(points);
+
+    $score.text('+' + points).addClass('fade-in');
 
     $answers.each(function(){
         $this = $(this).find('a .answer');
@@ -253,7 +258,7 @@ var runTimer = function() {
     } else {
         angle = 360 * .9999;
         drawTimer();
-        onQuestionComplete();
+        onQuestionComplete(0);
     };
 };
 
@@ -273,6 +278,7 @@ var onDocumentReady = function() {
     $content = $('#content');
     $quiz = $('#quiz');
     $progressBar = $('.progress .bar');
+    $score = $('#score');
 
     var slug = getParameterByName('quiz');
 
