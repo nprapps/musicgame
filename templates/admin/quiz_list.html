@@ -44,7 +44,7 @@
     </div>
     <div class="row">
         <div class="table-responsive">
-            <table class="quiz-list table table-bordered table-condensed">
+            <table class="quiz-list table table-bordered">
             <caption>Quizzes</caption>
             <thead>
                 <td>Quiz Name</td>
@@ -53,7 +53,7 @@
                 {% for quiz in obj_list %}
                     <tr class="quiz">
                         <td><a href="{{ quiz.id }}/">{{ quiz }}</a></td>
-                        <td><a href="{{ quiz.id }}/">{{ quiz.created }}</a></td>
+                        <td><a href="{{ quiz.id }}/">{{ quiz.created.strftime('%m-%d-%Y') }}</a></td>
                         <td><a href="{{ quiz.id }}/" class="btn btn-primary"><i class="fa fa-pencil"></i> Edit quiz</a>
                         <a class="btn btn-danger"><i class="fa fa-times"></i> Delete quiz</a></td>
                     </tr>
