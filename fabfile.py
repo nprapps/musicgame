@@ -172,7 +172,7 @@ def render():
     from flask import g
 
     update_copy()
-    assets_down()
+    assets_sync()
     update_data()
     less()
     jst()
@@ -348,7 +348,7 @@ def bootstrap():
 
     local('npm install less universal-jst -g --prefix node_modules')
 
-    assets_down()
+    assets_sync()
     update_copy()
     update_data()
 
@@ -671,7 +671,7 @@ def deploy(remote='origin'):
 
     if app_config.DEPLOY_TO_SERVERS:
         fabcast('update_copy')
-        fabcast('assets_down')
+        fabcast('assets_sync')
         fabcast('update_data')
 
         checkout_latest(remote)
@@ -695,7 +695,7 @@ def bootstrap_data():
     Sets up the app from scratch.
     """
     local('pip install -r requirements.txt')
-    assets_down()
+    assets_sync()
     init_db()
     init_tables()
     local('psql -U %s %s < www/assets/data/initial_db.sql' % (app_config.PROJECT_SLUG, app_config.PROJECT_SLUG))
