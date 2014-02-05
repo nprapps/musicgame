@@ -446,6 +446,9 @@ def assets_sync():
         if upload:
             _assets_upload(local_path, key)
 
+    action = None
+    always = False
+
     # Iterate over files that didn't exist on S3
     for local_path in local_paths:
         key_name = local_path.replace('www/assets', app_config.PROJECT_SLUG, 1)
@@ -453,7 +456,18 @@ def assets_sync():
 
         print local_path
 
-        _assets_upload(local_path, key)
+        if not always:
+            action, always = _assets_upload_confirm()
+
+        if not action:
+            print 'Cancelling!'
+
+            return
+
+        if action == 'upload':
+            _assets_upload(local_path, key)
+        elif action == 'delete':
+            _assets_delete(local_path, key)
 
 def _assets_get_bucket():
     """
@@ -468,7 +482,7 @@ def _assets_confirm(local_path):
     Check with user about whether to keep local or remote file.
     """
     print '--> This file has been changed locally and on S3.'
-    answer = prompt('Take remote [r] Take local [l] Take all remote [ra] Take all local [la] cancel', default="c")
+    answer = prompt('Take remote [r] Take local [l] Take all remote [ra] Take all local [la] cancel', default='c')
 
     if answer == 'r':
         return ('remote', False)
@@ -480,6 +494,21 @@ def _assets_confirm(local_path):
         return ('local', True)
         
     return (None, False)
+
+def _assets_upload_confirm():
+    print '--> This file does not exist on S3.'
+    answer = prompt('Upload local copy [u] Delete local copy [d] Upload all [ua] Delete all [da] cancel', default='c')
+
+    if answer == 'u':
+        return ('upload', False)
+    elif answer == 'd':
+        return ('delete', False)
+    elif answer == 'ua':
+        return ('upload', True)
+    elif answer == 'da':
+        return ('download', True)
+
+    return (None, False) 
 
 def _assets_download(s3_key, local_path):
     """
