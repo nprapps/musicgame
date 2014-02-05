@@ -113,6 +113,8 @@ body {
 		}
 
 		&.question-text {
+			margin: 0;
+
 			.audio& {
 				padding-left: 50px + @grid-gutter-width/2;
 			}
@@ -389,19 +391,25 @@ body {
 	}
 }
 
+.animation-container {
+	overflow: hidden;
+	max-width: 100%;
+	position: relative;
+}
+
 #score {
 	position: absolute;
 	top: 0;
-	-webkit-transform: translateY(-50%);
-	-ms-transform: translateY(-50%);
-	transform: translateY(-50%);
+	left: 0;
+	z-index: 100;
 	text-transform: uppercase;
 	text-align: center;
 	width: 100%;
 	opacity: 0;
-	font-size: @font-size-base * 8;
+	font-size: @font-size-base * 4;
+	line-height: 1;
 	.scale(0);
-	z-index: -1;
+
 
 	&.fade-in {
 		z-index: 10;

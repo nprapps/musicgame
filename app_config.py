@@ -160,9 +160,9 @@ def configure_targets(deployment_target):
         DEBUG = True
     else:
         S3_BUCKETS = []
-        S3_BASE_URL = 'http://127.0.0.1:8000'
+        S3_BASE_URL = 'http://10.44.17.203:8000'
         SERVERS = []
-        SERVER_BASE_URL = 'http://127.0.0.1:8001/%s' % PROJECT_SLUG
+        SERVER_BASE_URL = 'http://10.44.17.203:8001/%s' % PROJECT_SLUG
         DEBUG = True
         APP_LOG_PATH = '/tmp/%s.app.log' % PROJECT_SLUG
 

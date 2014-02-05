@@ -85,7 +85,9 @@ var renderQuestion = function(question) {
     $showScoreButton.on('click', renderGameOver);
 
     $nextQuestionButton.removeClass('show');
-    $score.removeClass('fade-in').css('top', $answersContainer.offset().top);
+
+    var scoreOffset = $answersContainer.offset().top + $answersContainer.height() / 2;
+    $score.removeClass('fade-in').css('top', scoreOffset);
     $progressBar.css('width', progress + '%');
 
     // Set up the STORY NARRATION player.
@@ -111,7 +113,6 @@ var renderQuestion = function(question) {
     } else { // Start the timer immediately if no audio.
         runTimer();
     }
-
 
 
     sendHeightToParent();
