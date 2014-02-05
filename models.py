@@ -1,4 +1,13 @@
+import datetime
+import os
+import time
+
+import boto
+from boto.s3.key import Key
+import envoy
 from peewee import *
+import requests
+
 import app_config
 
 db = PostgresqlDatabase(None)
@@ -82,8 +91,99 @@ class Audio(PSQLMODEL):
     credit = TextField()
     caption = TextField()
     file_path = TextField(null=True, blank=True)
-    rendered_oga_path = TextField(null=True, blank=True)
-    rendered_mp3_path = TextField(null=True, blank=True)
+    rendered_oga_path = TextField(null=True, default=None)
+    rendered_mp3_path = TextField(null=True, default=None)
+    render_audio = BooleanField(default=False)
 
     def __unicode__(self):
         return self.credit, self.caption
+
+    def render_audio_files(self):
+        """
+        Render the audio using envoy and the file path.
+        Update the rendered_oga_path with the path to the ogg encoded file.
+        Update the rendered_mp3_path with the path to the mp3 encoded file.
+        If anything fails, just write null to those paths.
+        """
+
+        try:
+
+            now = datetime.datetime.now()
+            timestamp = int(time.mktime(now.timetuple()))
+
+            unrendered_file = None
+
+            if "http://" in self.file_path:
+                r = requests.get(self.file_path)
+                if r.status_code == 200:
+                    file_name = self.file_path.split('/')[::-1][0].split('.mp3')[0]
+                    file_extension = 'mp3'
+
+                    file_name = '%s-%s' % (timestamp, file_name)
+
+                    with open('%s-temp.mp3' % file_name, 'wb') as writefile:
+                        writefile.write(r.content)
+
+                    os.system('mpg123 -w "%s-temp.wav" "%s-temp.mp3"' % (
+                        file_name, file_name))
+
+                    os.system('oggenc -m 96 -M 96 -o "%s.oga" --downmix "%s-temp.wav"' % (
+                        file_name, file_name))
+
+                    os.system('lame -m m -b 96 "%s-temp.mp3" "%s.mp3"' % (
+                        file_name, file_name))
+
+                else:
+                    pass
+
+            else:
+                unrendered_path, unrendered_file = os.path.split(self.file_path)
+                file_name, file_extension = os.path.splitext(unrendered_file)
+
+                file_name = '%s-%s' % (timestamp, file_name)
+
+                os.system('oggenc -m 96 -M 96 -o "%s.oga" --downmix "%s"' % (
+                    file_name, self.file_path))
+
+                os.system('lame -m m -b 96 "%s" "%s.mp3"' % (
+                    self.file_path, file_name))
+
+            for extension, content_type in [('oga', 'audio/ogg'), ('mp3', 'audio/mpeg')]:
+
+                s3_path = '%s/live-data/audio/%s.%s' % (app_config.PROJECT_SLUG, file_name, extension)
+
+                s3 = boto.connect_s3()
+
+                for bucket_name in app_config.S3_BUCKETS:
+                    bucket = s3.get_bucket(bucket_name)
+
+                    k = Key(bucket, s3_path)
+                    k.set_contents_from_filename('%s.%s' % (file_name, extension), headers={
+                        'Content-Type': content_type,
+                        'Cache-Control': 'max-age=5'
+                    })
+                    k.set_acl('public-read')
+
+                setattr(self, 'rendered_%s_path' % extension, 'http://%s.s3.amazonaws.com/%s' % (
+                    app_config.S3_BUCKETS[0],
+                    s3_path))
+
+            self.render_audio = False
+
+            os.system('rm -f *-temp.*')
+            os.system('rm -rf *.mp3')
+            os.system('rm -rf *.oga')
+
+        except:
+            self.rendered_oga_path = None
+            self.rendered_mp3_path = None
+
+    def save(self, *args, **kwargs):
+        """
+        Do things on save.
+        """
+
+        if self.render_audio:
+            self.render_audio_files()
+
+        super(Audio, self).save(*args, **kwargs)
