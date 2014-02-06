@@ -17,6 +17,7 @@ var $nextQuestionButton = null;
 var $showScoreButton = null;
 var $startQuizButton = null;
 var $progressBar = null;
+var timer = true;
 
 // Game state
 var currentQuestion = 0;
@@ -95,7 +96,9 @@ var renderQuestion = function(question) {
                     mp3: QUIZ.questions[currentQuestion].audio,
                     oga: 'http://s.npr.org/news/specials/2014/wolves/wolf-ambient-draft.ogg'
                 }).jPlayer('play');
-                runTimer();
+                if (timer !== 'false'){
+                    runTimer();
+                }
             },
             ended: function() {
                 onQuestionStopButtonClick();
@@ -108,7 +111,9 @@ var renderQuestion = function(question) {
         $content.find('.jp-play').hide();
         $content.find('.jp-stop').show();
     } else { // Start the timer immediately if no audio.
-        runTimer();
+        if (timer !== 'false'){
+            runTimer();
+        }
     }
 
 
@@ -317,6 +322,7 @@ var onDocumentReady = function() {
     $progressBar = $('.progress .bar');
 
     var slug = getParameterByName('quiz');
+    timer = getParameterByName('timer');
 
     if (slug !== null) {
         $.ajax({
