@@ -104,7 +104,7 @@ body {
 
 	h1 {
 		margin: 15px 0 0 0;
-		font-size: @font-size-large;
+		font-size: @font-size-base;
 		font-weight: 400;
 		line-height: 1.2;
 
@@ -181,7 +181,7 @@ body {
 				}
 
 				.cover {
-					width: 80px;
+					width: 60px;
 					overflow: hidden;
 					vertical-align: middle;
 
@@ -193,10 +193,12 @@ body {
 				}
 
 				.answer {
-					padding: 10px 40px 0 10px;
+					padding: 5px 40px 0 10px;
 					border-left: 10px solid fade(@gray-darker, 50%);
+					font-size: @font-size-small;
 
 					@media screen and (min-width: @screen-sm){
+						font-size: @font-size-base;
 						padding: @line-height-computed @line-height-computed + 30 @line-height-computed @line-height-computed;
 					}
 				}
