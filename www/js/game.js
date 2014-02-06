@@ -139,7 +139,6 @@ var renderGameOver = function() {
 * Click handler for the question player "play" button.
 */
 var onQuestionPlayButtonClick = function(e){
-    e.stopPropagation();
     $questionPlayer.jPlayer('play', 0);
     $content.find('.jp-play').hide();
     $content.find('.jp-stop').show();
@@ -149,7 +148,6 @@ var onQuestionPlayButtonClick = function(e){
 * Click handler for the question player "stop" button.
 */
 var onQuestionStopButtonClick = function(e){
-    e.stopPropagation();
     $questionPlayer.jPlayer('stop');
     $content.find('.jp-stop').hide();
     $content.find('.jp-play').show();
@@ -250,10 +248,14 @@ var drawTimer = function(){
 }
 
 var trimAnswers = function(){
+    incorrectAnswers = _.shuffle(incorrectAnswers);
     var wrongAnswer = incorrectAnswers.pop();
+    wrongAnswer = wrongAnswer.text||wrongAnswer;
+
+    console.log(wrongAnswer);
 
     $answers.each(function(){
-        $this = $(this).find('a .answer');
+        var $this = $(this).find('a .answer');
 
         if ($this.text() === wrongAnswer && !$this.parent().parent().hasClass('fade')){
             $this.parent().parent().addClass('fade').off("click");
