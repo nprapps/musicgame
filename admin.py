@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import flask
 from flask import Blueprint, render_template
 
 import app_config
@@ -8,8 +9,8 @@ from render_utils import make_context
 
 admin = Blueprint('admin', __name__)
 
-@admin.route('/admin/<model_name>/')
-def admin_quiz_list(model_name):
+@admin.route('/admin/quiz/')
+def admin_quiz_list():
     """
     List view of quizzes in the DB, sorted by insertion order.
     """
@@ -17,14 +18,12 @@ def admin_quiz_list(model_name):
 
     context = make_context()
 
-    model = getattr(models, model_name.title())
+    context['quizzes'] = models.Quiz.select()
 
-    context['obj_list'] = model.select()
+    return render_template('admin/quiz_list.html', **context)
 
-    return render_template('admin/%s_list.html' % model_name, **context)
-
-@admin.route('/admin/<model_name>/<obj_id>/')
-def admin_quiz_detail(model_name, obj_id):
+@admin.route('/admin/quiz/<quiz_id>/')
+def admin_quiz_detail(quiz_id):
     """
     A detail view of a single quiz.
     """
@@ -32,8 +31,25 @@ def admin_quiz_detail(model_name, obj_id):
 
     context = make_context()
 
-    model = getattr(models, model_name.title())
+    quiz = models.Quiz.get(models.Quiz.id == int(quiz_id))
 
-    context['obj'] = model.get(model.id == int(obj_id))
+    context['quiz'] = quiz
 
-    return render_template('admin/%s_detail.html' % model_name, **context)
+    quiz_flat = quiz.__dict__['_data']
+    quiz_flat['questions'] = [q.to_dict() for q in quiz.questions]
+
+    for i, question in enumerate(quiz.questions):
+        question_flat = quiz_flat['questions'][i]
+        question_flat['choices'] = [c.to_dict() for c in question.choices]
+        question_flat['audio'] = question.audio[0].to_dict() if question.audio.count() else None
+        question_flat['photo'] = question.photo[0].to_dict() if question.photo.count() else None
+
+        for j, choice in enumerate(question.choices):
+            choice_flat = question_flat['choices'][j]
+            choice_flat['audio'] = choice.audio[0].to_dict() if choice.audio.count() else None
+            choice_flat['photo'] = choice.photo[0].to_dict() if choice.photo.count() else None
+
+
+    context['quiz_json'] = flask.json.dumps(quiz_flat)
+
+    return render_template('admin/quiz_detail.html', **context)

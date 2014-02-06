@@ -31,7 +31,7 @@ env.forward_agent = True
 env.hosts = []
 env.settings = None
 
-model_names = ['Image', 'Audio', 'Choice', 'Question', 'Quiz', 'QuizCategory']
+model_names = ['Photo', 'Audio', 'Choice', 'Question', 'Quiz', 'QuizCategory']
 
 """
 Environments
@@ -676,7 +676,7 @@ def load_quizzes():
                 image_dict['caption'] = choice_dict['text']
                 image_dict['credit'] = "The internet"
 
-                img = models.Image(**image_dict)
+                img = models.Photo(**image_dict)
                 img.save()
 
                 print "Saved image: %s" % img

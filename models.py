@@ -13,6 +13,9 @@ import app_config
 db = PostgresqlDatabase(None)
 
 class PSQLMODEL(Model):
+    def to_dict(self):
+        return self.__dict__['_data']
+
     class Meta:
         database = db
 
@@ -23,7 +26,7 @@ class QuizCategory(PSQLMODEL):
         return self.name
 
 class Quiz(PSQLMODEL):
-    quiz_category = ForeignKeyField(QuizCategory, null=True, blank=True)
+    quiz_category = ForeignKeyField(QuizCategory, null=True, blank=True, related_name='quizzes')
     title = TextField()
     text = TextField()
     tags = TextField(null=True, blank=True)
@@ -48,7 +51,7 @@ class Quiz(PSQLMODEL):
     # 3. Handle the image field save.
 
 class Question(PSQLMODEL):
-    quiz = ForeignKeyField(Quiz, null=True, blank=True)
+    quiz = ForeignKeyField(Quiz, null=True, blank=True, related_name='questions')
     text = TextField()
     order = IntegerField()
     after_text = TextField(null=True, blank=True)
@@ -65,7 +68,7 @@ class Question(PSQLMODEL):
         return payload
 
 class Choice(PSQLMODEL):
-    question = ForeignKeyField(Question, null=True, blank=True)
+    question = ForeignKeyField(Question, null=True, blank=True, related_name='choices')
     text = TextField()
     order = IntegerField()
     correct_answer = BooleanField(default=False)
@@ -73,10 +76,10 @@ class Choice(PSQLMODEL):
     def __unicode__(self):
         return self.text
 
-class Image(PSQLMODEL):
-    choice = ForeignKeyField(Choice, null=True, blank=True)
-    question = ForeignKeyField(Question, null=True, blank=True)
-    quiz = ForeignKeyField(Quiz, null=True, blank=True)
+class Photo(PSQLMODEL):
+    choice = ForeignKeyField(Choice, null=True, blank=True, related_name='photo')
+    question = ForeignKeyField(Question, null=True, blank=True, related_name='photo')
+    quiz = ForeignKeyField(Quiz, null=True, blank=True, related_name='photo')
     credit = TextField()
     caption = TextField()
     file_path = TextField(null=True, blank=True)
@@ -86,8 +89,8 @@ class Image(PSQLMODEL):
         return self.credit, self.caption
 
 class Audio(PSQLMODEL):
-    choice = ForeignKeyField(Choice, null=True, blank=True)
-    question = ForeignKeyField(Question, null=True, blank=True)
+    choice = ForeignKeyField(Choice, null=True, blank=True, related_name='audio')
+    question = ForeignKeyField(Question, null=True, blank=True, related_name='audio')
     credit = TextField()
     caption = TextField()
     file_path = TextField(null=True, blank=True)

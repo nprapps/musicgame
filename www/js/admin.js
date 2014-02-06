@@ -5,14 +5,17 @@ var $addQuestionButton = null;
 var $rmQuestionButton = null;
 var $addChoiceButton = null;
 var $rmChoiceButton = null;
+var quiz = null;
 
 var addQuestion = function() {
     var context = {};
     var html = JST.admin_question(context);
 
     $questions.append(html);
-
     $rmQuestionButton = $('.rm-question');
+
+
+
     $addChoiceButton = $('.add-choice');
     $rmChoiceButton = $('.rm-choice');
 
@@ -56,6 +59,8 @@ var rmChoice = function() {
 }
 
 var onDocumentReady = function() {
+    quiz = new Quiz(window.QUIZ_DATA);
+
     $questions = $('.questions');
     $choices = $('.choices');
 

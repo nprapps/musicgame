@@ -57,7 +57,7 @@ api = RestAPI(app, default_auth=authorize_everyone, prefix="/%s/api" % app_confi
 api.register(models.Quiz, allowed_methods=['GET', 'POST', 'PUT', 'DELETE'])
 api.register(models.Question, allowed_methods=['GET', 'POST', 'PUT', 'DELETE'])
 api.register(models.Choice, allowed_methods=['GET', 'POST', 'PUT', 'DELETE'])
-api.register(models.Image, allowed_methods=['GET', 'POST', 'PUT', 'DELETE'])
+api.register(models.Photo, allowed_methods=['GET', 'POST', 'PUT', 'DELETE'])
 api.register(models.Audio, allowed_methods=['GET', 'POST', 'PUT', 'DELETE'])
 
 models.db.init(app_config.PROJECT_SLUG, user=app_config.PROJECT_SLUG)
