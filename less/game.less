@@ -78,6 +78,7 @@ body {
 	.timer-container {
 		.pull-right;
 		.transition(opacity .5s ease-in);
+		margin: 0 0 0 @grid-gutter-width / 2;
 
 		&.fade {
 			opacity: 0;
@@ -369,11 +370,12 @@ body {
 
 
 			h2 {
-				font-size: @font-size-large;
+				font-size: @font-size-base;
 			}
 
 			p {
 				text-align: left;
+				font-size: @font-size-small;
 
 				&.your-answer {
 					&:before {
@@ -416,7 +418,6 @@ body {
 	line-height: 1;
 	.scale(0);
 
-
 	&.fade-in {
 		z-index: 10;
 		-webkit-animation: zoomOut 1000ms both;
@@ -432,11 +433,18 @@ body {
     transform: scale(3);
   }
 
-  50% {
+  40% {
     opacity: 1;
     -webkit-transform: scale(1);
     transform: scale(1);
   }
+
+  60% {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+
   100% {
     opacity: 0;
     -webkit-transform: scale(0);
@@ -451,7 +459,13 @@ body {
     transform: scale(3);
   }
 
-  50% {
+  40% {
+    opacity: 1;
+    -o-transform: scale(1);
+    transform: scale(1);
+  }
+
+  60% {
     opacity: 1;
     -o-transform: scale(1);
     transform: scale(1);
@@ -473,13 +487,22 @@ body {
     transform: scale(3);
   }
 
-  50% {
+  40% {
     opacity: 1;
     -webkit-transform: scale(1);
     -ms-transform: scale(1);
     -o-transform: scale(1);
     transform: scale(1);
   }
+
+  60% {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    -ms-transform: scale(1);
+    -o-transform: scale(1);
+    transform: scale(1);
+  }
+
   100% {
     opacity: 0;
     -webkit-transform: scale(0);
