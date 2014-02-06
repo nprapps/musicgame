@@ -24,7 +24,7 @@
 			<a href="#">
 			<% if (choice.cover !== null) { %>
 				<div class="cover">
-					<img class="img-responsive" src="/musicgame/assets/cover_art/<%= choice.cover %>">
+					<img class="img-responsive" src="/musicgame/<%= choice.cover.replace('www/', '') %>">
 				</div>
 			<% } %>
 				<div class="answer"><%= choice.text %></div>
