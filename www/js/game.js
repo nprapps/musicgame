@@ -40,7 +40,8 @@ var renderStart = function() {
     $content.addClass('start').css('height', $(window).height());
 
     $startQuizButton = $content.find('#start-quiz');
-    $startQuizButton.on('click', function(){
+    $startQuizButton.on('click', function(e){
+        e.stopPropagation();
         renderQuestion(currentQuestion);
         $content.removeClass('start');
     });
@@ -137,7 +138,8 @@ var renderGameOver = function() {
 /*
 * Click handler for the question player "play" button.
 */
-var onQuestionPlayButtonClick = function(){
+var onQuestionPlayButtonClick = function(e){
+    e.stopPropagation();
     $questionPlayer.jPlayer('play', 0);
     $content.find('.jp-play').hide();
     $content.find('.jp-stop').show();
@@ -146,7 +148,8 @@ var onQuestionPlayButtonClick = function(){
 /*
 * Click handler for the question player "stop" button.
 */
-var onQuestionStopButtonClick = function(){
+var onQuestionStopButtonClick = function(e){
+    e.stopPropagation();
     $questionPlayer.jPlayer('stop');
     $content.find('.jp-stop').hide();
     $content.find('.jp-play').show();
@@ -197,8 +200,10 @@ var onQuestionComplete = function(points, selectedAnswer, element){
 
     if (currentQuestion + 1 < QUIZ.questions.length){
         $nextQuestionButton.addClass('show');
+        scrollTo($nextQuestionButton);
     } else {
         $showScoreButton.addClass('show');
+        scrollTo($showScoreButton);
     }
 
     sendHeightToParent();
@@ -207,7 +212,8 @@ var onQuestionComplete = function(points, selectedAnswer, element){
 /*
 * You ran out of time
 */
-var onAnswerClick = function(){
+var onAnswerClick = function(e){
+    e.stopPropagation();
     var points = 0;
     var answer = QUIZ.questions[currentQuestion].answer;
     $this = $(this).find('a .answer');
@@ -285,11 +291,21 @@ var runTimer = function() {
 /*
 * Go to the next question
 */
-var onNextQuestionClick = function(event) {
-    event.stopImmediatePropagation();
+var onNextQuestionClick = function(e) {
+    e.stopImmediatePropagation();
     currentQuestion++;
     renderQuestion(currentQuestion);
 }
+
+/*
+ * Scroll to a given element.
+ */
+var scrollTo = function($el) {
+    var top = $el.offset().top;
+    $('html,body').animate({
+        scrollTop: top
+    }, 1000);
+};
 
 /*
  * On browser ready.
