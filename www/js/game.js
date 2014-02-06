@@ -17,7 +17,7 @@ var $nextQuestionButton = null;
 var $showScoreButton = null;
 var $startQuizButton = null;
 var $progressBar = null;
-var $score = null;
+var $score = $('<div id="score"></div>');
 
 // Game state
 var currentQuestion = 0;
@@ -85,9 +85,6 @@ var renderQuestion = function(question) {
     $showScoreButton.on('click', renderGameOver);
 
     $nextQuestionButton.removeClass('show');
-
-    var scoreOffset = $answersContainer.offset().top + $answersContainer.height() / 2;
-    $score.removeClass('fade-in').css('top', scoreOffset);
     $progressBar.css('width', progress + '%');
 
     // Set up the STORY NARRATION player.
@@ -159,9 +156,19 @@ var onQuestionStopButtonClick = function(){
 * Answer clicked or timer ran out
 */
 var onQuestionComplete = function(points, selectedAnswer){
+    var scoreOffset = $answersContainer.offset().top + $answersContainer.height() / 2;
+
     granularPoints.push(points);
 
-    $score.text('+' + points).addClass('fade-in');
+    $content.after('<div class="score-container"><div id="score"></div></div>');
+    $(document).find('#score')
+        .text('+' + points)
+        .css('top', scoreOffset)
+        .addClass('fade-in')
+        .bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",
+            function(){
+                $(this).parent().remove();
+        });
 
     // Push the selected answer to our answer array
     answers.push(selectedAnswer);
