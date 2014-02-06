@@ -155,15 +155,27 @@ var onQuestionStopButtonClick = function(){
 /*
 * Answer clicked or timer ran out
 */
-var onQuestionComplete = function(points, selectedAnswer){
-    var scoreOffset = $answersContainer.offset().top + $answersContainer.height() / 2;
+var onQuestionComplete = function(points, selectedAnswer, element){
+    var scoreOffsetY = $answersContainer.offset().top;
+
+    if (element){
+        var scoreOffsetY = $(element).offset().top;
+        var scoreOffsetX = $(element).offset().left;
+        var width = $(element).width();
+        var height = $(element).height();
+    }
 
     granularPoints.push(points);
 
     $content.after('<div class="score-container"><div id="score"></div></div>');
     $(document).find('#score')
         .text('+' + points)
-        .css('top', scoreOffset)
+        .css({
+            'top': scoreOffsetY,
+            'left': scoreOffsetX,
+            'width': width,
+            'height': height
+        })
         .addClass('fade-in')
         .bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",
             function(){
@@ -212,7 +224,7 @@ var onAnswerClick = function(){
         $this.parent().parent().addClass('incorrect');
     }
 
-    onQuestionComplete(points, $this.text());
+    onQuestionComplete(points, $this.text(), this);
 };
 
 /*
