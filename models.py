@@ -84,9 +84,63 @@ class Photo(PSQLMODEL):
     caption = TextField()
     file_path = TextField(null=True, blank=True)
     rendered_file_path = TextField(null=True, blank=True)
+    render_image = BooleanField(default=False)
 
     def __unicode__(self):
         return self.credit, self.caption
+
+    def render_image_file(self):
+        """
+        Right now, this just uploads it to S3.
+        """
+
+        # Get the file path.
+        unrendered_path, unrendered_file = os.path.split(self.file_path)
+
+        # Get the name and extension from the filename.
+        file_name, file_extension = os.path.splitext(unrendered_file)
+
+        # Make a timestamp so we can have unique filenames.
+        now = datetime.datetime.now()
+        timestamp = int(time.mktime(now.timetuple()))
+
+        # Timestamp for uniqueness.
+        file_name = '%s-%s' % (timestamp, file_name)
+
+        # Set an S3 path for uploading.
+        s3_path = '%s/live-data/img/%s%s' % (app_config.PROJECT_SLUG, file_name, file_extension)
+
+        # Connect to S3.
+        s3 = boto.connect_s3()
+
+        # Loop over our buckets.
+        for bucket_name in app_config.S3_BUCKETS:
+            bucket = s3.get_bucket(bucket_name)
+
+            # Set the key as a content_from_filename
+            # CHRIST CONTENT TYPES SUCK
+            k = Key(bucket, s3_path)
+            k.set_contents_from_filename('%s' % (self.file_path), headers={
+                'Cache-Control': 'max-age=5'
+            })
+
+            # Everyone can read it.
+            k.set_acl('public-read')
+
+        # Set the rendered file path as the S3 bucket path.
+        setattr(self, 'rendered_file_path', 'http://%s.s3.amazonaws.com/%s' % (
+            app_config.S3_BUCKETS[0],
+            s3_path))
+
+    def save(self, *args, **kwargs):
+        """
+        Do things on save.
+        """
+
+        if self.render_image:
+            self.render_image_file()
+
+        super(Image, self).save(*args, **kwargs)
 
 class Audio(PSQLMODEL):
     choice = ForeignKeyField(Choice, null=True, blank=True, related_name='audio')
@@ -183,7 +237,7 @@ class Audio(PSQLMODEL):
             for extension, content_type in [('oga', 'audio/ogg'), ('mp3', 'audio/mpeg')]:
 
                 # Like, for example, set an S3 path for uploading.
-                s3_path = '%s/live-data/audio/%s.%s' % (app_config.PROJECT_SLUG, file_name, extension)
+                s3_path = '%s/live-data/audio/%s%s' % (app_config.PROJECT_SLUG, file_name, extension)
 
                 # Connect to S3.
                 s3 = boto.connect_s3()
