@@ -14,7 +14,7 @@
 			<div class="choices">
 				<p class="your-answer<% if (answers[index] == question.answer){ %> correct<% } else { %> incorrect<% }%>"><%= answers[index] %></p>
 				<% if (answers[index] !== question.answer){ %>
-					<p class="correct-answer"><i class="fa fa-check"></i> Correct Answer: <%= question.answer %></p>
+					<p class="correct-answer"><i class="fa fa-check"></i> <%= question.answer %></p>
 				<% }%>
 			</div>
 			<div class="points">+<%= points[index] %></div>
