@@ -650,7 +650,9 @@ def load_quizzes():
             audio_dict['credit'] = "The internet"
 
             audio = models.Audio(**audio_dict)
+            audio.render_audio = True
             audio.save()
+
 
             print "Saved audio: %s" % audio
 
@@ -677,6 +679,7 @@ def load_quizzes():
                 image_dict['credit'] = "The internet"
 
                 img = models.Photo(**image_dict)
+                img.render_image = True
                 img.save()
 
                 print "Saved image: %s" % img
