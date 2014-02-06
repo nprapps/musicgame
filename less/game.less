@@ -268,9 +268,27 @@ body {
 		}
 	}
 
+	&.start,
+	&.end {
+		h1 {
+			margin: @line-height-computed 0;
+		}
+
+		a {
+			text-transform: uppercase;
+			font-size: @font-size-base * 1.5;
+			font-weight: bold;
+			margin: 0 auto;
+		}
+	}
+
 	&.start {
-		#quiz {
-			.vertical-align;
+		text-align: center;
+		h1 {
+			text-transform: uppercase;
+		}
+		p {
+			margin-bottom: @line-height-computed;
 		}
 	}
 

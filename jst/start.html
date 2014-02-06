@@ -1,2 +1,6 @@
-<h1 class="start-header"><a id="start-quiz" class="btn btn-large btn-primary" href="#">Start Quiz</a></h1>
+<h1><%= title %></h1>
+<% if(quiz_type === 'audio'){ %>
+	<p><i class="fa fa-headphones"></i> Make sure your speakers or headphones are turned up.</p>
+<% } %>
+<a id="start-quiz" class="btn btn-large btn-primary" href="#">Start Quiz</a>
 

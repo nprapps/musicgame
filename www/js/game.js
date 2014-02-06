@@ -32,7 +32,7 @@ var incorrectAnswers = null;
  * Render the start screen.
  */
 var renderStart = function() {
-    var context = {};
+    var context = QUIZ;
     var html = JST.start(context);
 
     $quiz.html(html);
