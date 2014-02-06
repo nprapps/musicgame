@@ -140,7 +140,7 @@ class Photo(PSQLMODEL):
         if self.render_image:
             self.render_image_file()
 
-        super(Image, self).save(*args, **kwargs)
+        super(Photo, self).save(*args, **kwargs)
 
 class Audio(PSQLMODEL):
     choice = ForeignKeyField(Choice, null=True, blank=True, related_name='audio')

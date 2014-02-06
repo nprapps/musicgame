@@ -20,7 +20,7 @@ def admin_quiz_list():
 
     context['quizzes'] = models.Quiz.select()
 
-    return render_template('admin/quiz_list.html', **context)
+    return render_template('admin/admin.html', **context)
 
 @admin.route('/admin/quiz/<quiz_id>/')
 def admin_quiz_detail(quiz_id):
@@ -35,7 +35,7 @@ def admin_quiz_detail(quiz_id):
 
     context['quiz'] = quiz
 
-    quiz_flat = quiz.__dict__['_data']
+    quiz_flat = quiz.to_dict()
     quiz_flat['questions'] = [q.to_dict() for q in quiz.questions]
 
     for i, question in enumerate(quiz.questions):
@@ -52,4 +52,4 @@ def admin_quiz_detail(quiz_id):
 
     context['quiz_json'] = flask.json.dumps(quiz_flat)
 
-    return render_template('admin/quiz_detail.html', **context)
+    return render_template('admin/admin.html', **context)

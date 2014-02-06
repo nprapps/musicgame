@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <title>{{ PROJECT_NAME }} : NPR</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+
+    <!-- Fonts -->
+    <script src="//ajax.googleapis.com/ajax/libs/webfont/1.4.10/webfont.js"></script>
+    <script>
+        WebFont.load({
+             custom: {
+                 families: [
+                     'Gotham SSm:n4,n7',
+                     'Gotham:n4,n7'
+                 ],
+                 urls: [
+                     'http://s.npr.org/templates/css/fonts/GothamSSm.css',
+                     'http://s.npr.org/templates/css/fonts/Gotham.css'
+                 ]
+             },
+             timeout: 10000
+         });
+    </script>
+
+    <!-- CSS -->
+    {{ CSS.push('less/admin.less') }}
+    {% block extra_css %}{% endblock extra_css %}
+    {{ CSS.render('css/admin.min.css') }}
+</head>
+
+<body>
+    <div id="admin" class="container">
+    </div>
+
+<script type="text/javascript">
+    window.QUIZ_DATA = {{ quiz_json|safe }};
+</script>
+
+<!-- JS -->
+{{ JS.push('js/lib/jquery.js') }}
+{{ JS.push('js/lib/underscore.js') }}
+{{ JS.push('js/lib/backbone.js') }}
+{{ JS.push('js/lib/bootstrap.js') }}
+{{ JS.push('js/lib/moment.js') }}
+{{ JS.push('js/lib/child.js') }}
+{{ JS.push('js/lib/jquery.jplayer.js') }}
+{{ JS.push('js/app_config.js') }}
+{{ JS.push('js/copy.js') }}
+{{ JS.push('js/console.js') }}
+{{ JS.push('js/templates.js') }}
+{{ JS.push('js/utils.js') }}
+{{ JS.push('js/models.js') }}
+{{ JS.push('js/collections.js') }}
+{{ JS.push('js/views.js') }}
+{{ JS.push('js/admin.js') }}
+{{ JS.render('js/admin-footer.min.js') }}
+
+</body>
+</html>

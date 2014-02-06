@@ -6,17 +6,19 @@ var Quiz = Backbone.Model.extend({
     questions: null,
 
     initialize: function(attributes) {
+        this.questions = new Questions();
+
         if (attributes) {
             if ("questions" in attributes) {
-                this.questions = new Questions(attributes.questions);
+                this.questions.add(attributes.questions);
             }
         }
     },
-	url: function() {
+    url: function() {
         // Rewrite urls to include a trailing slash so flask doesn't freak out
-		var origUrl = Backbone.Model.prototype.url.call(this);
-		return origUrl + (origUrl.charAt(origUrl.length - 1) == '/' ? '' : '/');
-	},
+        var origUrl = Backbone.Model.prototype.url.call(this);
+        return origUrl + (origUrl.charAt(origUrl.length - 1) == '/' ? '' : '/');
+    },
     toJSON: function() {
         var data = _.clone(this.attributes);
 
@@ -26,7 +28,7 @@ var Quiz = Backbone.Model.extend({
         var data = _.clone(this.attributes);
 
         return data;
-    }
+    },
 });
 
 /*
@@ -39,9 +41,11 @@ var Question = Backbone.Model.extend({
     photo: null,
 
     initialize: function(attributes) {
+        this.choices = new Choices();
+
         if (attributes) {
             if ("choices" in attributes) {
-                this.choices = new Choices(attributes.choices);
+                this.choices.add(attributes.choices);
             }
             if ("audio" in attributes) {
                 this.audio = new Audio(attributes.audio);
