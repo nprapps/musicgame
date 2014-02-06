@@ -17,7 +17,6 @@ var $nextQuestionButton = null;
 var $showScoreButton = null;
 var $startQuizButton = null;
 var $progressBar = null;
-var $score = $('<div id="score"></div>');
 
 // Game state
 var currentQuestion = 0;
@@ -316,7 +315,6 @@ var onDocumentReady = function() {
     $content = $('#content');
     $quiz = $('#quiz');
     $progressBar = $('.progress .bar');
-    $score = $('#score');
 
     var slug = getParameterByName('quiz');
 
