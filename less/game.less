@@ -416,41 +416,52 @@ body {
 
 	&.fade-in {
 		z-index: 10;
-		-webkit-animation: fromAbove 1000ms both, toAbove 500ms ease forwards 650ms;
-		  -o-animation: fromAbove 1000ms both, toAbove 500ms ease forwards 650ms;
-		  animation: fromAbove 1000ms both, toAbove 500ms ease forwards 650ms;
+		-webkit-animation: zoomOut 1000ms both;
+		  -o-animation: zoomOut 1000ms both;
+		  animation: zoomOut 1000ms both;
 	}
 }
 
-@-webkit-keyframes fromAbove {
+@-webkit-keyframes zoomOut {
   0% {
     opacity: 0;
     -webkit-transform: scale(3);
     transform: scale(3);
   }
 
-  100% {
+  50% {
     opacity: 1;
     -webkit-transform: scale(1);
     transform: scale(1);
   }
+  100% {
+    opacity: 0;
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  }
 }
 
-@-o-keyframes fromAbove {
+@-o-keyframes zoomOut {
   0% {
     opacity: 0;
     -o-transform: scale(3);
     transform: scale(3);
   }
 
-  100% {
+  50% {
     opacity: 1;
     -o-transform: scale(1);
     transform: scale(1);
   }
+
+  100% {
+    opacity: 0;
+    -o-transform: scale(0);
+    transform: scale(0);
+  }
 }
 
-@keyframes fromAbove {
+@keyframes zoomOut {
   0% {
     opacity: 0;
     -webkit-transform: scale(3);
@@ -459,53 +470,13 @@ body {
     transform: scale(3);
   }
 
-  100% {
+  50% {
     opacity: 1;
     -webkit-transform: scale(1);
     -ms-transform: scale(1);
     -o-transform: scale(1);
     transform: scale(1);
   }
-}
-
-
-@-webkit-keyframes toAbove {
-  0% {
-    opacity: 1;
-    -webkit-transform: scale(1);
-    transform: scale(1);
-  }
-
-  100% {
-    opacity: 0;
-    -webkit-transform: scale(0);
-    transform: scale(0);
-  }
-}
-
-@-o-keyframes toAbove {
-  0% {
-    opacity: 1;
-    -o-transform: scale(1);
-    transform: scale(1);
-  }
-
-  100% {
-    opacity: 0;
-    -o-transform: scale(0);
-    transform: scale(0);
-  }
-}
-
-@keyframes toAbove {
-  0% {
-    opacity: 1;
-    -webkit-transform: scale(1);
-    -ms-transform: scale(1);
-    -o-transform: scale(1);
-    transform: scale(1);
-  }
-
   100% {
     opacity: 0;
     -webkit-transform: scale(0);
@@ -514,6 +485,3 @@ body {
     transform: scale(0);
   }
 }
-
-
-
