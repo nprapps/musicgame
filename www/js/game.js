@@ -59,7 +59,13 @@ var renderQuestion = function(question) {
     var html = JST.question(context);
     var progress = context.questionNumber / context.quizLength * 100;
     incorrectAnswers = _(QUIZ.questions[currentQuestion].choices)
-        .without(QUIZ.questions[currentQuestion].answer);
+        .filter(function(choice){
+            if (_.isObject(choice)){
+                return choice.text !== QUIZ.questions[currentQuestion].answer;
+            } else {
+                return choice !== QUIZ.questions[currentQuestion].answer;
+            }
+        });
 
 
     angle = 0;
