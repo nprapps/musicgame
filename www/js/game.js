@@ -232,7 +232,7 @@ var onAnswerClick = function(e){
 
     if ($this.text() === answer){
         $this.parent().parent().addClass('correct');
-        if(timer === true){
+        if(timer !== 'false'){
             points = Math.round(100 / QUIZ.questions.length * ((360 - angle) / 360));
         } else {
             points = Math.round(100 / QUIZ.questions.length);
