@@ -47,9 +47,16 @@
 }
 
 [contenteditable="true"]:active,
-[contenteditable="true"]:focus{
-    border:none;
+[contenteditable="true"]:focus,
+[contenteditable="true"]:hover
+{
+    border: none;
+    border-bottom: 1px solid black;
     outline:none;
+}
+
+[contenteditable="true"]:hover {
+
 }
 
 .header {
