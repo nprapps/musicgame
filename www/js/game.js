@@ -229,7 +229,7 @@ var onAnswerClick = function(e){
         if(timer === true){
             points = Math.round(100 / QUIZ.questions.length * ((360 - angle) / 360));
         } else {
-            points = Math.round(100 / QUIZ.questions.length;
+            points = Math.round(100 / QUIZ.questions.length);
         }
 
         totalScore += points;
