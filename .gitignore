@@ -50,3 +50,4 @@ data/gdoc*.csv
 .games.gzip
 .floo
 .flooignore
+FLOOBITS_README.md
