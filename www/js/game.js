@@ -1,6 +1,6 @@
 // Constants
 var TIMERLENGTH = 15; // Seconds allowed to answer per question
-var INTERVAL = 50; // Timout interval
+var INTERVAL = 50; // Timout interval in milliseconds
 
 // DOM Refs
 var $content = null;

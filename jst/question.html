@@ -1,10 +1,7 @@
 <div class="progress"><div class="bar" style="width: 0%;"></div></div>
 
 <h3 class="progress-header">Question <%= questionNumber %>/<%= quizLength %></h3>
-<svg class="timer-container" width="50" height="50" viewbox="0 0 50 50" preserveAspectRatio="xMinYMin meet">
-  <circle id="timer-bg" cx="25" cy="25" r="25" />
-  <path id="timer" transform="translate(25, 25)"/>
-</svg>
+
 <% if (QUIZ.quiz_type === "audio"){ %>
 <div id="player" class="jp-player"></div>
 <div id="jp_container_1" class="jp-audio">
