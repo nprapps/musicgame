@@ -82,7 +82,10 @@ var QuestionView = Backbone.View.extend({
 
         this.$choices = this.$('.choices');
 
-        console.log(this.$choices);
+        for (i=0; i<4; i++) {
+            this.addChoiceModel();
+        }
+
     },
 
     addChoiceModel: function() {
@@ -90,7 +93,6 @@ var QuestionView = Backbone.View.extend({
     },
 
     addChoiceView: function(choice) {
-        console.log(this.$choices);
         var choiceView = new ChoiceView({ model: choice });
         choiceView.render();
 
