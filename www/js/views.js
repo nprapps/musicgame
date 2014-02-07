@@ -86,6 +86,7 @@ var QuestionView = Backbone.View.extend({
         this.model.choices.on('add', this.addChoiceView);
     },
     render: function() {
+
         this.$el.html(JST.admin_question({ 'question': this.model }));
 
         this.$choices = this.$('.choices');
