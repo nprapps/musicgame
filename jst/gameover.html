@@ -12,12 +12,11 @@
 		<h2><%= question.text %></h2>
 		<div class="answer <% if (answers[index] == question.answer){ %>correct<% } else { %>incorrect<% }%>">
 			<div class="choices">
-				<p class="your-answer<% if (answers[index] == question.answer){ %> correct<% } else { %> incorrect<% }%>"><%= answers[index] %></p>
+				<p class="your-answer<% if (answers[index] == question.answer){ %> correct<% } else { %> incorrect<% }%>"><span class="points label<% if (answers[index] == question.answer){ %> label-success<% } else { %> label-danger<% }%>">+<%= points[index] %></span> <%= answers[index] %> </p>
 				<% if (answers[index] !== question.answer){ %>
 					<p class="correct-answer"><i class="fa fa-check"></i> <%= question.answer %></p>
 				<% }%>
 			</div>
-			<div class="points">+<%= points[index] %></div>
 		</div>
 	</li>
 <% }); %>

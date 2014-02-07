@@ -103,6 +103,8 @@ var renderQuestion = function(question) {
                     mp3: QUIZ.questions[currentQuestion].audio,
                     oga: 'http://s.npr.org/news/specials/2014/wolves/wolf-ambient-draft.ogg'
                 }).jPlayer('play');
+            },
+            play: function() {
                 if (timer !== 'false'){
                     runTimer();
                 }

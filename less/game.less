@@ -14,6 +14,7 @@
 @import "less/lib/bootstrap/grid.less";
 @import "less/lib/bootstrap/tables.less";
 @import "less/lib/bootstrap/forms.less";
+@import "less/lib/bootstrap/labels.less";
 @import "less/lib/bootstrap/buttons.less";
 
 // Icon font
@@ -61,12 +62,12 @@ body {
 #content {
 	max-width: 1125px;
 	margin: 0 auto;
-	padding: 0 @grid-gutter-width / 2 @grid-gutter-width / 2;
+	padding: 0 @grid-gutter-width @grid-gutter-width / 2;
 
 	.progress {
 		height: 30px;
 		background: fade(@musicMedium, 20%);
-		margin: 0 -@grid-gutter-width / 2 @line-height-computed / 2;
+		margin: 0 -@grid-gutter-width @line-height-computed / 2;
 
 		.bar {
 			height: 30px;
@@ -142,10 +143,14 @@ body {
 		overflow: hidden;
 		clear: both;
 
+		.make-row();
+
 		li {
 			list-style: none;
 			margin-bottom: 6px;
 			color: @musicLight;
+
+			.make-xs-column(12);
 
 			.transition(opacity .5s ease-in);
 
@@ -193,7 +198,9 @@ body {
 
 				.answer {
 					padding: 5px 40px 0 10px;
-					border-left: 10px solid fade(@gray-darker, 50%);
+					border-width: 0 0 0 10px;
+					border-style: solid;
+					border-color: fade(@gray-darker, 50%);
 					font-size: @font-size-small;
 
 					@media screen and (min-width: @screen-sm){
@@ -235,15 +242,40 @@ body {
 				}
 			}
 
-			@media screen and (min-width: @screen-sm){
-				width: 50%;
-				float: left;
-				padding-right: 3px;
+			&.has-cover {
+				@media screen and (min-width: @screen-sm){
+					.make-sm-column(3);
 
+					a {
+						display: block;
+						background: transparent;
 
-				&:nth-child(even){
-					padding-left: 3px;
+						.cover,
+						.answer {
+							display: block;
+							width: 100%;
+						}
+
+						.answer {
+							border-width: 10px 0 0 0;
+							padding: 5px 0;
+
+							&:after {
+								top: 0;
+								right: 0;
+								margin-top: 0;
+								background: rgba(0,0,0,0.8);
+								.square(50px);
+								text-align: center;
+							}
+						}
+					}
 				}
+			}
+
+			@media screen and (min-width: @screen-sm){
+				.make-sm-column(6);
+				margin-bottom: @grid-gutter-width;
 
 				a {
 					min-height: 120px;
@@ -260,10 +292,11 @@ body {
 
 		&.show {
 			display: block;
-			margin: 0 auto;
+			.pull-right;
 
 			text-transform: uppercase;
-			font-size: @font-size-base * 1.2;
+			font-size: @font-size-base;
+			font-weight: bold;
 		}
 	}
 
@@ -278,6 +311,10 @@ body {
 			font-size: @font-size-base * 1.5;
 			font-weight: bold;
 			margin: 0 auto;
+		}
+
+		p {
+			margin-bottom: @line-height-computed;
 		}
 	}
 
@@ -314,32 +351,8 @@ body {
 
 
 				.answer {
-					background: fade(@gray-darker, 50%);
 					color: @musicLight;
 					position: relative;
-					min-height: 60px;
-					display: table;
-					width: 100%;
-
-					// @media screen and (min-width: @screen-sm){
-					// 	padding: @line-height-computed @line-height-computed + 30 @line-height-computed @line-height-computed;
-					// }
-
-					.points,
-					.choices {
-						display: table-cell;
-						vertical-align: top;
-					}
-
-					.choices {
-						padding: @line-height-computed / 2 10px 0;
-					}
-
-					.points {
-						font-size: 200%;
-						text-align: right;
-						padding: @line-height-computed / 2 10px;
-					}
 
 					.your-answer,
 					.correct-answer {
@@ -350,7 +363,6 @@ body {
 					}
 
 					&.correct {
-						border-left: 10px solid @correct;
 
 						.your-answer {
 							color: @correct;
@@ -359,14 +371,9 @@ body {
 								content: '\f00c';
 							}
 						}
-
-						.points {
-							color: @correct;
-						}
 					}
 
 					&.incorrect {
-						border-left: 10px solid @incorrect;
 
 						.your-answer {
 							color: @incorrect;
@@ -374,10 +381,6 @@ body {
 							&:before {
 								content: '\f00d';
 							}
-						}
-
-						.points {
-							color: @incorrect;
 						}
 					}
 				}
