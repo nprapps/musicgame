@@ -4,7 +4,6 @@ var INTERVAL = 50; // Timout interval in milliseconds
 
 // DOM Refs
 var $content = null;
-var $quiz = null;
 var $answers = null;
 var $answersContainer = null;
 var $questionPlayer = null;
@@ -17,6 +16,7 @@ var $nextQuestionButton = null;
 var $showScoreButton = null;
 var $startQuizButton = null;
 var $progressBar = null;
+var $responses = null;
 var timer = true;
 
 // Game state
@@ -35,7 +35,7 @@ var renderStart = function() {
     var context = QUIZ;
     var html = JST.start(context);
 
-    $quiz.html(html);
+    $content.html(html);
 
     $content.addClass('start').css('height', $(window).height());
 
@@ -57,7 +57,7 @@ var renderQuestion = function(question) {
     context.quizLength = QUIZ.questions.length;
     context.questionNumber = question + 1;
     var html = JST.question(context);
-    var progress = context.questionNumber / context.quizLength * 100;
+
     incorrectAnswers = _(QUIZ.questions[currentQuestion].choices)
         .filter(function(choice){
             if (_.isObject(choice)){
@@ -71,7 +71,7 @@ var renderQuestion = function(question) {
     timeLeft = TIMERLENGTH * 1000;
     stopTimer = false;
 
-    $quiz.html(html);
+    $content.html(html);
     $content.removeClass().addClass(QUIZ.quiz_type);
 
     $answers = $content.find('.answers li');
@@ -93,7 +93,6 @@ var renderQuestion = function(question) {
     $showScoreButton.on('click', renderGameOver);
 
     $nextQuestionButton.removeClass('show');
-    $progressBar.css('width', progress + '%');
 
     // Set up the STORY NARRATION player.
     if (QUIZ.quiz_type === 'audio'){
@@ -133,17 +132,25 @@ var renderQuestion = function(question) {
  * Render the game over screen.
  */
 var renderGameOver = function() {
+    var $showResults = null;
     var context = {
         'score': totalScore,
         'answers': answers,
         'questions': QUIZ.questions,
-        'points': granularPoints
+        'points': granularPoints,
+        'category': QUIZ.category,
+        'cover_image': QUIZ.cover_image,
+        'title': QUIZ.title
     };
 
     var html = JST.gameover(context);
 
-    $quiz.html(html);
-    $content.addClass('end').css('height', $(window).height());;
+    $content.html(html);
+    $content.addClass('end').css('height', $(window).height());
+    $showResults = $content.find('#show-results');
+    $responses = $content.find('.responses');
+
+    $showResults.on('click', onShowResultsClick);
 
     sendHeightToParent();
 };
@@ -211,10 +218,8 @@ var onQuestionComplete = function(points, selectedAnswer, element){
 
     if (currentQuestion + 1 < QUIZ.questions.length){
         $nextQuestionButton.addClass('show');
-        scrollTo($nextQuestionButton);
     } else {
         $showScoreButton.addClass('show');
-        scrollTo($showScoreButton);
     }
 
     sendHeightToParent();
@@ -309,6 +314,14 @@ var onNextQuestionClick = function(e) {
 }
 
 /*
+* Go to the next question
+*/
+var onShowResultsClick = function(e) {
+    e.stopImmediatePropagation();
+    $responses.removeClass('hide');
+}
+
+/*
  * Scroll to a given element.
  */
 var scrollTo = function($el) {
@@ -323,7 +336,6 @@ var scrollTo = function($el) {
  */
 var onDocumentReady = function() {
     $content = $('#content');
-    $quiz = $('#quiz');
 
     var slug = getParameterByName('quiz');
 

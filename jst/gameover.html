@@ -1,23 +1,52 @@
-<h1>Game over</h1>
+<div class="category-header">
+	<h2><%= category %></h2>
+</div>
 
-<p>You scored <%= score %>.</p>
+<div class="container">
+	<div class="row">
+		<div class="quiz-info<% if (cover_image){ %> has-cover<% } %>">
+			<% if (cover_image){ %>
+				<div class="cover">
+					<img class="img-responsive" src="<%= cover_image %>">
+				</div>
+			<% } %>
 
-<p><a class="btn btn-large btn-primary" href="./game.html?quiz=michael_jackson_quiz">Play Another Quiz</a></p>
-
-
-<ul class="responses list-unstyled">
-
-<% _.each(questions, function(question, index){ %>
-	<li>
-		<h2><%= question.text %></h2>
-		<div class="answer <% if (answers[index] == question.answer){ %>correct<% } else { %>incorrect<% }%>">
-			<div class="choices">
-				<p class="your-answer<% if (answers[index] == question.answer){ %> correct<% } else { %> incorrect<% }%>"><span class="points label<% if (answers[index] == question.answer){ %> label-success<% } else { %> label-danger<% }%>">+<%= points[index] %></span> <%= answers[index] %> </p>
-				<% if (answers[index] !== question.answer){ %>
-					<p class="correct-answer"><i class="fa fa-check"></i> <%= question.answer %></p>
-				<% }%>
+			<div class="quiz-title">
+				<h1><%= title %></h1>
+				<h3>Score</h3>
+				<p class="score"><%= score %></p>
+				<p><a id="show-results" href="#">Review Quiz <i class="fa fa-list pull-right"></i></a></p>
 			</div>
 		</div>
-	</li>
-<% }); %>
-</ul>
+
+		<ul class="responses list-unstyled hide">
+		<% _.each(questions, function(question, index){ %>
+			<li>
+				<h2><%= question.text %></h2>
+				<div class="answer <% if (answers[index] == question.answer){ %>correct<% } else { %>incorrect<% }%>">
+					<div class="choices">
+						<p class="your-answer<% if (answers[index] == question.answer){ %> correct<% } else { %> incorrect<% }%>"><span class="points label<% if (answers[index] == question.answer){ %> label-success<% } else { %> label-danger<% }%>">+<%= points[index] %></span> <%= answers[index] %> </p>
+						<% if (answers[index] !== question.answer){ %>
+							<p class="correct-answer"><i class="fa fa-check"></i> <%= question.answer %></p>
+						<% }%>
+					</div>
+				</div>
+			</li>
+		<% }); %>
+		</ul>
+	</div>
+	<div class="row">
+		<div class="next-up">
+			<h2>Next up</h2>
+			<h3>Michael Jackson</h3>
+			<p><a class="btn btn-primary" href="./game.html?quiz=michael_jackson_quiz">Let's Go</a></p>
+		</div>
+	</div>
+
+
+</div>
+
+
+
+
+
