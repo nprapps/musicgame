@@ -6,6 +6,7 @@
 // var $addChoiceButton = null;
 // var $rmChoiceButton = null;
 var quiz = null;
+var quizzes = null;
 var quizDetailView = null;
 
 // var addQuestion = function() {
@@ -60,7 +61,9 @@ var quizDetailView = null;
 // }
 
 var onDocumentReady = function() {
+    quizzes = new Quizzes();
     quiz = new Quiz(window.QUIZ_DATA);
+    quizzes.add(quiz);
     quizDetailView = new QuizDetailView({ model: quiz });
 
     // $questions = $('.questions');

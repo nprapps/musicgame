@@ -24,11 +24,11 @@ var Choices = Backbone.Collection.extend({
 
 var Audios = Backbone.Collection.extend({
     url: APP_CONFIG['SERVER_BASE_URL'] + '/api/audio/',
-    model: Choice
+    model: Audio
 })
 
 var Photos = Backbone.Collection.extend({
     url: APP_CONFIG['SERVER_BASE_URL'] + '/api/photo/',
-    model: Choice
+    model: Photo
 })
 

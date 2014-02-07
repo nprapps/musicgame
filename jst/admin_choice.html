@@ -2,9 +2,9 @@
     <div class="col-lg-8 col-md-offset-2 col-s-12">
         <div class="input-group">
             <span class="input-group-addon">
-                <input type="radio" name="q1-answers"></input>
+                <input class="correct" type="radio" name="q1-answers" <% if (choice.get('correct_answer')) { %> checked="checked" <% } %></input>
             </span>
-            <input type="text" class="form-control" placeholder="Choice" value="<%= choice.get('text') || '' %>">
+            <input type="text" class="form-control answer" placeholder="Choice" value="<%= choice.get('text') || '' %>">
             <span class="input-group-btn">
                 <a class="btn btn-default" type="button"><i class="fa fa-camera"></i></a>
             </span>

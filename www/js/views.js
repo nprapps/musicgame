@@ -40,11 +40,20 @@ var QuizDetailView = Backbone.View.extend({
     },
 
     saveQuiz: function() {
-        // TODO
+        var properties = this.serialize();
+
+        this.model.save(properties);
+
+        _.each(this.questionViews, function(question) {
+            question.saveQuestion();
+        });
     },
 
     addQuestionModel: function() {
-        this.model.questions.add(new Question());
+        var question = new Question();
+        question.quiz = this.model;
+
+        this.model.questions.add(question);
     },
 
     addQuestionView: function(question) {
@@ -56,6 +65,15 @@ var QuizDetailView = Backbone.View.extend({
 
     rmQuestionView: function(question) {
         delete this.questionViews[question.cid];
+    },
+
+    serialize: function() {
+        var properties = {
+            title: this.$('.title h1 span').text(),
+            text: this.$('.desc h4 span').text(),
+        };
+
+        return properties;
     }
 });
 
@@ -65,7 +83,8 @@ var QuestionView = Backbone.View.extend({
     events: {
         'click .add-choice': 'addChoiceModel',
         'click .rm-choice': 'rmChoiceView',
-        'click .rm-question': 'close'
+        'click .rm-question': 'close',
+        'click #save-quiz': 'saveQuestion'
     },
     model: null,
 
@@ -79,7 +98,6 @@ var QuestionView = Backbone.View.extend({
         this.render();
 
         this.model.choices.each(_.bind(function(choice) {
-            console.log(choice);
             this.addChoiceView(choice);
         }, this));
 
@@ -104,6 +122,9 @@ var QuestionView = Backbone.View.extend({
     },
 
     addChoiceModel: function() {
+        var choice = new Choice();
+        choice.question = this.model;
+
         this.model.choices.add(new Choice());
     },
 
@@ -123,10 +144,28 @@ var QuestionView = Backbone.View.extend({
         }
     },
 
+    saveQuestion: function() {
+        var properties = this.serialize();
+
+        this.model.save(properties);
+
+        _.each(this.choiceViews, function(choiceView) {
+            choiceView.saveChoice();
+        });
+    },
+
     close: function() {
         this.model.destroy();
         this.remove();
         this.unbind();
+    },
+
+    serialize: function() {
+        var properties = {
+            text: this.$('.interrogative').text()
+        }
+
+        return properties;
     }
 });
 
@@ -148,11 +187,30 @@ var ChoiceView = Backbone.View.extend({
 
     render: function() {
         this.$el.html(JST.admin_choice({ 'choice': this.model }));
+
+    },
+
+    saveChoice: function() {
+        var properties = this.serialize();
+
+        this.model.save(properties);
     },
 
     close: function() {
         this.model.destroy();
         this.remove();
         this.unbind();
+    },
+
+    serialize: function() {
+        var properties = {
+            'text': this.$('.answer').val(),
+            'correct_answer': false
+        }
+        if (this.$('.correct').is(':checked')) {
+            properties['correct_answer'] = true;
+        }
+
+        return properties;
     }
 });

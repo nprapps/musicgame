@@ -41,7 +41,12 @@ var Quiz = Backbone.Model.extend({
 
         if (attributes) {
             if ("questions" in attributes) {
-                this.questions.add(attributes.questions);
+                _.each(attributes.questions, _.bind(function(questionData) {
+                    var question = new Question(questionData);
+                    question.quiz = this;
+
+                    this.questions.add(question);
+                }, this));
             }
         }
     },
@@ -53,6 +58,7 @@ var Quiz = Backbone.Model.extend({
     toJSON: function() {
         var data = _.clone(this.attributes);
 
+        delete data['questions'];
         return data;
     },
     forTemplate: function() {
@@ -67,6 +73,7 @@ var Quiz = Backbone.Model.extend({
  */
 var Question = Backbone.Model.extend({
 
+    quiz: null,
     choices: null,
     audio: null,
     photo: null,
@@ -76,7 +83,12 @@ var Question = Backbone.Model.extend({
 
         if (attributes) {
             if ("choices" in attributes) {
-                this.choices.add(attributes.choices);
+                _.each(attributes.choices, _.bind(function(choiceData) {
+                    var choice = new Choice(choiceData);
+                    choice.question = this;
+
+                    this.choices.add(choice);
+                }, this));
             }
             if ("audio" in attributes) {
                 this.audio = new Audio(attributes.audio);
@@ -93,6 +105,12 @@ var Question = Backbone.Model.extend({
     },
     toJSON: function() {
         var data = _.clone(this.attributes);
+        console.log(this);
+        data['quiz'] = this.quiz.id;
+
+        delete data['choices'];
+        delete data['photo'];
+        delete data['audio'];
 
         return data;
     },
@@ -104,6 +122,8 @@ var Question = Backbone.Model.extend({
 });
 
 var Choice = Backbone.Model.extend({
+
+    question: null,
     audio: null,
     photo: null,
 
@@ -124,6 +144,10 @@ var Choice = Backbone.Model.extend({
     },
     toJSON: function() {
         var data = _.clone(this.attributes);
+        data['question'] = this.question.id;
+
+        delete data['photo'];
+        delete data['audio'];
 
         return data;
     },
