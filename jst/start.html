@@ -1,4 +1,8 @@
 <h1><%= title %></h1>
+<% if(timer === true){ %>
+	<p><i class="fa fa-clock-o"></i> You'll have <%= TIMERLENGTH %> seconds to answer each question.</p>
+<% } %>
+
 <% if(quiz_type === 'audio'){ %>
 	<p><i class="fa fa-headphones"></i> Make sure your speakers or headphones are turned up.</p>
 <% } %>

@@ -1,6 +1,6 @@
 // Constants
 var TIMERLENGTH = 15; // Seconds allowed to answer per question
-var INTERVAL = (TIMERLENGTH / 360) * 1000; // Timout interval
+var INTERVAL = 50; // Timout interval
 
 // DOM Refs
 var $content = null;
@@ -21,7 +21,7 @@ var timer = true;
 
 // Game state
 var currentQuestion = 0;
-var angle = 0;
+var timeLeft = TIMERLENGTH * 1000;
 var stopTimer = false;
 var totalScore = 0;
 var granularPoints = [];
@@ -68,7 +68,7 @@ var renderQuestion = function(question) {
         });
 
 
-    angle = 0;
+    timeLeft = TIMERLENGTH * 1000;
     stopTimer = false;
 
     $quiz.html(html);
@@ -76,6 +76,7 @@ var renderQuestion = function(question) {
 
     $answers = $content.find('.answers li');
     $answersContainer = $content.find('.answers');
+    $progressBar = $content.find('.progress .bar');
     $questionPlayer = $content.find('#player');
     $questionPlayButton = $content.find('.jp-play');
     $questionStopButton = $content.find('.jp-stop');
@@ -233,10 +234,12 @@ var onAnswerClick = function(e){
     if ($this.text() === answer){
         $this.parent().parent().addClass('correct');
         if(timer !== 'false'){
-            points = Math.round(100 / QUIZ.questions.length * ((360 - angle) / 360));
+            points = 100 / QUIZ.questions.length * (timeLeft / (TIMERLENGTH * 1000));
         } else {
-            points = Math.round(100 / QUIZ.questions.length);
+            points = 100 / QUIZ.questions.length;
         }
+
+        points = Math.round(points);
 
         totalScore += points;
     } else {
@@ -246,28 +249,10 @@ var onAnswerClick = function(e){
     onQuestionComplete(points, $this.text(), this);
 };
 
-/*
-* Draw the timer
-*/
-var drawTimer = function(){
-    var r = ( angle * Math.PI / 180 );
-    var x = Math.sin( r ) * 25;
-    var y = Math.cos( r ) * - 25;
-    var mid = ( angle > 180 ) ? 1 : 0;
-    var anim = 'M 0 0 v -25 A 25 25 1 '
-             + mid + ' 1 '
-             +  x  + ' '
-             +  y  + ' z';
-
-    $timer.attr( 'd', anim );
-}
-
 var trimAnswers = function(){
     incorrectAnswers = _.shuffle(incorrectAnswers);
     var wrongAnswer = incorrectAnswers.pop();
     wrongAnswer = wrongAnswer.text||wrongAnswer;
-
-    console.log(wrongAnswer);
 
     $answers.each(function(){
         var $this = $(this).find('a .answer');
@@ -282,25 +267,32 @@ var trimAnswers = function(){
 * Animate our question timer
 */
 var runTimer = function() {
-    var answerAngle = 360 / QUIZ.questions[currentQuestion].choices.length;
-    var angleInterval = (360 - answerAngle) / (QUIZ.questions[currentQuestion].choices.length - 2);
+    var trimInterval = TIMERLENGTH * 1000 / (QUIZ.questions[currentQuestion].choices.length - 1);
 
     if (stopTimer === true){
         return;
     }
 
-    if (angle < 359){
-        drawTimer();
+    if (timeLeft > 0){
 
-        if (angle > answerAngle && angle % angleInterval === 0){
+        $progressBar.css('width', (TIMERLENGTH - timeLeft / 1000)/TIMERLENGTH * 100 + '%');
+
+        if (timeLeft <= (TIMERLENGTH * 1000 - trimInterval) && timeLeft % trimInterval === 0){
             trimAnswers();
         }
 
+        if (timeLeft / 1000 / TIMERLENGTH > (2/3)){
+            $progressBar.removeClass('warning danger').addClass('safe');
+        } else if (timeLeft / 1000 / TIMERLENGTH > (1/3)){
+            $progressBar.removeClass('safe danger').addClass('warning');
+        } else {
+            $progressBar.removeClass('safe warning').addClass('danger');
+        }
+
         var timer = setTimeout(runTimer, INTERVAL);
-        angle++;
+        timeLeft -= INTERVAL;
     } else {
-        angle = 360 * .9999;
-        drawTimer();
+        $progressBar.css('width', '100%');
         onQuestionComplete(0, '');
     };
 };
@@ -330,10 +322,12 @@ var scrollTo = function($el) {
 var onDocumentReady = function() {
     $content = $('#content');
     $quiz = $('#quiz');
-    $progressBar = $('.progress .bar');
 
     var slug = getParameterByName('quiz');
-    timer = getParameterByName('timer');
+
+    if (getParameterByName('timer') !== ""){
+        timer = getParameterByName('timer');
+    }
 
     if (slug !== null) {
         $.ajax({

@@ -64,29 +64,28 @@ body {
 	padding: 0 @grid-gutter-width / 2 @grid-gutter-width / 2;
 
 	.progress {
-		height: 10px;
+		height: 30px;
 		background: fade(@musicMedium, 20%);
 		margin: 0 -@grid-gutter-width / 2 @line-height-computed / 2;
 
 		.bar {
-			height: 10px;
+			height: 30px;
 			background: fade(@secondaryControl, 20%);
-			.transition(width .5s ease-in-out);
+			.transition(background 1s ease-in-out);
+
+			&.safe {
+				background: fade(@brand-success, 70%);
+			}
+
+			&.danger {
+				background: fade(@brand-danger, 70%);
+			}
+
+			&.warning {
+				background: fade(@brand-warning, 70%);
+			}
 		}
 	}
-
-	.timer-container {
-		.pull-right;
-		.transition(opacity .5s ease-in);
-		margin: 0 0 0 @grid-gutter-width / 2;
-
-		&.fade {
-			opacity: 0;
-		}
-	}
-
-	#timer { fill: fade(@secondaryControl, 20%); }
-	#timer-bg { fill: @musicDark; }
 
 	.jp-controls {
 		font-size: @font-size-large * 1.5;
@@ -132,12 +131,10 @@ body {
 			}
 		}
 	}
-
 	h3 {
 		text-transform: uppercase;
-		font-size: @font-size-small;
-		color: lighten(@musicDark, 30%);
-		margin-top: 0;
+		font-size: 16px;
+		color: hsl(213, 9%, 79%);
 	}
 
 	.answers {
@@ -258,6 +255,8 @@ body {
 	#next-question,
 	#show-score {
 		display: none;
+		position: relative;
+		z-index: 1000;
 
 		&.show {
 			display: block;
@@ -287,9 +286,7 @@ body {
 		h1 {
 			text-transform: uppercase;
 		}
-		p {
-			margin-bottom: @line-height-computed;
-		}
+
 	}
 
 	&.end {
