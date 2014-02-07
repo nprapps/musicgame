@@ -19,6 +19,10 @@ var QuizDetailView = Backbone.View.extend({
 
         this.render();
 
+        this.model.questions.each(_.bind(function(question) {
+            this.addQuestionView(question);
+        }, this));
+
         this.model.questions.on('add', this.addQuestionView);
         this.model.questions.on('remove', this.rmQuestionView);
     },
@@ -45,7 +49,6 @@ var QuizDetailView = Backbone.View.extend({
 
     addQuestionView: function(question) {
         var questionView = new QuestionView({ model: question });
-        questionView.render();
 
         this.$questions.append(questionView.el);
         this.questionViews[question.cid] = questionView;
@@ -75,15 +78,26 @@ var QuestionView = Backbone.View.extend({
 
         this.render();
 
+        this.model.choices.each(_.bind(function(choice) {
+            console.log(choice);
+            this.addChoiceView(choice);
+        }, this));
+
         this.model.choices.on('add', this.addChoiceView);
     },
     render: function() {
-        this.$el.html(JST.admin_question());
+        this.$el.html(JST.admin_question({ 'question': this.model }));
 
         this.$choices = this.$('.choices');
 
-        for (i=0; i<4; i++) {
-            this.addChoiceModel();
+        _.each(this.choiceViews, function(view) {
+            view.render();
+        });
+
+        if (this.model.choices.length == 0) {
+            for (i=0; i<4; i++) {
+                this.addChoiceModel();
+            }
         }
 
     },
@@ -132,7 +146,7 @@ var ChoiceView = Backbone.View.extend({
     },
 
     render: function() {
-        this.$el.html(JST.admin_choice());
+        this.$el.html(JST.admin_choice({ 'choice': this.model }));
     },
 
     close: function() {

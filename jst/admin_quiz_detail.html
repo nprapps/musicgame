@@ -1,11 +1,11 @@
 <form id="quiz-form">
     <div class="title row">
         <h1 class="col-lg-8 col-md-offset-2">
-            <span contenteditable="true">Put Title Here</span>
+            <span contenteditable="true"><%= quiz.get('title') %></span>
         </h1>
     </div>
     <div class="desc row">
-        <h4 class="col-lg-8 col-md-offset-2 col-s-12"><span contenteditable="true">Put Description Here</span></h4>
+        <h4 class="col-lg-8 col-md-offset-2 col-s-12"><span contenteditable="true"><%= quiz.get('text') %></span></h4>
     </div>
     <div class="tags row">
         <div class="col-lg-8 col-md-offset-2 col-s-12">

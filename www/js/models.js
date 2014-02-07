@@ -1,3 +1,34 @@
+var QuizCategory = Backbone.Model.extend({
+
+    quizzes: null,
+
+    initialize: function(attributes) {
+        this.quizzes = new Quiz();
+
+        if (attributes) {
+            if ("quizzes" in attributes) {
+                this.quizzes.add(attributes.quizzes);
+            }
+        }
+    },
+    url: function() {
+        // Rewrite urls to include a trailing slash so flask doesn't freak out
+        var origUrl = Backbone.Model.prototype.url.call(this);
+        return origUrl + (origUrl.charAt(origUrl.length - 1) == '/' ? '' : '/');
+    },
+    toJSON: function() {
+        var data = _.clone(this.attributes);
+
+        return data;
+    },
+    forTemplate: function() {
+        var data = _.clone(this.attributes);
+
+        return data;
+    },
+});
+
+
 /*
  * Quiz
  */
