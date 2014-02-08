@@ -153,7 +153,7 @@ var renderGameOver = function() {
     var $playButtons = $content.find('.jp-play');
     var $stopButtons = $content.find('.jp-stop');
 
-    // Set up the STORY NARRATION player.
+    // Set up question audio players
     if (QUIZ.quiz_type === 'audio'){
         $players.jPlayer({
             ready: function () {
@@ -169,24 +169,24 @@ var renderGameOver = function() {
             supplied: 'mp3, oga',
             loop: false
         });
+
+        $playButtons.each(function(){
+            $(this).on('click', function(){
+                console.log($(this).closest('.jp-audio').prev());
+                $(this).closest('.jp-audio').prev().jPlayer('play');
+                $(this).hide().next().show();
+            });
+
+        });
+
+        $stopButtons.each(function(){
+            $(this).on('click', function(){
+                $(this).closest('.jp-audio').prev().jPlayer('stop');
+                $(this).hide().prev().show();
+            });
+
+        });
     }
-
-    $playButtons.each(function(){
-        $(this).on('click', function(){
-            console.log($(this).closest('.jp-audio').prev());
-            $(this).closest('.jp-audio').prev().jPlayer('play');
-            $(this).hide().next().show();
-        });
-
-    });
-
-    $stopButtons.each(function(){
-        $(this).on('click', function(){
-            $(this).closest('.jp-audio').prev().jPlayer('stop');
-            $(this).hide().prev().show();
-        });
-
-    });
 
     $showResults.on('click', onShowResultsClick);
 
