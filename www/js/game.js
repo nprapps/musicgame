@@ -149,6 +149,44 @@ var renderGameOver = function() {
     $content.addClass('end').css('height', $(window).height());
     $showResults = $content.find('#show-results');
     $responses = $content.find('.responses');
+    var $players = $content.find('.jp-player')
+    var $playButtons = $content.find('.jp-play');
+    var $stopButtons = $content.find('.jp-stop');
+
+    // Set up the STORY NARRATION player.
+    if (QUIZ.quiz_type === 'audio'){
+        $players.jPlayer({
+            ready: function () {
+                $(this).jPlayer('setMedia', {
+                    mp3: $(this).data('audio'),
+                    oga: 'http://s.npr.org/news/specials/2014/wolves/wolf-ambient-draft.ogg'
+                });
+            },
+            ended: function() {
+                onQuestionStopButtonClick();
+            },
+            swfPath: 'js/lib',
+            supplied: 'mp3, oga',
+            loop: false
+        });
+    }
+
+    $playButtons.each(function(){
+        $(this).on('click', function(){
+            console.log($(this).closest('.jp-audio').prev());
+            $(this).closest('.jp-audio').prev().jPlayer('play');
+            $(this).hide().next().show();
+        });
+
+    });
+
+    $stopButtons.each(function(){
+        $(this).on('click', function(){
+            $(this).closest('.jp-audio').prev().jPlayer('stop');
+            $(this).hide().prev().show();
+        });
+
+    });
 
     $showResults.on('click', onShowResultsClick);
 
