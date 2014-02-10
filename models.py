@@ -26,13 +26,13 @@ class QuizCategory(PSQLMODEL):
         return self.name
 
 class Quiz(PSQLMODEL):
-    quiz_category = ForeignKeyField(QuizCategory, null=True, blank=True, related_name='quizzes')
+    quiz_category = ForeignKeyField(QuizCategory, null=True, related_name='quizzes')
     title = TextField()
     text = TextField()
-    tags = TextField(null=True, blank=True)
+    tags = TextField(null=True)
     created = DateTimeField()
     updated = DateTimeField()
-    byline = TextField(null=True, blank=True)
+    byline = TextField(null=True)
 
     def __unicode__(self):
         return self.title
@@ -51,10 +51,10 @@ class Quiz(PSQLMODEL):
     # 3. Handle the image field save.
 
 class Question(PSQLMODEL):
-    quiz = ForeignKeyField(Quiz, null=True, blank=True, related_name='questions')
+    quiz = ForeignKeyField(Quiz, null=True, related_name='questions')
     text = TextField()
     order = IntegerField()
-    after_text = TextField(null=True, blank=True)
+    after_text = TextField(null=True)
 
     def __unicode__(self):
         return "%s.) %s" % (self.order, self.text)
@@ -68,7 +68,7 @@ class Question(PSQLMODEL):
         return payload
 
 class Choice(PSQLMODEL):
-    question = ForeignKeyField(Question, null=True, blank=True, related_name='choices')
+    question = ForeignKeyField(Question, null=True, related_name='choices')
     text = TextField()
     order = IntegerField()
     correct_answer = BooleanField(default=False)
@@ -77,13 +77,13 @@ class Choice(PSQLMODEL):
         return self.text
 
 class Photo(PSQLMODEL):
-    choice = ForeignKeyField(Choice, null=True, blank=True, related_name='photo')
-    question = ForeignKeyField(Question, null=True, blank=True, related_name='photo')
-    quiz = ForeignKeyField(Quiz, null=True, blank=True, related_name='photo')
+    choice = ForeignKeyField(Choice, null=True, related_name='photo')
+    question = ForeignKeyField(Question, null=True, related_name='photo')
+    quiz = ForeignKeyField(Quiz, null=True, related_name='photo')
     credit = TextField()
     caption = TextField()
-    file_path = TextField(null=True, blank=True)
-    rendered_file_path = TextField(null=True, blank=True)
+    file_path = TextField(null=True)
+    rendered_file_path = TextField(null=True)
     render_image = BooleanField(default=False)
 
     def __unicode__(self):
@@ -143,11 +143,11 @@ class Photo(PSQLMODEL):
         super(Photo, self).save(*args, **kwargs)
 
 class Audio(PSQLMODEL):
-    choice = ForeignKeyField(Choice, null=True, blank=True, related_name='audio')
-    question = ForeignKeyField(Question, null=True, blank=True, related_name='audio')
+    choice = ForeignKeyField(Choice, null=True, related_name='audio')
+    question = ForeignKeyField(Question, null=True, related_name='audio')
     credit = TextField()
     caption = TextField()
-    file_path = TextField(null=True, blank=True)
+    file_path = TextField(null=True)
     rendered_oga_path = TextField(null=True, default=None)
     rendered_mp3_path = TextField(null=True, default=None)
     render_audio = BooleanField(default=False)

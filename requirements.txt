@@ -19,7 +19,7 @@ ipython==1.1.0
 jmespath==0.2.1
 nose==1.2.1
 odict==1.5.1
-peewee==2.1.7
+peewee==2.2.0
 ply==3.4
 psycopg2==2.5.2
 pyasn1==0.1.7
