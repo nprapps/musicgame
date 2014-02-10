@@ -34,22 +34,6 @@ def admin_quiz_detail(quiz_id):
     quiz = models.Quiz.get(models.Quiz.id == int(quiz_id))
 
     context['quiz'] = quiz
-
-    quiz_flat = quiz.to_dict()
-    quiz_flat['questions'] = [q.to_dict() for q in quiz.questions]
-
-    for i, question in enumerate(quiz.questions):
-        question_flat = quiz_flat['questions'][i]
-        question_flat['choices'] = [c.to_dict() for c in question.choices]
-        question_flat['audio'] = question.audio[0].to_dict() if question.audio.count() else None
-        question_flat['photo'] = question.photo[0].to_dict() if question.photo.count() else None
-
-        for j, choice in enumerate(question.choices):
-            choice_flat = question_flat['choices'][j]
-            choice_flat['audio'] = choice.audio[0].to_dict() if choice.audio.count() else None
-            choice_flat['photo'] = choice.photo[0].to_dict() if choice.photo.count() else None
-
-
-    context['quiz_json'] = flask.json.dumps(quiz_flat)
+    context['quiz_json'] = flask.json.dumps(quiz.flatten())
 
     return render_template('admin/admin.html', **context)

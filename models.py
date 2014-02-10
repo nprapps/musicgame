@@ -13,6 +13,9 @@ import app_config
 db = PostgresqlDatabase(None)
 
 class PSQLMODEL(Model):
+    """
+    Base class for Peewee models. Ensures they all live in the same database.
+    """
     def to_dict(self):
         return self.__dict__['_data']
 
@@ -20,12 +23,20 @@ class PSQLMODEL(Model):
         database = db
 
 class QuizCategory(PSQLMODEL):
+    """
+    A category of quizzes. An arcade cabinet within the arcade.
+    """
     name = TextField()
 
     def __unicode__(self):
         return self.name
 
 class Quiz(PSQLMODEL):
+    """
+    A single quiz game.
+
+    Quizzes have Questions.
+    """
     quiz_category = ForeignKeyField(QuizCategory, null=True, related_name='quizzes')
     title = TextField()
     text = TextField()
@@ -37,13 +48,26 @@ class Quiz(PSQLMODEL):
     def __unicode__(self):
         return self.title
 
-    @classmethod
-    def questions(self):
-        payload = []
-        for obj in Question.select().where(Question.quiz.id == self.id):
-            payload.append(obj.__dict__['data'])
+    def flatten(self):
+        """
+        Flattens a quiz and all it's related parts for serialization.
+        """
+        flat = self.to_dict()
+        flat['questions'] = [q.to_dict() for q in self.questions]
 
-        return payload
+        for i, question in enumerate(self.questions):
+            question_flat = flat['questions'][i]
+            question_flat['choices'] = [c.to_dict() for c in question.choices]
+            question_flat['audio'] = question.audio[0].to_dict() if question.audio.count() else None
+            question_flat['photo'] = question.photo[0].to_dict() if question.photo.count() else None
+
+            for j, choice in enumerate(question.choices):
+                choice_flat = question_flat['choices'][j]
+                choice_flat['audio'] = choice.audio[0].to_dict() if choice.audio.count() else None
+                choice_flat['photo'] = choice.photo[0].to_dict() if choice.photo.count() else None
+
+        return flat
+
 
     # TODO:
     # 1. Handle serializing/deserializing tags.
@@ -51,6 +75,11 @@ class Quiz(PSQLMODEL):
     # 3. Handle the image field save.
 
 class Question(PSQLMODEL):
+    """
+    A single quiz question.
+
+    Questions have Choices.
+    """
     quiz = ForeignKeyField(Quiz, null=True, related_name='questions')
     text = TextField()
     order = IntegerField()
@@ -68,6 +97,9 @@ class Question(PSQLMODEL):
         return payload
 
 class Choice(PSQLMODEL):
+    """
+    A single question choice.
+    """
     question = ForeignKeyField(Question, null=True, related_name='choices')
     text = TextField()
     order = IntegerField()
@@ -77,6 +109,9 @@ class Choice(PSQLMODEL):
         return self.text
 
 class Photo(PSQLMODEL):
+    """
+    A photo referenced from a Quiz, Question or Choice.
+    """
     choice = ForeignKeyField(Choice, null=True, related_name='photo')
     question = ForeignKeyField(Question, null=True, related_name='photo')
     quiz = ForeignKeyField(Quiz, null=True, related_name='photo')
@@ -148,6 +183,9 @@ class Photo(PSQLMODEL):
         super(Photo, self).save(*args, **kwargs)
 
 class Audio(PSQLMODEL):
+    """
+    An audio fragment referenced from a Quiz, Question or Choice.
+    """
     choice = ForeignKeyField(Choice, null=True, related_name='audio')
     question = ForeignKeyField(Question, null=True, related_name='audio')
     credit = TextField()
