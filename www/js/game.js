@@ -173,6 +173,9 @@ var renderGameOver = function() {
         $playButtons.each(function(){
             $(this).on('click', function(){
                 console.log($(this).closest('.jp-audio').prev());
+                $players.jPlayer('stop');
+                $stopButtons.hide();
+                $playButtons.show();
                 $(this).closest('.jp-audio').prev().jPlayer('play');
                 $(this).hide().next().show();
             });

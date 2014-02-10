@@ -12,41 +12,36 @@
 			<% } %>
 
 			<div class="quiz-title">
-				<h1><%= title %></h1>
-				<h3>Score</h3>
-				<p class="score"><%= score %></p>
-				<p><a id="show-results" href="#">Review Quiz <i class="fa fa-list pull-right"></i></a></p>
+				<h1>You scored:</h1>
+				<p class="score"><%= score %>/100</p>
+				<p><a id="show-results" href="#"><i class="fa fa-list"></i> Review Quiz</a></p>
+
+				<ul class="responses list-unstyled hide <% if (QUIZ.quiz_type === "audio"){ %>audio<% } %>">
+				<% _.each(questions, function(question, index){ %>
+					<li>
+						<% if (QUIZ.quiz_type === "audio"){ %>
+						<div id="player_<%= index %>" class="jp-player" data-audio="<%= question.audio %>"></div>
+						<div id="jp_container_<%= index %>" class="jp-audio pull-left">
+						    <div class="jp-type-single">
+						        <div class="jp-gui jp-interface">
+						            <div class="jp-controls">
+						                <a href="javascript:;" class="jp-play nav-btn" tabindex="1" title="play"><i class="fa fa-play"></i></i></a>
+						                <a href="javascript:;" class="jp-stop nav-btn" tabindex="1" style="display: none;" title="stop"><i class="fa fa-stop"></i></a>
+						            </div>
+						        </div>
+						    </div>
+						</div> <!-- end .jp-audio -->
+						<% } %>
+						<h2><%= question.text %></h2>
+						<p class="answer your-answer<% if (answers[index] == question.answer){ %> correct<% } else { %> incorrect<% }%>"><%= answers[index] %> </p>
+						<% if (answers[index] !== question.answer){ %>
+							<p class="answer correct-answer"><i class="fa fa-check"></i> <%= question.answer %></p>
+						<% }%>
+					</li>
+				<% }); %>
+				</ul>
 			</div>
 		</div>
-
-		<ul class="responses list-unstyled hide">
-		<% _.each(questions, function(question, index){ %>
-			<li>
-				<% if (QUIZ.quiz_type === "audio"){ %>
-				<div id="player_<%= index %>" class="jp-player" data-audio="<%= question.audio %>"></div>
-				<div id="jp_container_<%= index %>" class="jp-audio pull-left">
-				    <div class="jp-type-single">
-				        <div class="jp-gui jp-interface">
-				            <div class="jp-controls">
-				                <a href="javascript:;" class="jp-play nav-btn" tabindex="1" title="play"><i class="fa fa-play"></i></i></a>
-				                <a href="javascript:;" class="jp-stop nav-btn" tabindex="1" style="display: none;" title="stop"><i class="fa fa-stop"></i></a>
-				            </div>
-				        </div>
-				    </div>
-				</div> <!-- end .jp-audio -->
-				<% } %>
-				<h2><%= question.text %></h2>
-				<div class="answer <% if (answers[index] == question.answer){ %>correct<% } else { %>incorrect<% }%>">
-					<div class="choices">
-						<p class="your-answer<% if (answers[index] == question.answer){ %> correct<% } else { %> incorrect<% }%>"><span class="points label<% if (answers[index] == question.answer){ %> label-success<% } else { %> label-danger<% }%>">+<%= points[index] %></span> <%= answers[index] %> </p>
-						<% if (answers[index] !== question.answer){ %>
-							<p class="correct-answer"><i class="fa fa-check"></i> <%= question.answer %></p>
-						<% }%>
-					</div>
-				</div>
-			</li>
-		<% }); %>
-		</ul>
 	</div>
 	<div class="row">
 		<div class="next-up">

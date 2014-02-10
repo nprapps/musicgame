@@ -174,7 +174,9 @@ body {
 					overflow: hidden;
 					vertical-align: middle;
 
-					img { width: 100%; }
+					img { 
+						width: 100%; 
+					}
 
 					@media screen and (min-width: @screen-sm){
 						width: 120px;
@@ -300,6 +302,13 @@ body {
 			.make-sm-column(12);
 		}
 
+		.cover {
+			img {
+				.img-circle;
+				border: 5px solid #fff;
+			}
+		}
+
 		h1 {
 			text-transform: uppercase;
 			font-weight: bold;
@@ -318,7 +327,7 @@ body {
 		}
 
 		p {
-			margin-bottom: @line-height-computed;
+			margin-bottom: @line-height-computed / 2;
 		}
 
 		.btn {
@@ -331,9 +340,11 @@ body {
 	&.start {
 		.quiz-info {
 			&.has-cover {
-				.cover,
+				.cover {
+					.make-sm-column(4);
+				}
 				.quiz-title {
-					.make-sm-column(6);
+					.make-sm-column(8);
 				}
 			}
 		}
@@ -343,11 +354,12 @@ body {
 		.quiz-info {
 			&.has-cover {
 				.cover {
+					.make-xs-column(6);
 					.make-sm-column(4);
-					.make-sm-column-offset(2);
 				}
 				.quiz-title {
-					.make-sm-column(4);
+					.make-xs-column(6);
+					.make-sm-column(8);
 				}
 			}
 
@@ -362,7 +374,7 @@ body {
 
 		.next-up {
 			.make-sm-column(8);
-			.make-sm-column-offset(2);
+			.make-sm-column-offset(4);
 
 			h2 {
 				border-top: 1px solid lighten(@musicDark, 20%);
@@ -375,8 +387,6 @@ body {
 			list-style: none;
 
 			li {
-				.make-sm-column(8);
-				.make-sm-column-offset(2);
 				margin-bottom: @line-height-computed / 2;
 
 				h2 {
@@ -388,40 +398,39 @@ body {
 					margin-right: @grid-gutter-width;
 				}
 
-
-				.answer {
+				.your-answer,
+				.correct-answer {
 					color: @musicLight;
 					position: relative;
+					margin-bottom: @line-height-computed / 2;
 
-					.your-answer,
-					.correct-answer {
-						&:before {
-							font-family: FontAwesome;
-							-webkit-font-smoothing: antialiased;
-						}
+					&:before {
+						font-family: FontAwesome;
+						-webkit-font-smoothing: antialiased;
 					}
+				}
 
-					&.correct {
+				.your-answer {
+					color: @correct;
 
-						.your-answer {
-							color: @correct;
-
-							&:before {
-								content: '\f00c';
-							}
-						}
+					&:before {
+						content: '\f00c';
 					}
 
 					&.incorrect {
+						color: @incorrect;
 
-						.your-answer {
-							color: @incorrect;
-
-							&:before {
-								content: '\f00d';
-							}
+						&:before {
+							content: '\f00d';
 						}
 					}
+				}
+			}
+
+			&.audio {
+				h2,
+				.answer {
+					padding-left: 70px;
 				}
 			}
 
