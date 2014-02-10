@@ -563,9 +563,7 @@ def bootstrap_data():
     """
     local('pip install -r requirements.txt')
     assets_down()
-    init_db()
-    init_tables()
-    local('psql -U %s %s < www/assets/data/initial_db.sql' % (app_config.PROJECT_SLUG, app_config.PROJECT_SLUG))
+    load_quizzes()
 
 def init_db():
     """
@@ -587,26 +585,20 @@ def init_tables():
             model = getattr(models, model_name)
             model.create_table()
 
-def drop_tables():
-    """
-    Uses the ORM to drop tables.
-    """
-    models.db.init(app_config.PROJECT_SLUG, user=app_config.PROJECT_SLUG)
-
-    for model_name in model_names:
-        model = getattr(models, model_name)
-
-        if model.table_exists():
-            model.drop_table()
+def install_brew_requirements():
+    with settings(warn_only=True):
+        local('brew install mpg123 vorbis-tools lame')
 
 def load_quizzes():
     """
     You know, some sample data.
     """
-    drop_tables()
+    init_db()
     init_tables()
 
     models.db.init(app_config.PROJECT_SLUG, user=app_config.PROJECT_SLUG)
+
+    install_brew_requirements()
 
     quiz_list = [
         'drum_fill_friday.json'
