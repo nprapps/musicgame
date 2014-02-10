@@ -381,8 +381,16 @@ var onDocumentReady = function() {
     }
 
     if (slug !== null) {
+        var url = 'TKTK'; // TODO: deployed url
+
+        if (!APP_CONFIG.DEPLOYMENT_TARGET) {
+            // TODO: not quite ready yet, need to make sure server data matches template expecatations
+            //url = '/musicgame/quiz/' + slug + '/';
+            url = '/musicgame/assets/data/' + slug + '.json';
+        }
+
         $.ajax({
-            url: '/musicgame/assets/data/' + slug + '.json',
+            url: url,
             dataType: 'json',
             async: false,
             crossDomain: false,

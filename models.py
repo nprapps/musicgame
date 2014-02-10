@@ -22,7 +22,7 @@ class PSQLMODEL(Model):
     class Meta:
         database = db
 
-class QuizCategory(PSQLMODEL):
+class Category(PSQLMODEL):
     """
     A category of quizzes. An arcade cabinet within the arcade.
     """
@@ -37,7 +37,7 @@ class Quiz(PSQLMODEL):
 
     Quizzes have Questions.
     """
-    quiz_category = ForeignKeyField(QuizCategory, null=True, related_name='quizzes')
+    category = ForeignKeyField(Category, null=True, related_name='quizzes')
     title = TextField()
     text = TextField()
     tags = TextField(null=True)
