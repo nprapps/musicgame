@@ -563,9 +563,7 @@ def bootstrap_data():
     """
     local('pip install -r requirements.txt')
     assets_down()
-    init_db()
-    init_tables()
-    local('psql -U %s %s < www/assets/data/initial_db.sql' % (app_config.PROJECT_SLUG, app_config.PROJECT_SLUG))
+    load_quizzes()
 
 def init_db():
     """
