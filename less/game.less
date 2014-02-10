@@ -498,7 +498,7 @@ body {
 	background: rgba(0,0,0,0.7);
 	text-align: center;
 	text-transform: uppercase;
-	font-size: @font-size-base * 4;
+	font-size: @font-size-base * 3;
 	line-height: 125px;
 	opacity: 0;
 
@@ -508,9 +508,9 @@ body {
 
 	&.fade-in {
 		z-index: 10;
-		-webkit-animation: zoomOut 1000ms both;
-		  -o-animation: zoomOut 1000ms both;
-		  animation: zoomOut 1000ms both;
+		-webkit-animation: zoomOut 1500ms ease both;
+		  -o-animation: zoomOut 1500ms ease both;
+		  animation: zoomOut 1500ms ease  both;
 	}
 }
 
@@ -521,16 +521,34 @@ body {
     transform: scale(3);
   }
 
+  15% {
+    opacity: 1;
+    -webkit-transform: scale(0.8);
+    transform: scale(0.8);
+  }
+
+  25% {
+    opacity: 1;
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+  }
+
   30% {
     opacity: 1;
     -webkit-transform: scale(1);
     transform: scale(1);
   }
 
-  70% {
+  60% {
     opacity: 1;
     -webkit-transform: scale(1);
     transform: scale(1);
+  }
+
+  65% {
+    opacity: 1;
+    -webkit-transform: scale(1.2);
+    transform: scale(1.2);
   }
 
   100% {
