@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <h3 class="progress-header">Question <%= questionNumber %>/<%= quizLength %></h3>
 <svg class="timer-container" width="50" height="50" viewbox="0 0 50 50" preserveAspectRatio="xMinYMin meet">
   <circle id="timer-bg" cx="25" cy="25" r="25" />
@@ -33,7 +34,27 @@
 	<% } else { %>
 		<li><a href="#"><div class="answer"><%= choice %></div></a></li>
 	<% } %>
-<% }); %>
-</ul>
+	<h1 class="question-text"><%= text %></h1>
+	<ul class="answers">
+	<% _.each(_.shuffle(choices), function(choice){ %>
+		<% if (choice.text) { %>
+			<li<% if (choice.cover !== null) { %> class="has-cover"<% } %>>
+				<a href="#">
+				<% if (choice.cover !== null) { %>
+					<div class="cover">
+						<img class="img-responsive" src="/musicgame/assets/cover_art/<%= choice.cover %>">
+					</div>
+				<% } %>
+					<div class="answer"><%= choice.text %></div>
+				</a>
+			</li>
+		<% } else { %>
+			<li><a href="#"><div class="answer"><%= choice %></div></a></li>
+		<% } %>
+	<% }); %>
+	</ul>
 
 
+	<button id="next-question" class="btn btn-large btn-primary">Next Question</button>
+	<button id="show-score" class="btn btn-large btn-primary">Show My Score</button>
+</div>

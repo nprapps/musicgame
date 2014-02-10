@@ -1,6 +1,11 @@
+// Constants
+var TIMERLENGTH = 15; // Seconds allowed to answer per question
+var INTERVAL = 50; // Timout interval in milliseconds
+
+// DOM Refs
 var $content = null;
-var $quiz = null;
 var $answers = null;
+var $answersContainer = null;
 var $questionPlayer = null;
 var $questionPlayButton = null;
 var $questionStopButton = null;
@@ -11,12 +16,15 @@ var $nextQuestionButton = null;
 var $showScoreButton = null;
 var $startQuizButton = null;
 var $progressBar = null;
-var angle = 0;
-var timerLength = 15; // Seconds allowed to answer per question
-var interval = (timerLength / 360) * 1000; // Timout interval
+var $responses = null;
+var timer = true;
+
+// Game state
 var currentQuestion = 0;
+var timeLeft = TIMERLENGTH * 1000;
 var stopTimer = false;
-var score = 0;
+var totalScore = 0;
+var granularPoints = [];
 var answers = [];
 var incorrectAnswers = null;
 
@@ -24,15 +32,16 @@ var incorrectAnswers = null;
  * Render the start screen.
  */
 var renderStart = function() {
-    var context = {};
+    var context = QUIZ;
     var html = JST.start(context);
 
-    $quiz.html(html);
+    $content.html(html);
 
     $content.addClass('start').css('height', $(window).height());
 
     $startQuizButton = $content.find('#start-quiz');
-    $startQuizButton.on('click', function(){
+    $startQuizButton.on('click', function(e){
+        e.stopPropagation();
         renderQuestion(currentQuestion);
         $content.removeClass('start');
     });
@@ -48,18 +57,26 @@ var renderQuestion = function(question) {
     context.quizLength = QUIZ.questions.length;
     context.questionNumber = question + 1;
     var html = JST.question(context);
-    var progress = context.questionNumber / context.quizLength * 100;
+
     incorrectAnswers = _(QUIZ.questions[currentQuestion].choices)
-        .without(QUIZ.questions[currentQuestion].answer);
+        .filter(function(choice){
+            if (_.isObject(choice)){
+                return choice.text !== QUIZ.questions[currentQuestion].answer;
+            } else {
+                return choice !== QUIZ.questions[currentQuestion].answer;
+            }
+        });
 
 
-    angle = 0;
+    timeLeft = TIMERLENGTH * 1000;
     stopTimer = false;
 
-    $quiz.html(html);
+    $content.html(html);
     $content.removeClass().addClass(QUIZ.quiz_type);
 
     $answers = $content.find('.answers li');
+    $answersContainer = $content.find('.answers');
+    $progressBar = $content.find('.progress .bar');
     $questionPlayer = $content.find('#player');
     $questionPlayButton = $content.find('.jp-play');
     $questionStopButton = $content.find('.jp-stop');
@@ -69,7 +86,6 @@ var renderQuestion = function(question) {
     $nextQuestionButton = $content.find('#next-question');
     $showScoreButton = $content.find('#show-score');
 
-
     $questionPlayButton.on('click', onQuestionPlayButtonClick);
     $questionStopButton.on('click', onQuestionStopButtonClick);
     $answers.on('click', onAnswerClick);
@@ -77,7 +93,6 @@ var renderQuestion = function(question) {
     $showScoreButton.on('click', renderGameOver);
 
     $nextQuestionButton.removeClass('show');
-    $progressBar.css('width', progress + '%');
 
     // Set up the STORY NARRATION player.
     if (QUIZ.quiz_type === 'audio'){
@@ -87,7 +102,11 @@ var renderQuestion = function(question) {
                     mp3: QUIZ.questions[currentQuestion].audio,
                     oga: 'http://s.npr.org/news/specials/2014/wolves/wolf-ambient-draft.ogg'
                 }).jPlayer('play');
-                runTimer();
+            },
+            play: function() {
+                if (timer !== 'false'){
+                    runTimer();
+                }
             },
             ended: function() {
                 onQuestionStopButtonClick();
@@ -100,9 +119,10 @@ var renderQuestion = function(question) {
         $content.find('.jp-play').hide();
         $content.find('.jp-stop').show();
     } else { // Start the timer immediately if no audio.
-        runTimer();
+        if (timer !== 'false'){
+            runTimer();
+        }
     }
-
 
 
     sendHeightToParent();
@@ -112,16 +132,66 @@ var renderQuestion = function(question) {
  * Render the game over screen.
  */
 var renderGameOver = function() {
+    var $showResults = null;
     var context = {
-        'score': score + '%',
+        'score': totalScore,
         'answers': answers,
-        'questions': QUIZ.questions
+        'questions': QUIZ.questions,
+        'points': granularPoints,
+        'category': QUIZ.category,
+        'cover_image': QUIZ.cover_image,
+        'title': QUIZ.title
     };
 
     var html = JST.gameover(context);
 
-    $quiz.html(html);
-    $content.addClass('end').css('height', $(window).height());;
+    $content.html(html);
+    $content.addClass('end').css('height', $(window).height());
+    $showResults = $content.find('#show-results');
+    $responses = $content.find('.responses');
+    var $players = $content.find('.jp-player')
+    var $playButtons = $content.find('.jp-play');
+    var $stopButtons = $content.find('.jp-stop');
+
+    // Set up question audio players
+    if (QUIZ.quiz_type === 'audio'){
+        $players.jPlayer({
+            ready: function () {
+                $(this).jPlayer('setMedia', {
+                    mp3: $(this).data('audio'),
+                    oga: 'http://s.npr.org/news/specials/2014/wolves/wolf-ambient-draft.ogg'
+                });
+            },
+            ended: function() {
+                onQuestionStopButtonClick();
+            },
+            swfPath: 'js/lib',
+            supplied: 'mp3, oga',
+            loop: false
+        });
+
+        $playButtons.each(function(){
+            $(this).on('click', function(){
+                console.log($(this).closest('.jp-audio').prev());
+                $players.jPlayer('stop');
+                $stopButtons.hide();
+                $playButtons.show();
+                $(this).closest('.jp-audio').prev().jPlayer('play');
+                $(this).hide().next().show();
+            });
+
+        });
+
+        $stopButtons.each(function(){
+            $(this).on('click', function(){
+                $(this).closest('.jp-audio').prev().jPlayer('stop');
+                $(this).hide().prev().show();
+            });
+
+        });
+    }
+
+    $showResults.on('click', onShowResultsClick);
 
     sendHeightToParent();
 };
@@ -129,7 +199,7 @@ var renderGameOver = function() {
 /*
 * Click handler for the question player "play" button.
 */
-var onQuestionPlayButtonClick = function(){
+var onQuestionPlayButtonClick = function(e){
     $questionPlayer.jPlayer('play', 0);
     $content.find('.jp-play').hide();
     $content.find('.jp-stop').show();
@@ -138,7 +208,7 @@ var onQuestionPlayButtonClick = function(){
 /*
 * Click handler for the question player "stop" button.
 */
-var onQuestionStopButtonClick = function(){
+var onQuestionStopButtonClick = function(e){
     $questionPlayer.jPlayer('stop');
     $content.find('.jp-stop').hide();
     $content.find('.jp-play').show();
@@ -147,7 +217,34 @@ var onQuestionStopButtonClick = function(){
 /*
 * Answer clicked or timer ran out
 */
-var onQuestionComplete = function(){
+var onQuestionComplete = function(points, selectedAnswer, element){
+    var scoreOffsetY = $answersContainer.offset().top;
+
+    if (element){
+        var scoreOffsetY = $(element).offset().top + $(element).height() / 2;
+        var scoreOffsetX = $(element).offset().left + $(element).width() / 2;
+        var width = $(element).width();
+        var height = $(element).height();
+    }
+
+    granularPoints.push(points);
+
+    $content.after('<div class="score-container"><div id="score"></div></div>');
+    $(document).find('#score')
+        .text('+' + points)
+        .css({
+            'top': scoreOffsetY,
+            'left': scoreOffsetX
+        })
+        .addClass('fade-in')
+        .bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",
+            function(){
+                $(this).parent().remove();
+        });
+
+    // Push the selected answer to our answer array
+    answers.push(selectedAnswer);
+
     $answers.each(function(){
         $this = $(this).find('a .answer');
 
@@ -155,6 +252,7 @@ var onQuestionComplete = function(){
             $this.parent().parent().addClass('correct');
         }
     });
+
     $content.find('.answers li:not(.correct, .incorrect)').addClass('fade').off("click");
 
     if (currentQuestion + 1 < QUIZ.questions.length){
@@ -169,7 +267,9 @@ var onQuestionComplete = function(){
 /*
 * You ran out of time
 */
-var onAnswerClick = function(){
+var onAnswerClick = function(e){
+    e.stopPropagation();
+    var points = 0;
     var answer = QUIZ.questions[currentQuestion].answer;
     $this = $(this).find('a .answer');
 
@@ -177,42 +277,31 @@ var onAnswerClick = function(){
     stopTimer = true;
     $timerContainer.attr('class', 'timer-container fade');
 
-    // Push the selected answer to our answer array
-    answers.push($this.text());
-
     if ($this.text() === answer){
         $this.parent().parent().addClass('correct');
+        if(timer !== 'false'){
+            points = 100 / QUIZ.questions.length * (timeLeft / (TIMERLENGTH * 1000));
+        } else {
+            points = 100 / QUIZ.questions.length;
+        }
 
-        // TODO: more elegant scoring
-        score += Math.round(100 / QUIZ.questions.length);
+        points = Math.round(points);
+
+        totalScore += points;
     } else {
         $this.parent().parent().addClass('incorrect');
     }
 
-    onQuestionComplete();
+    onQuestionComplete(points, $this.text(), this);
 };
 
-/*
-* Draw the timer
-*/
-var drawTimer = function(){
-    var r = ( angle * Math.PI / 180 );
-    var x = Math.sin( r ) * 25;
-    var y = Math.cos( r ) * - 25;
-    var mid = ( angle > 180 ) ? 1 : 0;
-    var anim = 'M 0 0 v -25 A 25 25 1 '
-             + mid + ' 1 '
-             +  x  + ' '
-             +  y  + ' z';
-
-    $timer.attr( 'd', anim );
-}
-
 var trimAnswers = function(){
+    incorrectAnswers = _.shuffle(incorrectAnswers);
     var wrongAnswer = incorrectAnswers.pop();
+    wrongAnswer = wrongAnswer.text||wrongAnswer;
 
     $answers.each(function(){
-        $this = $(this).find('a .answer');
+        var $this = $(this).find('a .answer');
 
         if ($this.text() === wrongAnswer && !$this.parent().parent().hasClass('fade')){
             $this.parent().parent().addClass('fade').off("click");
@@ -224,47 +313,74 @@ var trimAnswers = function(){
 * Animate our question timer
 */
 var runTimer = function() {
-    var answerAngle = 360 / QUIZ.questions[currentQuestion].choices.length;
-    var angleInterval = (360 - answerAngle) / (QUIZ.questions[currentQuestion].choices.length - 2);
+    var trimInterval = TIMERLENGTH * 1000 / (QUIZ.questions[currentQuestion].choices.length - 1);
 
     if (stopTimer === true){
         return;
     }
 
-    if (angle < 359){
-        drawTimer();
+    if (timeLeft > 0){
 
-        if (angle > answerAngle && angle % angleInterval === 0){
+        $progressBar.css('width', (TIMERLENGTH - timeLeft / 1000)/TIMERLENGTH * 100 + '%');
+
+        if (timeLeft <= (TIMERLENGTH * 1000 - trimInterval) && timeLeft % trimInterval === 0){
             trimAnswers();
         }
 
-        var timer = setTimeout(runTimer, interval);
-        angle++;
+        if (timeLeft / 1000 / TIMERLENGTH > (2/3)){
+            $progressBar.removeClass('warning danger').addClass('safe');
+        } else if (timeLeft / 1000 / TIMERLENGTH > (1/3)){
+            $progressBar.removeClass('safe danger').addClass('warning');
+        } else {
+            $progressBar.removeClass('safe warning').addClass('danger');
+        }
+
+        var timer = setTimeout(runTimer, INTERVAL);
+        timeLeft -= INTERVAL;
     } else {
-        angle = 360 * .9999;
-        drawTimer();
-        onQuestionComplete();
+        $progressBar.css('width', '100%');
+        onQuestionComplete(0, '');
     };
 };
 
 /*
 * Go to the next question
 */
-var onNextQuestionClick = function(event) {
-    event.stopImmediatePropagation();
+var onNextQuestionClick = function(e) {
+    e.stopImmediatePropagation();
     currentQuestion++;
     renderQuestion(currentQuestion);
 }
+
+/*
+* Go to the next question
+*/
+var onShowResultsClick = function(e) {
+    e.stopImmediatePropagation();
+    $responses.removeClass('hide');
+}
+
+/*
+ * Scroll to a given element.
+ */
+var scrollTo = function($el) {
+    var top = $el.offset().top;
+    $('html,body').animate({
+        scrollTop: top
+    }, 1000);
+};
 
 /*
  * On browser ready.
  */
 var onDocumentReady = function() {
     $content = $('#content');
-    $quiz = $('#quiz');
-    $progressBar = $('.progress .bar');
 
     var slug = getParameterByName('quiz');
+
+    if (getParameterByName('timer') !== ""){
+        timer = getParameterByName('timer');
+    }
 
     if (slug !== null) {
         $.ajax({

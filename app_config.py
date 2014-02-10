@@ -163,7 +163,7 @@ def configure_targets(deployment_target):
         DEBUG = True
     else:
         S3_BUCKETS = []
-        S3_BASE_URL = 'http://127.0.0.1:8000'
+        S3_BASE_URL = 'http://127.0.0.1:8000/'
         SERVERS = []
         SERVER_BASE_URL = 'http://127.0.0.1:8000/%s' % PROJECT_SLUG
         DEBUG = True

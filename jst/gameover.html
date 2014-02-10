@@ -1,19 +1,60 @@
-<h1>Game over</h1>
+<div class="category-header">
+	<h2><%= category %></h2>
+</div>
 
-<p>You got <%= score %> right.</p>
+<div class="container">
+	<div class="row">
+		<div class="quiz-info<% if (cover_image){ %> has-cover<% } %>">
+			<% if (cover_image){ %>
+				<div class="cover">
+					<img class="img-responsive" src="<%= cover_image %>">
+				</div>
+			<% } %>
 
-<p><a class="btn btn-large btn-primary" href="./game.html?quiz=michael_jackson_quiz">Play Another Quiz</a></p>
+			<div class="quiz-title">
+				<h1>You scored:</h1>
+				<p class="score"><%= score %>/100</p>
+				<p><a id="show-results" href="#"><i class="fa fa-list"></i> Review Quiz</a></p>
+
+				<ul class="responses list-unstyled hide <% if (QUIZ.quiz_type === "audio"){ %>audio<% } %>">
+				<% _.each(questions, function(question, index){ %>
+					<li>
+						<% if (QUIZ.quiz_type === "audio"){ %>
+						<div id="player_<%= index %>" class="jp-player" data-audio="<%= question.audio %>"></div>
+						<div id="jp_container_<%= index %>" class="jp-audio pull-left">
+						    <div class="jp-type-single">
+						        <div class="jp-gui jp-interface">
+						            <div class="jp-controls">
+						                <a href="javascript:;" class="jp-play nav-btn" tabindex="1" title="play"><i class="fa fa-play"></i></i></a>
+						                <a href="javascript:;" class="jp-stop nav-btn" tabindex="1" style="display: none;" title="stop"><i class="fa fa-stop"></i></a>
+						            </div>
+						        </div>
+						    </div>
+						</div> <!-- end .jp-audio -->
+						<% } %>
+						<h2><%= question.text %></h2>
+						<% if (answers[index] !== question.answer){ %>
+							<p class="answer correct-answer"><i class="fa fa-check"></i> <%= question.answer %></p>
+						<% }%>
+						<p class="answer your-answer<% if (answers[index] == question.answer){ %> correct<% } else { %> incorrect<% }%>"><% if (answers[index] !== question.answer){ %>You answered: <% } %><%= answers[index] %> </p>
+					</li>
+				<% }); %>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="next-up">
+			<h2>Next up</h2>
+			<h3>Michael Jackson</h3>
+			<p><a class="btn btn-primary" href="./game.html?quiz=michael_jackson_quiz">Let's Go</a></p>
+		</div>
+	</div>
 
 
-<ul class="responses container">
+</div>
 
-<% _.each(questions, function(question, index){ %>
-	<li>
-		<h2><%= question.text %></h2>
-		<p class="your-answer<% if (answers[index] == question.answer){ %> correct<% } else { %> incorrect<% }%>"><%= answers[index] %></p>
-		<% if (answers[index] !== question.answer){ %>
-			<p class="correct-answer">Correct answer: <%= question.answer %></p>
-		<% }%>
-	</li>
-<% }); %>
-</ul>
+
+
+
+
