@@ -321,4 +321,3 @@ class Choice(PSQLMODEL):
     def __unicode__(self):
         return self.text
 
-

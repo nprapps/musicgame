@@ -42,10 +42,15 @@ var QuizDetailView = Backbone.View.extend({
     saveQuiz: function() {
         var properties = this.serialize();
 
-        this.model.save(properties);
-
-        _.each(this.questionViews, function(question) {
-            question.saveQuestion();
+        this.model.save(properties, {
+            success: _.bind(function() {
+                _.each(this.questionViews, function(question) {
+                    question.saveQuestion();
+                });
+            }, this),
+            error: _.bind(function() {
+                console.log('error');
+            }, this)
         });
     },
 
@@ -137,20 +142,25 @@ var QuestionView = Backbone.View.extend({
     },
 
     rmChoiceView: function() {
-        if (this.model.choices.length > 1) {
+        // if (this.model.choices.length > 1) {
             var model = this.model.choices.last();
             this.choiceViews[model.cid].close();
             delete this.choiceViews[choice.cid];
-        }
+        // }
     },
 
     saveQuestion: function() {
         var properties = this.serialize();
 
-        this.model.save(properties);
-
-        _.each(this.choiceViews, function(choiceView) {
-            choiceView.saveChoice();
+        this.model.save(properties, {
+            success: _.bind(function() {
+                _.each(this.choiceViews, function(choiceView) {
+                    choiceView.saveChoice();
+                });
+            }, this),
+            error: _.bind(function() {
+                console.log('error');
+            }, this)
         });
     },
 
@@ -162,7 +172,7 @@ var QuestionView = Backbone.View.extend({
 
     serialize: function() {
         var properties = {
-            text: this.$('.interrogative').text()
+            text: this.$('.interrogative').text(),
         }
 
         return properties;
