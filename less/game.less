@@ -63,7 +63,7 @@ body {
 	.progress {
 		height: 30px;
 		background: fade(@musicMedium, 20%);
-		margin: 0 -@grid-gutter-width @line-height-computed / 2;
+		margin: 0 0 @line-height-computed / 2;
 
 		.bar {
 			height: 30px;
@@ -71,7 +71,7 @@ body {
 			.transition(background 1s ease-in-out);
 
 			&.safe {
-				background: fade(@brand-success, 50%);
+				// background: fade(@brand-success, 50%);
 			}
 
 			&.danger {
@@ -79,7 +79,7 @@ body {
 			}
 
 			&.warning {
-				background: fade(@brand-warning, 70%);
+				// background: fade(@brand-warning, 70%);
 			}
 		}
 	}
@@ -128,16 +128,16 @@ body {
 		overflow: hidden;
 		clear: both;
 		.make-row();
-		margin-left: -5px;
-		margin-right: -5px;
+		margin-left: -@grid-gutter-width / 4;
+		margin-right: -@grid-gutter-width / 4;
 
 		li {
 			list-style: none;
 			margin-bottom: 6px;
 			color: @musicLight;
 			.make-xs-column(12);
-			padding-left: 5px;
-			padding-right: 5px;
+			padding-left: @grid-gutter-width / 4;
+			padding-right: @grid-gutter-width / 4;
 
 			.transition(opacity .5s ease-in);
 
@@ -235,8 +235,8 @@ body {
 				@media screen and (min-width: @screen-sm){
 					.make-sm-column(3);
 
-					padding-left: 5px;
-					padding-right: 5px;
+					padding-left: @grid-gutter-width / 4;
+					padding-right: @grid-gutter-width / 4;
 
 					a {
 						display: block;
@@ -266,9 +266,9 @@ body {
 
 			@media screen and (min-width: @screen-sm){
 				.make-sm-column(6);
-				padding-left: 5px;
-				padding-right: 5px;
-				margin-bottom: 10px;
+				padding-left: @grid-gutter-width / 4;
+				padding-right: @grid-gutter-width / 4;
+				margin-bottom: @grid-gutter-width / 2;
 
 				a {
 					min-height: 120px;
@@ -352,6 +352,10 @@ body {
 				}
 				.quiz-title {
 					.make-sm-column(8);
+
+					h1 {
+						margin-bottom: @line-height-computed;
+					}
 				}
 			}
 		}
@@ -479,17 +483,28 @@ body {
 }
 
 #score {
+	.scale(0);
 	position: absolute;
 	top: 0;
-	left: 0;
-	z-index: 100;
-	text-transform: uppercase;
+	left: 50%;
+	z-index: 20000;
+	margin-left: -75px;
+	margin-top: -75px;
+	padding: 10px;
+	width: 150px;
+	height: 150px;
+
+	border-radius: 75px;
+	background: rgba(0,0,0,0.7);
 	text-align: center;
-	width: 100%;
-	opacity: 0;
+	text-transform: uppercase;
 	font-size: @font-size-base * 4;
-	line-height: 1;
-	.scale(0);
+	line-height: 125px;
+	opacity: 0;
+
+	-webkit-transform: translateX(-50%);
+	-ms-transform: translateX(-50%);
+	transform: translateX(-50%);
 
 	&.fade-in {
 		z-index: 10;
@@ -506,13 +521,13 @@ body {
     transform: scale(3);
   }
 
-  40% {
+  30% {
     opacity: 1;
     -webkit-transform: scale(1);
     transform: scale(1);
   }
 
-  60% {
+  70% {
     opacity: 1;
     -webkit-transform: scale(1);
     transform: scale(1);
@@ -532,13 +547,13 @@ body {
     transform: scale(3);
   }
 
-  40% {
+  30% {
     opacity: 1;
     -o-transform: scale(1);
     transform: scale(1);
   }
 
-  60% {
+  70% {
     opacity: 1;
     -o-transform: scale(1);
     transform: scale(1);
@@ -560,7 +575,7 @@ body {
     transform: scale(3);
   }
 
-  40% {
+  30% {
     opacity: 1;
     -webkit-transform: scale(1);
     -ms-transform: scale(1);
@@ -568,7 +583,7 @@ body {
     transform: scale(1);
   }
 
-  60% {
+  70% {
     opacity: 1;
     -webkit-transform: scale(1);
     -ms-transform: scale(1);

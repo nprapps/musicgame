@@ -221,8 +221,8 @@ var onQuestionComplete = function(points, selectedAnswer, element){
     var scoreOffsetY = $answersContainer.offset().top;
 
     if (element){
-        var scoreOffsetY = $(element).offset().top;
-        var scoreOffsetX = $(element).offset().left;
+        var scoreOffsetY = $(element).offset().top + $(element).height() / 2;
+        var scoreOffsetX = $(element).offset().left + $(element).width() / 2;
         var width = $(element).width();
         var height = $(element).height();
     }
@@ -234,9 +234,7 @@ var onQuestionComplete = function(points, selectedAnswer, element){
         .text('+' + points)
         .css({
             'top': scoreOffsetY,
-            'left': scoreOffsetX,
-            'width': width,
-            'height': height
+            'left': scoreOffsetX
         })
         .addClass('fade-in')
         .bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",
