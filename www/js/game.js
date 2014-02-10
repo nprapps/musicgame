@@ -20,6 +20,7 @@ var $responses = null;
 var timer = true;
 
 // Game state
+var quizData = null;
 var currentQuestion = 0;
 var timeLeft = TIMERLENGTH * 1000;
 var stopTimer = false;
@@ -32,8 +33,7 @@ var incorrectAnswers = null;
  * Render the start screen.
  */
 var renderStart = function() {
-    var context = QUIZ;
-    var html = JST.start(context);
+    var html = JST.start(quizData);
 
     $content.html(html);
 
@@ -53,17 +53,18 @@ var renderStart = function() {
  * Render the question screen.
  */
 var renderQuestion = function(question) {
-    var context = QUIZ.questions[question];
-    context.quizLength = QUIZ.questions.length;
+    var context = quizData['questions'][question];
+    context.quiz_type = quizData['quiz_type'];
+    context.quizLength = quizData['questions'].length;
     context.questionNumber = question + 1;
     var html = JST.question(context);
 
-    incorrectAnswers = _(QUIZ.questions[currentQuestion].choices)
+    incorrectAnswers = _(quizData['questions'][currentQuestion].choices)
         .filter(function(choice){
             if (_.isObject(choice)){
-                return choice.text !== QUIZ.questions[currentQuestion].answer;
+                return choice.text !== quizData['questions'][currentQuestion]['answer'];
             } else {
-                return choice !== QUIZ.questions[currentQuestion].answer;
+                return choice !== quizData['questions'][currentQuestion]['answer'];
             }
         });
 
@@ -72,7 +73,7 @@ var renderQuestion = function(question) {
     stopTimer = false;
 
     $content.html(html);
-    $content.removeClass().addClass(QUIZ.quiz_type);
+    $content.removeClass().addClass(quizData['quiz_type']);
 
     $answers = $content.find('.answers li');
     $answersContainer = $content.find('.answers');
@@ -95,11 +96,11 @@ var renderQuestion = function(question) {
     $nextQuestionButton.removeClass('show');
 
     // Set up the STORY NARRATION player.
-    if (QUIZ.quiz_type === 'audio'){
+    if (quizData['quiz_type'] === 'audio'){
         $questionPlayer.jPlayer({
             ready: function () {
                 $(this).jPlayer('setMedia', {
-                    mp3: QUIZ.questions[currentQuestion].audio,
+                    mp3: quizData['questions'][currentQuestion].audio,
                     oga: 'http://s.npr.org/news/specials/2014/wolves/wolf-ambient-draft.ogg'
                 }).jPlayer('play');
             },
@@ -134,13 +135,10 @@ var renderQuestion = function(question) {
 var renderGameOver = function() {
     var $showResults = null;
     var context = {
+        'quizData': quizData,
         'score': totalScore,
         'answers': answers,
-        'questions': QUIZ.questions,
-        'points': granularPoints,
-        'category': QUIZ.category,
-        'cover_image': QUIZ.cover_image,
-        'title': QUIZ.title
+        'points': granularPoints
     };
 
     var html = JST.gameover(context);
@@ -154,7 +152,7 @@ var renderGameOver = function() {
     var $stopButtons = $content.find('.jp-stop');
 
     // Set up question audio players
-    if (QUIZ.quiz_type === 'audio'){
+    if (quizData['quiz_type'] === 'audio'){
         $players.jPlayer({
             ready: function () {
                 $(this).jPlayer('setMedia', {
@@ -248,14 +246,14 @@ var onQuestionComplete = function(points, selectedAnswer, element){
     $answers.each(function(){
         $this = $(this).find('a .answer');
 
-        if ($this.text() === QUIZ.questions[currentQuestion].answer){
+        if ($this.text() === quizData['questions'][currentQuestion].answer){
             $this.parent().parent().addClass('correct');
         }
     });
 
     $content.find('.answers li:not(.correct, .incorrect)').addClass('fade').off("click");
 
-    if (currentQuestion + 1 < QUIZ.questions.length){
+    if (currentQuestion + 1 < quizData['questions'].length){
         $nextQuestionButton.addClass('show');
     } else {
         $showScoreButton.addClass('show');
@@ -270,7 +268,7 @@ var onQuestionComplete = function(points, selectedAnswer, element){
 var onAnswerClick = function(e){
     e.stopPropagation();
     var points = 0;
-    var answer = QUIZ.questions[currentQuestion].answer;
+    var answer = quizData['questions'][currentQuestion].answer;
     $this = $(this).find('a .answer');
 
     // Stop the timer
@@ -280,9 +278,9 @@ var onAnswerClick = function(e){
     if ($this.text() === answer){
         $this.parent().parent().addClass('correct');
         if(timer !== 'false'){
-            points = 100 / QUIZ.questions.length * (timeLeft / (TIMERLENGTH * 1000));
+            points = 100 / quizData['questions'].length * (timeLeft / (TIMERLENGTH * 1000));
         } else {
-            points = 100 / QUIZ.questions.length;
+            points = 100 / quizData['questions'].length;
         }
 
         points = Math.round(points);
@@ -313,7 +311,7 @@ var trimAnswers = function(){
 * Animate our question timer
 */
 var runTimer = function() {
-    var trimInterval = TIMERLENGTH * 1000 / (QUIZ.questions[currentQuestion].choices.length - 1);
+    var trimInterval = TIMERLENGTH * 1000 / (quizData['questions'][currentQuestion]['choices'].length - 1);
 
     if (stopTimer === true){
         return;
@@ -390,7 +388,7 @@ var onDocumentReady = function() {
             crossDomain: false,
             jsonp: false,
             success: function(data){
-                window.QUIZ = data;
+                quizData = data;
                 renderStart();
             },
             error: function(error){

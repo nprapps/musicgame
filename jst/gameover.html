@@ -1,13 +1,13 @@
 <div class="category-header">
-	<h2><%= category %></h2>
+	<h2><%= quizData['category'] %></h2>
 </div>
 
 <div class="container">
 	<div class="row">
-		<div class="quiz-info<% if (cover_image){ %> has-cover<% } %>">
-			<% if (cover_image){ %>
+		<div class="quiz-info<% if (quizData['cover_image']){ %> has-cover<% } %>">
+			<% if (quizData['cover_image']){ %>
 				<div class="cover">
-					<img class="img-responsive" src="<%= cover_image %>">
+					<img class="img-responsive" src="<%= quizData['cover_image'] %>">
 				</div>
 			<% } %>
 
@@ -16,10 +16,10 @@
 				<p class="score"><%= score %>/100</p>
 				<p><a id="show-results" href="#"><i class="fa fa-list"></i> Review Quiz</a></p>
 
-				<ul class="responses list-unstyled hide <% if (QUIZ.quiz_type === "audio"){ %>audio<% } %>">
-				<% _.each(questions, function(question, index){ %>
+				<ul class="responses list-unstyled hide <% if (quizData['quiz_type'] === "audio"){ %>audio<% } %>">
+				<% _.each(quizData['questions'], function(question, index){ %>
 					<li>
-						<% if (QUIZ.quiz_type === "audio"){ %>
+						<% if (quizData['quiz_type'] === "audio"){ %>
 						<div id="player_<%= index %>" class="jp-player" data-audio="<%= question.audio %>"></div>
 						<div id="jp_container_<%= index %>" class="jp-audio pull-left">
 						    <div class="jp-type-single">
