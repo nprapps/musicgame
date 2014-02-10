@@ -113,8 +113,13 @@ class Photo(PSQLMODEL):
         # Connect to S3.
         s3 = boto.connect_s3()
 
+        buckets = app_config.S3_BUCKETS
+
+        if not app_config.DEPLOYMENT_TARGET:
+            buckets = ['stage-apps.npr.org']
+
         # Loop over our buckets.
-        for bucket_name in app_config.S3_BUCKETS:
+        for bucket_name in buckets:
             bucket = s3.get_bucket(bucket_name)
 
             # Set the key as a content_from_filename
@@ -129,7 +134,7 @@ class Photo(PSQLMODEL):
 
         # Set the rendered file path as the S3 bucket path.
         setattr(self, 'rendered_file_path', 'http://%s.s3.amazonaws.com/%s' % (
-            app_config.S3_BUCKETS[0],
+            buckets[0],
             s3_path))
 
     def save(self, *args, **kwargs):
