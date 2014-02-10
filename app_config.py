@@ -28,6 +28,9 @@ REPOSITORY_ALT_URL = None # 'git@bitbucket.org:nprapps/%s.git' % REPOSITORY_NAME
 # The name to be used in paths on the server
 PROJECT_FILENAME = 'musicgame'
 
+AUDIO_FILE_PATH_PREFIX = ''
+IMAGE_FILE_PATH_PREFIX = ''
+
 """
 DEPLOYMENT
 """
@@ -160,9 +163,9 @@ def configure_targets(deployment_target):
         DEBUG = True
     else:
         S3_BUCKETS = []
-        S3_BASE_URL = 'http://10.44.17.203:8000'
+        S3_BASE_URL = 'http://127.0.0.1:8000/'
         SERVERS = []
-        SERVER_BASE_URL = 'http://10.44.17.203:8001/%s' % PROJECT_SLUG
+        SERVER_BASE_URL = 'http://127.0.0.1:8000/%s' % PROJECT_SLUG
         DEBUG = True
         APP_LOG_PATH = '/tmp/%s.app.log' % PROJECT_SLUG
 

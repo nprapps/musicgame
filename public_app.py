@@ -10,9 +10,12 @@ from StringIO import StringIO
 import boto
 from boto.s3.key import Key
 from flask import Flask, redirect, request, render_template, url_for
+from flask_peewee.rest import RestAPI, Authentication
 
+import admin
 import app_config
 import games
+import models
 from render_utils import make_context, urlencode_filter
 import static
 
@@ -20,6 +23,7 @@ app = Flask(app_config.PROJECT_NAME)
 
 app.jinja_env.filters['urlencode'] = urlencode_filter
 
+app.register_blueprint(admin.admin, url_prefix='/%s' % app_config.PROJECT_SLUG)
 app.register_blueprint(games.games, url_prefix='/%s' % app_config.PROJECT_SLUG)
 app.register_blueprint(static.static, url_prefix='/%s' % app_config.PROJECT_SLUG)
 
@@ -30,25 +34,42 @@ file_handler.setLevel(logging.INFO)
 app.logger.addHandler(file_handler)
 app.logger.setLevel(logging.INFO)
 
+class AuthorizeEveryone(Authentication):
+    """
+    Authorize any single person to POST/PUT/DELETE because this is running internally.
+    """
+    def __init__(self):
+        """
+        Gotta super.
+        """
+        super(AuthorizeEveryone, self).__init__()
+
+    def authorize(self):
+        """
+        Like I said, authorize everyone.
+        """
+        return True
+
+authorize_everyone = AuthorizeEveryone()
+
+api = RestAPI(app, default_auth=authorize_everyone, prefix="/%s/api" % app_config.PROJECT_SLUG)
+
+api.register(models.Quiz, allowed_methods=['GET', 'POST', 'PUT', 'DELETE'])
+api.register(models.Question, allowed_methods=['GET', 'POST', 'PUT', 'DELETE'])
+api.register(models.Choice, allowed_methods=['GET', 'POST', 'PUT', 'DELETE'])
+api.register(models.Photo, allowed_methods=['GET', 'POST', 'PUT', 'DELETE'])
+api.register(models.Audio, allowed_methods=['GET', 'POST', 'PUT', 'DELETE'])
+
+models.db.init(app_config.PROJECT_SLUG, user=app_config.PROJECT_SLUG)
+
+api.setup()
+
 @app.route('/%s/' % app_config.PROJECT_SLUG)
 def index():
     """
     Render the admin index.
     """
     context = make_context()
-    context['top_singles_by_year'] = []
-
-    with open('www/assets/data/tracks-by-year.json', 'rb') as readfile:
-
-        tracks_by_year = json.loads(readfile.read())
-
-        for year, track_list in tracks_by_year.items():
-            year_dict = {}
-            year_dict['year'] = year
-            year_dict['choices'] = track_list
-            context['top_singles_by_year'].append(year_dict)
-
-    context['top_singles_by_year'] = sorted(context['top_singles_by_year'], key=lambda x: x['year'], reverse=True)
 
     return render_template('index.html', **context)
 
@@ -63,7 +84,7 @@ def _publish_game():
     data = '{ "placeholder": "TKTK" }'
 
     gzip_buffer = StringIO()
-    
+
     with gzip.GzipFile(fileobj=gzip_buffer, mode='w') as f:
         f.write(data)
 
@@ -82,7 +103,7 @@ def _publish_game():
         })
         k.set_acl('public-read')
 
-    return redirect(url_for('games.preview')) 
+    return redirect(url_for('games.preview'))
 
 # Scout uptime test route
 @app.route('/%s/test/' % app_config.PROJECT_SLUG, methods=['GET'])

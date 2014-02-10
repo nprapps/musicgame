@@ -48,3 +48,6 @@ www/assets
 data/gdoc*.csv
 .games
 .games.gzip
+.floo
+.flooignore
+FLOOBITS_README.md

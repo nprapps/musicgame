@@ -1,0 +1,107 @@
+// Core variables and mixins
+@import "less/lib/bootstrap/variables.less";
+@import "less/lib/bootstrap/mixins.less";
+@import "less/lib/bootstrap/utilities.less";
+
+// Reset
+@import "less/lib/bootstrap/normalize.less";
+@import "less/lib/bootstrap/print.less";
+
+// Core CSS
+@import "less/lib/bootstrap/scaffolding.less";
+@import "less/lib/bootstrap/type.less";
+@import "less/lib/bootstrap/code.less";
+@import "less/lib/bootstrap/grid.less";
+@import "less/lib/bootstrap/tables.less";
+@import "less/lib/bootstrap/forms.less";
+@import "less/lib/bootstrap/buttons.less";
+@import "less/lib/bootstrap/button-groups.less";
+@import "less/lib/bootstrap/input-groups.less";
+
+// Icon font
+@import "less/lib/font-awesome/font-awesome.less";
+
+// NPR colors
+// -------------------------
+@inlineLink: #4774cc;
+@primaryControl: #6d8ac4;
+@secondaryControl: #bccae5;
+@heavyGray: #e0e0e0;
+@lightGray: #ebebeb;
+@brandingGray: #7c7c7c;
+@nprTextColor: #111;
+@darkHover: #4065a2;
+@deepBlue: #7598C9;
+
+//music palette
+@musicDark: #41474E;
+@musicMedium: #e6ebf2;
+@musicLight: #dbe0e6;
+
+.vertical-align {
+  position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+[contenteditable="true"]:active,
+[contenteditable="true"]:focus,
+[contenteditable="true"]:hover
+{
+    border: none;
+    border-bottom: 1px solid black;
+    outline:none;
+}
+
+[contenteditable="true"]:hover {
+
+}
+
+.header {
+    margin: 50px 0;
+}
+
+.quiz-list {
+    caption {
+        font-size: 200%;
+    }
+    td {
+        text-align: center;
+    }
+}
+
+.question {
+    margin: 50px 0;
+}
+
+.questions {
+    position: relative;
+    top: -20px;
+}
+
+.choice {
+    margin-bottom: 10px;
+    margin-left: 10px;
+}
+
+.tags {
+    margin-bottom: 50px;
+}
+
+.toolbelt {
+    bottom: 0;
+    position: fixed;
+    width: 100%;
+    background-color: white;
+    padding: 10px 0;
+    border-top: 2px solid @heavyGray;
+    text-align: center;
+}
+
+@media (min-width: 1024px) {
+    .add-quiz-btn {
+        .pull-right();
+    }
+}

@@ -1,0 +1,24 @@
+<div class="question">
+    <div class="question-title row">
+        <div class="col-lg-8 col-lg-offset-2">
+            <h3>
+                <span class="interrogative" contenteditable="true"><%= question.get('text') || 'Put question text here' %></span>
+                <div class="btn-group media">
+                  <a type="button" class="btn btn-default"><i class="fa fa-camera"></i></a>
+                  <a type="button" class="btn btn-default"><i class="fa fa-volume-up"></i></a>
+                </div>
+            </h3>
+        </div>
+    </div>
+    <div class="choices">
+    </div>
+    <div class="choice-btns row">
+        <div class="col-lg-8 col-md-offset-2 col-s-12">
+            <div class="pull-right">
+                <a class="btn btn-success add-choice"><i class="fa fa-plus"></i></a>
+                <a class="btn btn-danger rm-choice"><i class="fa fa-minus"></i></a>
+                <a class="btn btn-danger rm-question"><i class="fa fa-times"></i> Remove question</a>
+            </div>
+        </div>
+    </div>
+</div>

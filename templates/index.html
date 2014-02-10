@@ -14,18 +14,6 @@
 
     <p>Example game url: <a href="game.html?quiz=drum_fill_friday">game.html?quiz=drum_fill_friday</a></p>
 
-    {% for year in top_singles_by_year %}
-        <form>
-            <h4>Which was the top single in {{ year.year }}?</h4>
-            {% for track in year.choices %}
-                <label>
-                    <input name="{{ year.year }}" type="radio" data-value="{{ track['Yearly Rank'] }}"></input>
-                    {{ track['Track'] }} by {{ track['Artist'] }}
-                </label><br/>
-            {% endfor %}
-        </form>
-    {% endfor %}
-
     {{ JS.push('js/lib/jquery.js') }}
     {{ JS.push('js/index.js') }}
     {% block extra_foot_js %}{% endblock extra_foot_js %}
