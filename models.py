@@ -271,6 +271,8 @@ class Quiz(PSQLMODEL):
         """
         flat = self.to_dict()
         flat['questions'] = [q.to_dict() for q in self.questions]
+        flat['category'] = self.category.to_dict() if self.category else None
+        flat['photo'] = self.photo.to_dict() if self.photo else None
 
         for i, question in enumerate(self.questions):
             question_flat = flat['questions'][i]

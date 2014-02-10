@@ -42,7 +42,7 @@ var renderStart = function() {
     $startQuizButton = $content.find('#start-quiz');
     $startQuizButton.on('click', function(e){
         e.stopPropagation();
-        renderQuestion(currentQuestion);
+        renderQuestion();
         $content.removeClass('start');
     });
 
@@ -52,28 +52,33 @@ var renderStart = function() {
 /*
  * Render the question screen.
  */
-var renderQuestion = function(question) {
-    var context = quizData['questions'][question];
-    context.quiz_type = quizData['quiz_type'];
-    context.quizLength = quizData['questions'].length;
-    context.questionNumber = question + 1;
+var renderQuestion = function() {
+    var question = quizData['questions'][currentQuestion];
+
+    var context = question;
+    context['quizLength'] = quizData['questions'].length;
+    context['questionNumber'] = question + 1;
+
     var html = JST.question(context);
 
-    incorrectAnswers = _(quizData['questions'][currentQuestion].choices)
+    incorrectAnswers = _(question['choices'])
         .filter(function(choice){
             if (_.isObject(choice)){
-                return choice.text !== quizData['questions'][currentQuestion]['answer'];
+                return choice.text !== question['answer'];
             } else {
-                return choice !== quizData['questions'][currentQuestion]['answer'];
+                return choice !== question['answer'];
             }
         });
-
 
     timeLeft = TIMERLENGTH * 1000;
     stopTimer = false;
 
     $content.html(html);
-    $content.removeClass().addClass(quizData['quiz_type']);
+    $content.removeClass();
+
+    if (question['audio']) {
+        $content.addClass('audio');
+    }
 
     $answers = $content.find('.answers li');
     $answersContainer = $content.find('.answers');
@@ -95,13 +100,13 @@ var renderQuestion = function(question) {
 
     $nextQuestionButton.removeClass('show');
 
-    // Set up the STORY NARRATION player.
-    if (quizData['quiz_type'] === 'audio'){
+    if (question['audio']){
         $questionPlayer.jPlayer({
             ready: function () {
                 $(this).jPlayer('setMedia', {
-                    mp3: quizData['questions'][currentQuestion].audio,
-                    oga: 'http://s.npr.org/news/specials/2014/wolves/wolf-ambient-draft.ogg'
+                    mp3: question['audio']['file_path'],
+                    // TODO
+                    //oga: 'http://s.npr.org/news/specials/2014/wolves/wolf-ambient-draft.ogg'
                 }).jPlayer('play');
             },
             play: function() {
@@ -347,7 +352,7 @@ var runTimer = function() {
 var onNextQuestionClick = function(e) {
     e.stopImmediatePropagation();
     currentQuestion++;
-    renderQuestion(currentQuestion);
+    renderQuestion();
 }
 
 /*
@@ -384,9 +389,8 @@ var onDocumentReady = function() {
         var url = 'TKTK'; // TODO: deployed url
 
         if (!APP_CONFIG.DEPLOYMENT_TARGET) {
-            // TODO: not quite ready yet, need to make sure server data matches template expecatations
-            //url = '/musicgame/quiz/' + slug + '/';
-            url = '/musicgame/assets/data/' + slug + '.json';
+            url = '/musicgame/quiz/' + slug + '/';
+            //url = '/musicgame/assets/data/' + slug + '.json';
         }
 
         $.ajax({
