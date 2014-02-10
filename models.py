@@ -30,8 +30,6 @@ class Quiz(PSQLMODEL):
     title = TextField()
     text = TextField()
     tags = TextField(null=True)
-    created = DateTimeField()
-    updated = DateTimeField()
     byline = TextField(null=True)
 
     def __unicode__(self):

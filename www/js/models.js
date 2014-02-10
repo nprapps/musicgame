@@ -105,7 +105,6 @@ var Question = Backbone.Model.extend({
     },
     toJSON: function() {
         var data = _.clone(this.attributes);
-        console.log(this);
         data['quiz'] = this.quiz.id;
 
         delete data['choices'];
@@ -144,6 +143,7 @@ var Choice = Backbone.Model.extend({
     },
     toJSON: function() {
         var data = _.clone(this.attributes);
+        console.log(data);
         data['question'] = this.question.id;
 
         delete data['photo'];
