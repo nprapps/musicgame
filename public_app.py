@@ -3,13 +3,12 @@
 import argparse
 import datetime
 import gzip
-import json
 import logging
 from StringIO import StringIO
 
 import boto
 from boto.s3.key import Key
-from flask import Flask, redirect, request, render_template, url_for
+from flask import Flask, jsonify, redirect, request, render_template, url_for
 from flask_peewee.rest import RestAPI, Authentication
 
 import admin
@@ -72,6 +71,15 @@ def index():
     context = make_context()
 
     return render_template('index.html', **context)
+
+@app.route('/%s/quiz/<quiz_id>/' % app_config.PROJECT_SLUG)
+def _test_quiz(quiz_id):
+    """
+    Get a serialized version of a quiz for testing. 
+    """
+    quiz = models.Quiz.get(id=quiz_id)
+
+    return jsonify(quiz.flatten())
 
 @app.route('/%s/publish/' % app_config.PROJECT_SLUG)
 def _publish_game():
