@@ -57,17 +57,13 @@ var renderQuestion = function() {
 
     var context = question;
     context['quizLength'] = quizData['questions'].length;
-    context['questionNumber'] = question + 1;
+    context['questionNumber'] = currentQuestion + 1;
 
     var html = JST.question(context);
 
     incorrectAnswers = _(question['choices'])
         .filter(function(choice){
-            if (_.isObject(choice)){
-                return choice.text !== question['answer'];
-            } else {
-                return choice !== question['answer'];
-            }
+            return !choice.correct_answer;
         });
 
     timeLeft = TIMERLENGTH * 1000;
@@ -272,7 +268,7 @@ var onQuestionComplete = function(points, selectedAnswer, element){
 var onAnswerClick = function(e){
     e.stopPropagation();
     var points = 0;
-    var answer = quizData['questions'][currentQuestion].answer;
+    var answer = _.where(quizData['questions'][currentQuestion]['choices'], {correct_answer: true})[0]['text'];
     $this = $(this).find('a .answer');
 
     // Stop the timer
