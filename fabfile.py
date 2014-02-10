@@ -25,7 +25,7 @@ env.forward_agent = True
 env.hosts = []
 env.settings = None
 
-model_names = ['Photo', 'Audio', 'Choice', 'Question', 'Quiz', 'Category']
+model_names = ['Category', 'Photo', 'Audio', 'Quiz', 'Question', 'Choice']
 
 """
 Environments
@@ -710,7 +710,7 @@ def init_tables():
     models.db.init(app_config.PROJECT_SLUG, user=app_config.PROJECT_SLUG)
 
     with settings(warn_only=True):
-        for model_name in reversed(model_names):
+        for model_name in model_names:
             model = getattr(models, model_name)
             model.create_table()
 

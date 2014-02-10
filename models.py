@@ -31,90 +31,10 @@ class Category(PSQLMODEL):
     def __unicode__(self):
         return self.name
 
-class Quiz(PSQLMODEL):
-    """
-    A single quiz game.
-
-    Quizzes have Questions.
-    """
-    category = ForeignKeyField(Category, null=True, related_name='quizzes')
-    title = TextField()
-    text = TextField()
-    tags = TextField(null=True)
-    created = DateTimeField()
-    updated = DateTimeField()
-    byline = TextField(null=True)
-
-    def __unicode__(self):
-        return self.title
-
-    def flatten(self):
-        """
-        Flattens a quiz and all it's related parts for serialization.
-        """
-        flat = self.to_dict()
-        flat['questions'] = [q.to_dict() for q in self.questions]
-
-        for i, question in enumerate(self.questions):
-            question_flat = flat['questions'][i]
-            question_flat['choices'] = [c.to_dict() for c in question.choices]
-            question_flat['audio'] = question.audio[0].to_dict() if question.audio.count() else None
-            question_flat['photo'] = question.photo[0].to_dict() if question.photo.count() else None
-
-            for j, choice in enumerate(question.choices):
-                choice_flat = question_flat['choices'][j]
-                choice_flat['audio'] = choice.audio[0].to_dict() if choice.audio.count() else None
-                choice_flat['photo'] = choice.photo[0].to_dict() if choice.photo.count() else None
-
-        return flat
-
-
-    # TODO:
-    # 1. Handle serializing/deserializing tags.
-    # 2. Handle auto-stamping updated/created fields.
-    # 3. Handle the image field save.
-
-class Question(PSQLMODEL):
-    """
-    A single quiz question.
-
-    Questions have Choices.
-    """
-    quiz = ForeignKeyField(Quiz, null=True, related_name='questions')
-    text = TextField()
-    order = IntegerField()
-    after_text = TextField(null=True)
-
-    def __unicode__(self):
-        return "%s.) %s" % (self.order, self.text)
-
-    @classmethod
-    def choices(self):
-        payload = []
-        for obj in Choice.select().where(Choice.question.id == self.id):
-            payload.append(obj.__dict__['data'])
-
-        return payload
-
-class Choice(PSQLMODEL):
-    """
-    A single question choice.
-    """
-    question = ForeignKeyField(Question, null=True, related_name='choices')
-    text = TextField()
-    order = IntegerField()
-    correct_answer = BooleanField(default=False)
-
-    def __unicode__(self):
-        return self.text
-
 class Photo(PSQLMODEL):
     """
     A photo referenced from a Quiz, Question or Choice.
     """
-    choice = ForeignKeyField(Choice, null=True, related_name='photo')
-    question = ForeignKeyField(Question, null=True, related_name='photo')
-    quiz = ForeignKeyField(Quiz, null=True, related_name='photo')
     credit = TextField()
     caption = TextField()
     file_path = TextField(null=True)
@@ -186,8 +106,6 @@ class Audio(PSQLMODEL):
     """
     An audio fragment referenced from a Quiz, Question or Choice.
     """
-    choice = ForeignKeyField(Choice, null=True, related_name='audio')
-    question = ForeignKeyField(Question, null=True, related_name='audio')
     credit = TextField()
     caption = TextField()
     file_path = TextField(null=True)
@@ -238,15 +156,15 @@ class Audio(PSQLMODEL):
                         writefile.write(r.content)
 
                     # Write a wav file so that oggenc can convert mumblemumblehateyoumumble
-                    os.system('mpg123 -w "%s-temp.wav" "%s-temp.mp3"' % (
+                    envoy.run('mpg123 -w "%s-temp.wav" "%s-temp.mp3"' % (
                         file_name, file_name))
 
                     # Have oggenc encode against the temp wav file.
-                    os.system('oggenc -m 96 -M 96 -o "%s.oga" --downmix "%s-temp.wav"' % (
+                    envoy.run('oggenc -m 96 -M 96 -o "%s.oga" --downmix "%s-temp.wav"' % (
                         file_name, file_name))
 
                     # Have lame encode against the original mp3 just in case it's huge.
-                    os.system('lame -m m -b 96 "%s-temp.mp3" "%s.mp3"' % (
+                    envoy.run('lame -m m -b 96 "%s-temp.mp3" "%s.mp3"' % (
                         file_name, file_name))
 
                 else:
@@ -265,15 +183,15 @@ class Audio(PSQLMODEL):
                 file_name = '%s-%s' % (timestamp, file_name)
 
                 # Write a wav file so that oggenc can convert mumblemumblehateyoumumble
-                os.system('mpg123 -w "%s-temp.wav" "%s"' % (
+                envoy.run('mpg123 -w "%s-temp.wav" "%s"' % (
                         file_name, self.file_path))
 
                 # Write an ogg file.
-                os.system('oggenc -m 96 -M 96 -o "%s.oga" --downmix "%s"' % (
+                envoy.run('oggenc -m 96 -M 96 -o "%s.oga" --downmix "%s"' % (
                     file_name, self.file_path))
 
                 # Write an mp3 file.
-                os.system('lame -m m -b 96 "%s" "%s.mp3"' % (
+                envoy.run('lame -m m -b 96 "%s" "%s.mp3"' % (
                     self.file_path, file_name))
 
             # Loop over our ogg/mp3 files and do stuff.
@@ -315,9 +233,9 @@ class Audio(PSQLMODEL):
             self.rendered_mp3_path = None
 
         # Clean up after ourselves. So messy.
-        os.system('rm -f *.wav')
-        os.system('rm -f *.mp3')
-        os.system('rm -f *.oga')
+        envoy.run('rm -f *.wav')
+        envoy.run('rm -f *.mp3')
+        envoy.run('rm -f *.oga')
 
     def save(self, *args, **kwargs):
         """
@@ -328,3 +246,79 @@ class Audio(PSQLMODEL):
             self.render_audio_files()
 
         super(Audio, self).save(*args, **kwargs)
+
+class Quiz(PSQLMODEL):
+    """
+    A single quiz game.
+
+    Quizzes have Questions.
+    """
+    category = ForeignKeyField(Category, null=True, related_name='quizzes')
+    title = TextField()
+    text = TextField()
+    tags = TextField(null=True)
+    created = DateTimeField()
+    updated = DateTimeField()
+    byline = TextField(null=True)
+    photo = ForeignKeyField(Photo, null=True)
+
+    def __unicode__(self):
+        return self.title
+
+    def flatten(self):
+        """
+        Flattens a quiz and all it's related parts for serialization.
+        """
+        flat = self.to_dict()
+        flat['questions'] = [q.to_dict() for q in self.questions]
+
+        for i, question in enumerate(self.questions):
+            question_flat = flat['questions'][i]
+            question_flat['choices'] = [c.to_dict() for c in question.choices]
+            question_flat['audio'] = question.audio.to_dict() if question.audio else None
+            question_flat['photo'] = question.photo.to_dict() if question.photo else None
+
+            for j, choice in enumerate(question.choices):
+                choice_flat = question_flat['choices'][j]
+                choice_flat['audio'] = choice.audio.to_dict() if choice.audio else None
+                choice_flat['photo'] = choice.photo.to_dict() if choice.photo else None
+
+        return flat
+
+
+    # TODO:
+    # 1. Handle serializing/deserializing tags.
+    # 2. Handle auto-stamping updated/created fields.
+    # 3. Handle the image field save.
+
+class Question(PSQLMODEL):
+    """
+    A single quiz question.
+
+    Questions have Choices.
+    """
+    quiz = ForeignKeyField(Quiz, null=True, related_name='questions')
+    text = TextField()
+    order = IntegerField()
+    after_text = TextField(null=True)
+    photo = ForeignKeyField(Photo, null=True)
+    audio = ForeignKeyField(Audio, null=True)
+
+    def __unicode__(self):
+        return "%s.) %s" % (self.order, self.text)
+
+class Choice(PSQLMODEL):
+    """
+    A single question choice.
+    """
+    question = ForeignKeyField(Question, null=True, related_name='choices')
+    text = TextField()
+    order = IntegerField()
+    correct_answer = BooleanField(default=False)
+    photo = ForeignKeyField(Photo, null=True)
+    audio = ForeignKeyField(Audio, null=True)
+
+    def __unicode__(self):
+        return self.text
+
+
