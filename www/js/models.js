@@ -1,4 +1,7 @@
-var QuizCategory = Backbone.Model.extend({
+/*
+ * Category
+ */
+var Category = Backbone.Model.extend({
 
     quizzes: null,
 
@@ -34,13 +37,23 @@ var QuizCategory = Backbone.Model.extend({
  */
 var Quiz = Backbone.Model.extend({
 
+    category: null,
+    photo: null,
     questions: null,
 
     initialize: function(attributes) {
         this.questions = new Questions();
 
         if (attributes) {
-            if ("questions" in attributes) {
+            if ('category' in attributes) {
+                this.category = new Category(attributes['category']);
+            }
+
+            if ('photo' in attributes) {
+                this.photo = new Photo(attributes['photo']);
+            }
+
+            if ('questions' in attributes) {
                 _.each(attributes.questions, _.bind(function(questionData) {
                     var question = new Question(questionData);
                     question.quiz = this;

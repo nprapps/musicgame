@@ -1,7 +1,7 @@
 <div class="progress"><div class="bar" style="width: 0%;"></div></div>
 <div class="container">
 	<h3 class="progress-header">Question <%= questionNumber %>/<%= quizLength %></h3>
-	<% if (audio){ %>
+	<% if (question.audio) { %>
 	<div id="player" class="jp-player"></div>
 	<div id="jp_container_1" class="jp-audio">
 	    <div class="jp-type-single">
@@ -14,22 +14,22 @@
 	    </div>
 	</div> <!-- end .jp-audio -->
 	<% } %>
-	<h1 class="question-text"><%= text %></h1>
+	<h1 class="question-text"><%= question.get('text') %></h1>
 	<ul class="answers">
-	<% _.each(_.shuffle(choices), function(choice){ %>
-		<% if (choice.text) { %>
+	<% _.each(question.choices.shuffle(), function(choice) { %>
+		<% if (choice.get('text')) { %>
 			<li<% if (choice.photo) { %> class="has-cover"<% } %>>
 				<a href="#">
 				<% if (choice.photo) { %>
 					<div class="cover">
-						<img class="img-responsive" src="<%= choice.photo.file_path %>">
+						<img class="img-responsive" src="<%= choice.photo.get('file_path') %>">
 					</div>
 				<% } %>
-					<div class="answer"><%= choice.text %></div>
+					<div class="answer"><%= choice.get('text') %></div>
 				</a>
 			</li>
 		<% } else { %>
-			<li><a href="#"><div class="answer"><%= choice %></div></a></li>
+			<li><a href="#"><div class="answer"><%= choice.get('text') %></div></a></li>
 		<% } %>
 	<% }); %>
 	</ul>

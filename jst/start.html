@@ -1,18 +1,20 @@
+<% if (quiz.category) { %>
 <div class="category-header">
-	<h2><%= category.name %></h2>
+	<h2><%= quiz.category.get('name') %></h2>
 </div>
+<% } %>
 
 <div class="container">
 	<div class="row">
-		<div class="quiz-info<% if (photo) { %> has-cover<% } %>">
-			<% if (photo){ %>
+		<div class="quiz-info<% if (quiz.photo) { %> has-cover<% } %>">
+			<% if (quiz.photo){ %>
 				<div class="cover">
-					<img class="img-responsive" src="<%= photo['file_path'] %>">
+					<img class="img-responsive" src="<%= quiz.photo.get('file_path') %>"
 				</div>
 			<% } %>
 
 			<div class="quiz-title">
-				<h1><%= title %></h1>
+				<h1><%= quiz.get('title') %></h1>
 				<% if(timer === true){ %>
 					<p><i class="fa fa-clock-o"></i> You'll have <%= TIMERLENGTH %> seconds to answer each question.</p>
 				<% } %>

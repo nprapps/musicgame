@@ -20,7 +20,7 @@ var $responses = null;
 var timer = true;
 
 // Game state
-var quizData = null;
+var quiz = null;
 var currentQuestion = 0;
 var timeLeft = TIMERLENGTH * 1000;
 var stopTimer = false;
@@ -33,7 +33,11 @@ var incorrectAnswers = null;
  * Render the start screen.
  */
 var renderStart = function() {
-    var html = JST.start(quizData);
+    var context = {
+        'quiz': quiz
+    };
+
+    var html = JST.start(context);
 
     $content.html(html);
 
@@ -53,20 +57,23 @@ var renderStart = function() {
  * Render the question screen.
  */
 var renderQuestion = function() {
-    var question = quizData['questions'][currentQuestion];
+    var question = quiz.questions.at(currentQuestion);
 
-    var context = question;
-    context['quizLength'] = quizData['questions'].length;
-    context['questionNumber'] = question + 1;
+    var context = {
+        'question': question,
+        'quizLength': quiz.questions.length,
+        'questionNumber': question + 1
+    };
 
     var html = JST.question(context);
 
-    incorrectAnswers = _(question['choices'])
+    incorrectAnswers = _(question.choices)
+
         .filter(function(choice){
             if (_.isObject(choice)){
-                return choice.text !== question['answer'];
+                return choice.text !== question.get('answer');
             } else {
-                return choice !== question['answer'];
+                return choice !== question.get('answer');
             }
         });
 
@@ -76,7 +83,7 @@ var renderQuestion = function() {
     $content.html(html);
     $content.removeClass();
 
-    if (question['audio']) {
+    if (question.audio) {
         $content.addClass('audio');
     }
 
@@ -100,11 +107,11 @@ var renderQuestion = function() {
 
     $nextQuestionButton.removeClass('show');
 
-    if (question['audio']){
+    if (question.audio){
         $questionPlayer.jPlayer({
             ready: function () {
                 $(this).jPlayer('setMedia', {
-                    mp3: question['audio']['file_path'],
+                    mp3: question.audio.get('file_path'),
                     // TODO
                     //oga: 'http://s.npr.org/news/specials/2014/wolves/wolf-ambient-draft.ogg'
                 }).jPlayer('play');
@@ -140,7 +147,7 @@ var renderQuestion = function() {
 var renderGameOver = function() {
     var $showResults = null;
     var context = {
-        'quizData': quizData,
+        'quiz': quiz,
         'score': totalScore,
         'answers': answers,
         'points': granularPoints
@@ -157,7 +164,7 @@ var renderGameOver = function() {
     var $stopButtons = $content.find('.jp-stop');
 
     // Set up question audio players
-    if (quizData['quiz_type'] === 'audio'){
+    if (quiz.audio) {
         $players.jPlayer({
             ready: function () {
                 $(this).jPlayer('setMedia', {
@@ -250,14 +257,14 @@ var onQuestionComplete = function(points, selectedAnswer, element){
     $answers.each(function(){
         $this = $(this).find('a .answer');
 
-        if ($this.text() === quizData['questions'][currentQuestion].answer){
+        if ($this.text() === quiz.questions.at(currentQuestion).get('answer')){
             $this.parent().parent().addClass('correct');
         }
     });
 
     $content.find('.answers li:not(.correct, .incorrect)').addClass('fade').off("click");
 
-    if (currentQuestion + 1 < quizData['questions'].length){
+    if (currentQuestion + 1 < quiz.questions.length){
         $nextQuestionButton.addClass('show');
     } else {
         $showScoreButton.addClass('show');
@@ -272,7 +279,7 @@ var onQuestionComplete = function(points, selectedAnswer, element){
 var onAnswerClick = function(e){
     e.stopPropagation();
     var points = 0;
-    var answer = quizData['questions'][currentQuestion].answer;
+    var answer = quiz.questions.at(currentQuestion).get('answer');
     $this = $(this).find('a .answer');
 
     // Stop the timer
@@ -282,9 +289,9 @@ var onAnswerClick = function(e){
     if ($this.text() === answer){
         $this.parent().parent().addClass('correct');
         if(timer !== 'false'){
-            points = 100 / quizData['questions'].length * (timeLeft / (TIMERLENGTH * 1000));
+            points = 100 / quiz.questions.length * (timeLeft / (TIMERLENGTH * 1000));
         } else {
-            points = 100 / quizData['questions'].length;
+            points = 100 / quiz.questions.length;
         }
 
         points = Math.round(points);
@@ -315,7 +322,7 @@ var trimAnswers = function(){
 * Animate our question timer
 */
 var runTimer = function() {
-    var trimInterval = TIMERLENGTH * 1000 / (quizData['questions'][currentQuestion]['choices'].length - 1);
+    var trimInterval = TIMERLENGTH * 1000 / (quiz.questions.at(currentQuestion).choices.length - 1);
 
     if (stopTimer === true){
         return;
@@ -399,7 +406,7 @@ var onDocumentReady = function() {
             crossDomain: false,
             jsonp: false,
             success: function(data){
-                quizData = data;
+                quiz = new Quiz(data);
                 renderStart();
             },
             error: function(error){
