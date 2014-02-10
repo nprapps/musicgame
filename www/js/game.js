@@ -27,6 +27,7 @@ var stopTimer = false;
 var totalScore = 0;
 var granularPoints = [];
 var answers = [];
+var current_answer = null;
 var incorrectAnswers = null;
 
 /*
@@ -54,6 +55,8 @@ var renderStart = function() {
  */
 var renderQuestion = function() {
     var question = quizData['questions'][currentQuestion];
+    current_answer = _.where(quizData['questions'][currentQuestion]['choices'], {correct_answer: true})[0]['text'];
+
 
     var context = question;
     context['quizLength'] = quizData['questions'].length;
@@ -246,7 +249,7 @@ var onQuestionComplete = function(points, selectedAnswer, element){
     $answers.each(function(){
         $this = $(this).find('a .answer');
 
-        if ($this.text() === quizData['questions'][currentQuestion].answer){
+        if ($this.text() === current_answer){
             $this.parent().parent().addClass('correct');
         }
     });
@@ -268,14 +271,13 @@ var onQuestionComplete = function(points, selectedAnswer, element){
 var onAnswerClick = function(e){
     e.stopPropagation();
     var points = 0;
-    var answer = _.where(quizData['questions'][currentQuestion]['choices'], {correct_answer: true})[0]['text'];
     $this = $(this).find('a .answer');
 
     // Stop the timer
     stopTimer = true;
     $timerContainer.attr('class', 'timer-container fade');
 
-    if ($this.text() === answer){
+    if ($this.text() === current_answer){
         $this.parent().parent().addClass('correct');
         if(timer !== 'false'){
             points = 100 / quizData['questions'].length * (timeLeft / (TIMERLENGTH * 1000));
