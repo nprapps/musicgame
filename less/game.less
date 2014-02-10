@@ -20,6 +20,9 @@
 // Icon font
 @import "less/lib/font-awesome/font-awesome.less";
 
+// LESS Hat Mixins
+@import "less/lib/lesshat-prefixed.less";
+
 // NPR colors
 // -------------------------
 @inlineLink: #4774cc;
@@ -510,115 +513,11 @@ body {
 
 		&.fade-in {
 			z-index: 10;
-			-webkit-animation: zoomOut 1500ms ease both;
-			  -o-animation: zoomOut 1500ms ease both;
-			  animation: zoomOut 1500ms ease  both;
+			.lh-animation(zoomOut 1500ms ease both);
 		}
 	}
 }
 
 
+.lh-keyframes(~'zoomOut, 0%{opacity: 0; transform: scale(3); } 15%{opacity: 1; transform: scale(0.8); } 25%{opacity: 1; transform: scale(1.1); } 30%{opacity: 1; transform: scale(1); } 60%{opacity: 1; transform: scale(1); } 65%{opacity: 1; transform: scale(1.2); } 100%{opacity: 0; transform: scale(0); } ');
 
-@-webkit-keyframes zoomOut {
-  0% {
-    opacity: 0;
-    -webkit-transform: scale(3);
-    transform: scale(3);
-  }
-
-  15% {
-    opacity: 1;
-    -webkit-transform: scale(0.8);
-    transform: scale(0.8);
-  }
-
-  25% {
-    opacity: 1;
-    -webkit-transform: scale(1.1);
-    transform: scale(1.1);
-  }
-
-  30% {
-    opacity: 1;
-    -webkit-transform: scale(1);
-    transform: scale(1);
-  }
-
-  60% {
-    opacity: 1;
-    -webkit-transform: scale(1);
-    transform: scale(1);
-  }
-
-  65% {
-    opacity: 1;
-    -webkit-transform: scale(1.2);
-    transform: scale(1.2);
-  }
-
-  100% {
-    opacity: 0;
-    -webkit-transform: scale(0);
-    transform: scale(0);
-  }
-}
-
-@-o-keyframes zoomOut {
-  0% {
-    opacity: 0;
-    -o-transform: scale(3);
-    transform: scale(3);
-  }
-
-  30% {
-    opacity: 1;
-    -o-transform: scale(1);
-    transform: scale(1);
-  }
-
-  70% {
-    opacity: 1;
-    -o-transform: scale(1);
-    transform: scale(1);
-  }
-
-  100% {
-    opacity: 0;
-    -o-transform: scale(0);
-    transform: scale(0);
-  }
-}
-
-@keyframes zoomOut {
-  0% {
-    opacity: 0;
-    -webkit-transform: scale(3);
-    -ms-transform: scale(3);
-    -o-transform: scale(3);
-    transform: scale(3);
-  }
-
-  30% {
-    opacity: 1;
-    -webkit-transform: scale(1);
-    -ms-transform: scale(1);
-    -o-transform: scale(1);
-    transform: scale(1);
-  }
-
-  70% {
-    opacity: 1;
-    -webkit-transform: scale(1);
-    -ms-transform: scale(1);
-    -o-transform: scale(1);
-    transform: scale(1);
-  }
-
-  100% {
-    opacity: 0;
-    -webkit-transform: scale(0);
-    -ms-transform: scale(0);
-    -o-transform: scale(0);
-    transform: scale(0);
-  }
-}
