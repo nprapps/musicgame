@@ -33,10 +33,10 @@
 						</div> <!-- end .jp-audio -->
 						<% } %>
 						<h2><%= question.text %></h2>
-						<p class="answer your-answer<% if (answers[index] == question.answer){ %> correct<% } else { %> incorrect<% }%>"><%= answers[index] %> </p>
 						<% if (answers[index] !== question.answer){ %>
 							<p class="answer correct-answer"><i class="fa fa-check"></i> <%= question.answer %></p>
 						<% }%>
+						<p class="answer your-answer<% if (answers[index] == question.answer){ %> correct<% } else { %> incorrect<% }%>"><% if (answers[index] !== question.answer){ %>You answered: <% } %><%= answers[index] %> </p>
 					</li>
 				<% }); %>
 				</ul>
