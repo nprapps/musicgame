@@ -1,26 +1,19 @@
 #!/usr/bin/env python
 
-import csv
 import datetime
 from glob import glob
 import json
 import os
-import time
-import uuid
 
 import boto
-from bs4 import BeautifulSoup
 from fabric.api import *
 from jinja2 import Template
-import random
-import requests
 
 import app
 import app_config
 import copy
 from etc import github
 from etc.gdocs import GoogleDoc
-import games
 import models
 
 """
@@ -32,7 +25,7 @@ env.forward_agent = True
 env.hosts = []
 env.settings = None
 
-model_names = ['Photo', 'Audio', 'Choice', 'Question', 'Quiz', 'QuizCategory']
+model_names = ['Category', 'Photo', 'Audio', 'Quiz', 'Question', 'Choice']
 
 """
 Environments
@@ -698,7 +691,7 @@ def bootstrap_data():
     Sets up the app from scratch.
     """
     local('pip install -r requirements.txt')
-    assets_down()
+    assets_sync()
     load_quizzes()
 
 def init_db():
@@ -717,7 +710,7 @@ def init_tables():
     models.db.init(app_config.PROJECT_SLUG, user=app_config.PROJECT_SLUG)
 
     with settings(warn_only=True):
-        for model_name in reversed(model_names):
+        for model_name in model_names:
             model = getattr(models, model_name)
             model.create_table()
 
@@ -740,7 +733,7 @@ def load_quizzes():
         'drum_fill_friday.json'
     ]
 
-    qc = models.QuizCategory(name="Drum Fill Friday")
+    qc = models.Category(name="Drum Fill Friday")
     qc.save()
 
     for quiz in quiz_list:
@@ -749,7 +742,7 @@ def load_quizzes():
             quiz_json = dict(json.loads(readfile.read()))
 
         quiz_dict = {}
-        quiz_dict['quiz_category'] = qc
+        quiz_dict['category'] = qc
         quiz_dict['title'] = quiz_json['title']
         quiz_dict['text'] = 'This is some faked out text because this isn\'t in the json yet.'
         quiz_dict['created'] = datetime.datetime.now()

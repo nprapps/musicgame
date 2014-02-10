@@ -1,7 +1,7 @@
 <div class="progress"><div class="bar" style="width: 0%;"></div></div>
 <div class="container">
 	<h3 class="progress-header">Question <%= questionNumber %>/<%= quizLength %></h3>
-	<% if (QUIZ.quiz_type === "audio"){ %>
+	<% if (quiz_type === "audio"){ %>
 	<div id="player" class="jp-player"></div>
 	<div id="jp_container_1" class="jp-audio">
 	    <div class="jp-type-single">
