@@ -224,16 +224,15 @@ var onQuestionComplete = function(points, selectedAnswer, element){
     var scoreOffsetY = $answersContainer.offset().top;
 
     if (element){
-        var scoreOffsetY = $(element).offset().top + $(element).height() / 2;
-        var scoreOffsetX = $(element).offset().left + $(element).width() / 2;
-        var width = $(element).width();
-        var height = $(element).height();
+        var scoreOffsetY = $(element).offset().top + $(element).outerHeight() / 2;
+        var scoreOffsetX = $(element).offset().left + $(element).outerWidth() / 2;
     }
 
     granularPoints.push(points);
 
     $content.after('<div class="score-container"><div id="score"></div></div>');
     $(document).find('#score')
+        .addClass(points > 0 ? '' : 'zero')
         .text('+' + points)
         .css({
             'top': scoreOffsetY,
