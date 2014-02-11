@@ -1,13 +1,13 @@
 <div class="category-header">
-	<h2><%= category %></h2>
+	<h2><%= category.name %></h2>
 </div>
 
 <div class="container">
 	<div class="row">
-		<div class="quiz-info<% if (cover_image){ %> has-cover<% } %>">
-			<% if (cover_image){ %>
+		<div class="quiz-info<% if (photo) { %> has-cover<% } %>">
+			<% if (photo){ %>
 				<div class="cover">
-					<img class="img-responsive" src="<%= cover_image %>">
+					<img class="img-responsive" src="<%= photo['file_path'] %>">
 				</div>
 			<% } %>
 
@@ -17,9 +17,7 @@
 					<p><i class="fa fa-clock-o"></i> You'll have <%= TIMERLENGTH %> seconds to answer each question.</p>
 				<% } %>
 
-				<% if(quiz_type === 'audio'){ %>
-					<p><i class="fa fa-headphones"></i> Make sure your speakers or headphones are turned up.</p>
-				<% } %>
+				<p><i class="fa fa-headphones"></i> Make sure your speakers or headphones are turned up.</p>
 				<a id="start-quiz" class="btn btn-large btn-primary" href="#">Start Quiz</a>
 			</div>
 		</div>

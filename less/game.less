@@ -20,6 +20,9 @@
 // Icon font
 @import "less/lib/font-awesome/font-awesome.less";
 
+// LESS Hat Mixins
+@import "less/lib/lesshat-prefixed.less";
+
 // NPR colors
 // -------------------------
 @inlineLink: #4774cc;
@@ -140,8 +143,6 @@ body {
 			padding-right: @grid-gutter-width / 4;
 
 			.transition(opacity .5s ease-in);
-
-
 
 			&.fade {
 				opacity: 0.2;
@@ -480,140 +481,43 @@ body {
 	left: 0;
 	right: 0;
 	overflow: hidden;
-}
 
-#score {
-	.scale(0);
-	position: absolute;
-	top: 0;
-	left: 50%;
-	z-index: 20000;
-	margin-left: -75px;
-	margin-top: -75px;
-	padding: 10px;
-	width: 150px;
-	height: 150px;
+	#score {
+		.scale(0);
+		position: absolute;
+		top: 0;
+		left: 50%;
+		z-index: 20000;
+		margin-left: -75px;
+		margin-top: -75px;
+		padding: 10px;
+		width: 150px;
+		height: 150px;
+		box-sizing: border-box;
 
-	border-radius: 75px;
-	background: rgba(0,0,0,0.7);
-	text-align: center;
-	text-transform: uppercase;
-	font-size: @font-size-base * 3;
-	line-height: 125px;
-	opacity: 0;
+		border-radius: 75px;
+		background: fade(@brand-success, 90%);
+		text-align: center;
+		text-transform: uppercase;
+		font-size: @font-size-base * 3;
+		line-height: 125px;
+		opacity: 0;
 
-	-webkit-transform: translateX(-50%);
-	-ms-transform: translateX(-50%);
-	transform: translateX(-50%);
+		-webkit-transform: translateX(-50%);
+		-ms-transform: translateX(-50%);
+		transform: translateX(-50%);
 
-	&.fade-in {
-		z-index: 10;
-		-webkit-animation: zoomOut 1500ms ease both;
-		  -o-animation: zoomOut 1500ms ease both;
-		  animation: zoomOut 1500ms ease  both;
+		&.zero {
+			background: fade(@brand-danger, 90%);
+		}
+
+		&.fade-in {
+			z-index: 10;
+			.lh-animation(zoomOut 1000ms ease both);
+		}
 	}
 }
 
-@-webkit-keyframes zoomOut {
-  0% {
-    opacity: 0;
-    -webkit-transform: scale(3);
-    transform: scale(3);
-  }
 
-  15% {
-    opacity: 1;
-    -webkit-transform: scale(0.8);
-    transform: scale(0.8);
-  }
+.lh-keyframes(~'zoomOut, 0%{opacity: 0; transform: scale(3); } 15%{opacity: 1; transform: scale(0.8); } 25%{opacity: 1; transform: scale(1.1); } 30%{opacity: 1; transform: scale(1); } 70%{opacity: 1; transform: scale(1); } 75%{opacity: 1; transform: scale(1.2); } 100%{opacity: 0; transform: scale(0); } ');
 
-  25% {
-    opacity: 1;
-    -webkit-transform: scale(1.1);
-    transform: scale(1.1);
-  }
-
-  30% {
-    opacity: 1;
-    -webkit-transform: scale(1);
-    transform: scale(1);
-  }
-
-  60% {
-    opacity: 1;
-    -webkit-transform: scale(1);
-    transform: scale(1);
-  }
-
-  65% {
-    opacity: 1;
-    -webkit-transform: scale(1.2);
-    transform: scale(1.2);
-  }
-
-  100% {
-    opacity: 0;
-    -webkit-transform: scale(0);
-    transform: scale(0);
-  }
-}
-
-@-o-keyframes zoomOut {
-  0% {
-    opacity: 0;
-    -o-transform: scale(3);
-    transform: scale(3);
-  }
-
-  30% {
-    opacity: 1;
-    -o-transform: scale(1);
-    transform: scale(1);
-  }
-
-  70% {
-    opacity: 1;
-    -o-transform: scale(1);
-    transform: scale(1);
-  }
-
-  100% {
-    opacity: 0;
-    -o-transform: scale(0);
-    transform: scale(0);
-  }
-}
-
-@keyframes zoomOut {
-  0% {
-    opacity: 0;
-    -webkit-transform: scale(3);
-    -ms-transform: scale(3);
-    -o-transform: scale(3);
-    transform: scale(3);
-  }
-
-  30% {
-    opacity: 1;
-    -webkit-transform: scale(1);
-    -ms-transform: scale(1);
-    -o-transform: scale(1);
-    transform: scale(1);
-  }
-
-  70% {
-    opacity: 1;
-    -webkit-transform: scale(1);
-    -ms-transform: scale(1);
-    -o-transform: scale(1);
-    transform: scale(1);
-  }
-
-  100% {
-    opacity: 0;
-    -webkit-transform: scale(0);
-    -ms-transform: scale(0);
-    -o-transform: scale(0);
-    transform: scale(0);
-  }
-}

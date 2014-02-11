@@ -1,7 +1,7 @@
 <div class="progress"><div class="bar" style="width: 0%;"></div></div>
 <div class="container">
 	<h3 class="progress-header">Question <%= questionNumber %>/<%= quizLength %></h3>
-	<% if (quiz_type === "audio"){ %>
+	<% if (audio){ %>
 	<div id="player" class="jp-player"></div>
 	<div id="jp_container_1" class="jp-audio">
 	    <div class="jp-type-single">
@@ -18,11 +18,11 @@
 	<ul class="answers">
 	<% _.each(_.shuffle(choices), function(choice){ %>
 		<% if (choice.text) { %>
-			<li<% if (choice.cover !== null) { %> class="has-cover"<% } %>>
+			<li<% if (choice.photo) { %> class="has-cover"<% } %>>
 				<a href="#">
-				<% if (choice.cover !== null) { %>
+				<% if (choice.photo) { %>
 					<div class="cover">
-						<img class="img-responsive" src="/musicgame/assets/cover_art/<%= choice.cover %>">
+						<img class="img-responsive" src="<%= choice.photo.file_path %>">
 					</div>
 				<% } %>
 					<div class="answer"><%= choice.text %></div>

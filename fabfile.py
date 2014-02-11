@@ -718,6 +718,38 @@ def install_brew_requirements():
     with settings(warn_only=True):
         local('brew install mpg123 vorbis-tools lame')
 
+def _create_audio(path):
+    audio = {
+        'file_path': path,
+        'rendered_mp3_path': path,
+        'caption': 'TKTK',
+        'credit': 'TKTK'
+    }
+
+    audio = models.Audio(**audio)
+    audio.render_audio = False
+    audio.save()
+    
+    print "Saved audio: %s" % audio
+
+    return audio
+
+def _create_photo(path):
+    image = {
+        'file_path': path,
+        'rendered_file_path': path,
+        'caption': 'TKTK',
+        'credit': 'TKTK'
+    }
+
+    image = models.Photo(**image)
+    image.render_image = False 
+    image.save()
+
+    print "Saved image: %s" % image
+
+    return image
+
 def load_quizzes():
     """
     You know, some sample data.
@@ -736,74 +768,78 @@ def load_quizzes():
     qc = models.Category(name="Drum Fill Friday")
     qc.save()
 
-    for quiz in quiz_list:
+    now = datetime.datetime.now()
 
+    for quiz in quiz_list:
         with open('www/assets/data/%s' % quiz, 'rb') as readfile:
             quiz_json = dict(json.loads(readfile.read()))
 
-        quiz_dict = {}
-        quiz_dict['category'] = qc
-        quiz_dict['title'] = quiz_json['title']
-        quiz_dict['text'] = 'This is some faked out text because this isn\'t in the json yet.'
-        quiz_dict['created'] = datetime.datetime.now()
-        quiz_dict['updated'] = datetime.datetime.now()
+        quiz = {
+            'category': qc,
+            'title': quiz_json['title'],
+            'text': 'TKTK',
+            'created': now,
+            'updated': now,
+            'photo': None
+        }
 
-        qz = models.Quiz(**quiz_dict)
+        # Create photo
+        if quiz_json['photo']:
+            quiz['photo'] = _create_photo(quiz_json['photo'])
+
+        # Create quiz
+        qz = models.Quiz(**quiz)
         qz.save()
 
         print "Saved quiz: %s" % qz
 
-        for question_index, question in enumerate(quiz_json['questions']):
+        for question_index, question_json in enumerate(quiz_json['questions']):
+            question = {
+                'order': question_index + 1,
+                'quiz': qz,
+                'text': question_json['text'],
+                'photo': None,
+                'audio': None
+            }
 
-            question_dict = {}
-            question_dict['order'] = question_index + 1
-            question_dict['quiz'] = qz
-            question_dict['text'] = question['text']
+            # Create photo
+            if question_json['photo']:
+                question['photo'] = _create_photo(question_json['photo'])
 
-            qn = models.Question(**question_dict)
+            # Create audio
+            if question_json['audio']:
+                question['audio'] = _create_audio(question_json['audio'])
+
+            # Create question
+            qn = models.Question(**question)
             qn.save()
-
-            audio_dict = {}
-            audio_dict['file_path'] = question['audio']
-            audio_dict['rendered_mp3_path'] = question['audio']
-            audio_dict['question'] = qn
-            audio_dict['caption'] = "Audio clip"
-            audio_dict['credit'] = "The internet"
-
-            audio = models.Audio(**audio_dict)
-            audio.render_audio = True
-            audio.save()
-
-
-            print "Saved audio: %s" % audio
 
             print "Saved question: %s" % qn
 
-            for choice_index, choice in enumerate(question['choices']):
+            for choice_index, choice_json in enumerate(question_json['choices']):
+                choice = {
+                    'order': choice_index + 1,
+                    'question': qn,
+                    'text': choice_json['text'],
+                    'correct_answer': False,
+                    'photo': None,
+                    'audio': None,
+                }
 
-                choice_dict = {}
-                choice_dict['order'] = choice_index + 1
-                choice_dict['question'] = qn
-                choice_dict['text'] = choice['text']
+                if choice['text'] == question_json['answer']:
+                    choice['correct_answer'] = True
 
-                if choice_dict['text'] == question['answer']:
-                    choice_dict['correct_answer'] = True
+                # Create photo
+                if choice_json['photo']:
+                    choice['photo'] = _create_photo(choice_json['photo'])
 
-                ch = models.Choice(**choice_dict)
+                # Create audio
+                if choice_json['audio']:
+                    choice['audio'] = _create_audio(choice_json['audio'])
+
+                # Create choice
+                ch = models.Choice(**choice)
                 ch.save()
-
-                image_dict = {}
-                image_dict['file_path'] = choice['cover']
-                image_dict['rendered_file_path'] = choice['cover']
-                image_dict['choice'] = ch
-                image_dict['caption'] = choice_dict['text']
-                image_dict['credit'] = "The internet"
-
-                img = models.Photo(**image_dict)
-                img.render_image = True
-                img.save()
-
-                print "Saved image: %s" % img
 
                 print "Saved choice: %s" % ch
 
