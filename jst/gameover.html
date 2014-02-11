@@ -22,8 +22,8 @@
 		<ul class="responses list-unstyled hide <% if (_.where(quizData['questions'], {audio: null}).length < quizData['questions'].length){ %>audio<% } %>">
 		<% _.each(quizData['questions'], function(question, index){ %>
 			<li class="<%= answers[index] === correctAnswers[index] ? 'correct' : 'incorrect' %>">
-				<% if (_.findWhere(question['choices'], {correct_answer: true})['photo']) { %>
-					<img src="<%= _.findWhere(question['choices'], {correct_answer: true})['photo']['file_path'] %>">
+				<% if (_.where(question['choices'], {correct_answer: true})[0]['photo']['file_path']) { %>
+					<img src="<%= _.where(question['choices'], {correct_answer: true})[0]['photo']['file_path'] %>">
 				<% } %>
 				<% if (question.audio){ %>
 				<div id="player_<%= index %>" class="jp-player" data-audio="<%= question.audio.file_path %>"></div>
