@@ -43,9 +43,9 @@ var renderStart = function() {
 
     $startQuizButton = $content.find('#start-quiz');
     $startQuizButton.on('click', function(e){
-        e.stopPropagation();
         renderQuestion();
         $content.removeClass('start');
+        return false;
     });
 
     sendHeightToParent();
@@ -261,8 +261,7 @@ var onQuestionComplete = function(points, selectedAnswer, element){
 /*
 * You ran out of time
 */
-var onAnswerClick = function(e){
-    e.stopPropagation();
+var onAnswerClick = function(){
     var points = 0;
     $this = $(this).find('a .answer');
 
@@ -286,6 +285,7 @@ var onAnswerClick = function(e){
     }
 
     onQuestionComplete(points, $this.text(), this);
+    return false;
 };
 
 var trimAnswers = function(){
@@ -339,18 +339,18 @@ var runTimer = function() {
 /*
 * Go to the next question
 */
-var onNextQuestionClick = function(e) {
-    e.stopImmediatePropagation();
+var onNextQuestionClick = function() {
     currentQuestion++;
     renderQuestion();
+    return false;
 }
 
 /*
 * Go to the next question
 */
-var onShowResultsClick = function(e) {
-    e.stopImmediatePropagation();
+var onShowResultsClick = function() {
     $responses.removeClass('hide');
+    return false;
 }
 
 /*
