@@ -27,7 +27,8 @@ var stopTimer = false;
 var totalScore = 0;
 var granularPoints = [];
 var answers = [];
-var current_answer = null;
+var correctAnswers = [];
+var currentAnswer = null;
 var incorrectAnswers = null;
 
 /*
@@ -55,7 +56,7 @@ var renderStart = function() {
  */
 var renderQuestion = function() {
     var question = quizData['questions'][currentQuestion];
-    current_answer = _.where(quizData['questions'][currentQuestion]['choices'], {correct_answer: true})[0]['text'];
+    currentAnswer = _.where(quizData['questions'][currentQuestion]['choices'], {correct_answer: true})[0]['text'];
 
 
     var context = question;
@@ -66,7 +67,7 @@ var renderQuestion = function() {
 
     incorrectAnswers = _(question['choices'])
         .filter(function(choice){
-            return !choice.correct_answer;
+            return !choice.correctAnswer;
         });
 
     timeLeft = TIMERLENGTH * 1000;
@@ -141,8 +142,9 @@ var renderGameOver = function() {
     var context = {
         'quizData': quizData,
         'score': totalScore,
-        'answers': answers,
-        'points': granularPoints
+        'selected_answers': answers,
+        'points': granularPoints,
+        'correct_answers': correctAnswers
     };
 
     var html = JST.gameover(context);
@@ -156,7 +158,7 @@ var renderGameOver = function() {
     var $stopButtons = $content.find('.jp-stop');
 
     // Set up question audio players
-    if (quizData['quiz_type'] === 'audio'){
+    if (_.where(quizData['questions'], {audio: null}).length < quizData['questions'].length > 0){
         $players.jPlayer({
             ready: function () {
                 $(this).jPlayer('setMedia', {
@@ -220,15 +222,20 @@ var onQuestionStopButtonClick = function(e){
 * Answer clicked or timer ran out
 */
 var onQuestionComplete = function(points, selectedAnswer, element){
-    var scoreOffsetY = $answersContainer.offset().top;
+    var $correctAnswer = $answers.filter(function(){
+        return $(this).find('a .answer').text() === currentAnswer;
+    });
+    var element = element||$correctAnswer;
+    var scoreOffsetY = $(element).offset().top + $(element).outerHeight() / 2;
+    var scoreOffsetX = $(element).offset().left + $(element).outerWidth() / 2;
 
-    if (element){
-        var scoreOffsetY = $(element).offset().top + $(element).outerHeight() / 2;
-        var scoreOffsetX = $(element).offset().left + $(element).outerWidth() / 2;
-    }
-
+    // Push answer and points for the round to our arrays
+    correctAnswers.push(currentAnswer);
+    answers.push(selectedAnswer);
     granularPoints.push(points);
 
+    $correctAnswer.addClass('correct');
+    $content.find('.answers li:not(.correct, .incorrect)').addClass('fade').off("click");
     $content.after('<div class="score-container"><div id="score"></div></div>');
     $(document).find('#score')
         .addClass(points > 0 ? '' : 'zero')
@@ -242,19 +249,6 @@ var onQuestionComplete = function(points, selectedAnswer, element){
             function(){
                 $(this).parent().remove();
         });
-
-    // Push the selected answer to our answer array
-    answers.push(selectedAnswer);
-
-    $answers.each(function(){
-        $this = $(this).find('a .answer');
-
-        if ($this.text() === current_answer){
-            $this.parent().parent().addClass('correct');
-        }
-    });
-
-    $content.find('.answers li:not(.correct, .incorrect)').addClass('fade').off("click");
 
     if (currentQuestion + 1 < quizData['questions'].length){
         $nextQuestionButton.addClass('show');
@@ -277,7 +271,7 @@ var onAnswerClick = function(e){
     stopTimer = true;
     $timerContainer.attr('class', 'timer-container fade');
 
-    if ($this.text() === current_answer){
+    if ($this.text() === currentAnswer){
         $this.parent().parent().addClass('correct');
         if(timer !== 'false'){
             points = 100 / quizData['questions'].length * (timeLeft / (TIMERLENGTH * 1000));
