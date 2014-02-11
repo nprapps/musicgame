@@ -65,10 +65,9 @@ var renderQuestion = function() {
 
     var html = JST.question(context);
 
-    incorrectAnswers = _(question['choices'])
-        .filter(function(choice){
-            return !choice.correctAnswer;
-        });
+    incorrectAnswers = _.filter(question['choices'], function(choice){
+        return !choice.correct_answer;
+    });
 
     timeLeft = TIMERLENGTH * 1000;
     stopTimer = false;
@@ -235,7 +234,7 @@ var onQuestionComplete = function(points, selectedAnswer, element){
     granularPoints.push(points);
 
     $correctAnswer.addClass('correct');
-    $content.find('.answers li:not(.correct, .incorrect)').addClass('fade').off("click");
+    $answers.not($correctAnswer).not($(element)).addClass('fade').off("click");
     $content.after('<div class="score-container"><div id="score"></div></div>');
     $(document).find('#score')
         .addClass(points > 0 ? '' : 'zero')
