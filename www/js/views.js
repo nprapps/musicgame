@@ -118,7 +118,7 @@ var QuestionView = Backbone.View.extend({
             view.render();
         });
 
-        if (this.model.choices.length == 0) {
+        if (this.model.choices.length === 0) {
             for (i=0; i<4; i++) {
                 this.addChoiceModel();
             }
@@ -173,7 +173,7 @@ var QuestionView = Backbone.View.extend({
     serialize: function() {
         var properties = {
             text: this.$('.interrogative').text(),
-        }
+        };
 
         return properties;
     }
@@ -216,7 +216,7 @@ var ChoiceView = Backbone.View.extend({
         var properties = {
             'text': this.$('.answer').val(),
             'correct_answer': false
-        }
+        };
         if (this.$('.correct').is(':checked')) {
             properties['correct_answer'] = true;
         }

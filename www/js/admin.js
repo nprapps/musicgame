@@ -7,6 +7,6 @@ var onDocumentReady = function() {
     quiz = new Quiz(window.QUIZ_DATA);
     quizzes.add(quiz);
     quizDetailView = new QuizDetailView({ model: quiz });
-}
+};
 
 $(document).ready(onDocumentReady);
