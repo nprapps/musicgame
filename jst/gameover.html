@@ -18,7 +18,7 @@
 
 				<ul class="responses list-unstyled hide <% if (_.where(quizData['questions'], {audio: null}).length < quizData['questions'].length){ %>audio<% } %>">
 				<% _.each(quizData['questions'], function(question, index){ %>
-					<li>
+					<li class="<%= answers[index] === correctAnswers[index] ? 'correct' : 'incorrect' %>">
 						<% if (question.audio){ %>
 						<div id="player_<%= index %>" class="jp-player" data-audio="<%= question.audio.file_path %>"></div>
 						<div id="jp_container_<%= index %>" class="jp-audio pull-left">
@@ -36,7 +36,9 @@
 						<% if (answers[index] !== correctAnswers[index]){ %>
 							<p class="answer correct-answer"><i class="fa fa-check"></i> <%= _.where(quizData['questions'][index]['choices'], {correct_answer: true})[0]['text'] %></p>
 						<% }%>
+						<% if (answers[index].length > 0){ %>
 						<p class="answer your-answer<% if (answers[index] === correctAnswers[index]){ %> correct<% } else { %> incorrect<% }%>"><% if (answers[index] !== correctAnswers[index]){ %>You answered: <% } %><%= answers[index] %> </p>
+						<% } %>
 					</li>
 				<% }); %>
 				</ul>
