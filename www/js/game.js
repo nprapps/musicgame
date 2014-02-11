@@ -62,20 +62,13 @@ var renderQuestion = function() {
     var context = {
         'question': question,
         'quizLength': quiz.questions.length,
-        'questionNumber': question + 1
+        'questionNumber': currentQuestion + 1
     };
 
     var html = JST.question(context);
 
-    incorrectAnswers = _(question.choices)
-
-        .filter(function(choice){
-            if (_.isObject(choice)){
-                return choice.text !== question.get('answer');
-            } else {
-                return choice !== question.get('answer');
-            }
-        });
+    incorrectAnswers = question['choices']
+        .where({ correct_answer: false });
 
     timeLeft = TIMERLENGTH * 1000;
     stopTimer = false;
@@ -257,7 +250,7 @@ var onQuestionComplete = function(points, selectedAnswer, element){
     $answers.each(function(){
         $this = $(this).find('a .answer');
 
-        if ($this.text() === quiz.questions.at(currentQuestion).get('answer')){
+        if ($this.text() === quiz.questions.at(currentQuestion)['choices'].where({ correct_answer: true })[0].get('text')){
             $this.parent().parent().addClass('correct');
         }
     });
@@ -279,7 +272,7 @@ var onQuestionComplete = function(points, selectedAnswer, element){
 var onAnswerClick = function(e){
     e.stopPropagation();
     var points = 0;
-    var answer = quiz.questions.at(currentQuestion).get('answer');
+    var answer = quiz.questions.at(currentQuestion)['choices'].where({ correct_answer: true })[0].get('text');
     $this = $(this).find('a .answer');
 
     // Stop the timer
@@ -307,7 +300,7 @@ var onAnswerClick = function(e){
 var trimAnswers = function(){
     incorrectAnswers = _.shuffle(incorrectAnswers);
     var wrongAnswer = incorrectAnswers.pop();
-    wrongAnswer = wrongAnswer.text||wrongAnswer;
+    wrongAnswer = wrongAnswer.get('text');
 
     $answers.each(function(){
         var $this = $(this).find('a .answer');
