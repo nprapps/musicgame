@@ -306,9 +306,6 @@ body {
 				margin: 0;
 			}
 		}
-		.next-up {
-			.make-sm-column(12);
-		}
 
 		.cover {
 			img {
@@ -349,9 +346,11 @@ body {
 		.quiz-info {
 			&.has-cover {
 				.cover {
+					.make-xs-column(4);
 					.make-sm-column(4);
 				}
 				.quiz-title {
+					.make-xs-column(8);
 					.make-sm-column(8);
 
 					h1 {
@@ -366,12 +365,16 @@ body {
 		.quiz-info {
 			&.has-cover {
 				.cover {
-					.make-xs-column(6);
-					.make-sm-column(4);
+					.make-xs-column(3);
+					.make-sm-column(3);
+					.make-sm-column-offset(1);
+					.make-md-column(2);
+					.make-md-column-offset(2);
 				}
 				.quiz-title {
-					.make-xs-column(6);
-					.make-sm-column(8);
+					.make-xs-column(9);
+					.make-sm-column(7);
+					.make-md-column(6);
 				}
 			}
 
@@ -384,10 +387,15 @@ body {
 			}
 		}
 
-		.next-up {
-			.make-sm-column(8);
-			.make-sm-column-offset(4);
+		.next-up,
+		.responses {
+			.make-sm-column(10);
+			.make-sm-column-offset(1);
+			.make-md-column(8);
+			.make-md-column-offset(2);
+		}
 
+		.next-up {
 			h2 {
 				border-top: 1px solid lighten(@musicDark, 20%);
 				padding-top: @line-height-computed;
@@ -404,6 +412,7 @@ body {
 				border-width: 0 0 0 10px;
 				border-style: solid;
 				padding: @grid-gutter-width / 2;
+				overflow: hidden;
 
 				&.correct {
 					border-color: @correct;
@@ -411,6 +420,12 @@ body {
 
 				&.incorrect {
 					border-color: @incorrect;
+				}
+
+				img {
+					max-width: 100px;
+					.pull-left;
+					margin-right: @grid-gutter-width / 2;
 				}
 
 
