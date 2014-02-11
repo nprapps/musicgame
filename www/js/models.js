@@ -156,7 +156,7 @@ var Choice = Backbone.Model.extend({
 
         return data;
     }
-})
+});
 
 var Audio = Backbone.Model.extend({
     url: function() {
@@ -174,7 +174,7 @@ var Audio = Backbone.Model.extend({
 
         return data;
     }
-})
+});
 
 var Photo = Backbone.Model.extend({
     url: function() {
@@ -192,4 +192,4 @@ var Photo = Backbone.Model.extend({
 
         return data;
     }
-})
+});
