@@ -232,7 +232,7 @@ var onQuestionComplete = function(points, selectedAnswer, element){
     $content.after('<div class="score-container"><div id="score"></div></div>');
     $(document).find('#score')
         .addClass(points > 0 ? '' : 'zero')
-        .text('+' + points)
+        .html('+' + points)
         .css({
             'top': scoreOffsetY,
             'left': scoreOffsetX
