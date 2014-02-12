@@ -50,8 +50,8 @@ var QuizListView = Backbone.View.extend({
         var properties = {
             title: 'Put Title Here',
             text: 'Put description here.',
-            created: '2014-02-12',
-            updated: '2014-02-12'
+            created: moment().format(),
+            updated: moment().format()
         };
 
         return properties;
