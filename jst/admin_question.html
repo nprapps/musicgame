@@ -13,7 +13,9 @@
     <div class="question-info row">
         <div class="col-lg-8 col-lg-offset-2">
             <p>
-                <span class="after-text" contenteditable="true" placeholder='Put information about the question that the user will see after they answer here.'><%= question.get('after_text') %></span>
+                <span class="after-text" contenteditable="true" placeholder='Put information about the question that the user will see after they answer here.'><% if (question.attributes['after_text'] == 'null') {
+                    question.get('after_text')
+                }%></span>
             </p>
         </div>
     </div>
