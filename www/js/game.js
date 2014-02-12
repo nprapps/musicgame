@@ -56,7 +56,7 @@ var renderStart = function() {
  */
 var renderQuestion = function() {
     var question = quizData['questions'][currentQuestion];
-    currentAnswer = _.where(quizData['questions'][currentQuestion]['choices'], {correct_answer: true})[0]['text'];
+    currentAnswer = _.where(question['choices'], {correct_answer: true})[0]['text'];
 
 
     var context = question;
@@ -66,7 +66,7 @@ var renderQuestion = function() {
     var html = JST.question(context);
 
     incorrectAnswers = _.filter(question['choices'], function(choice){
-        return !choice.correct_answer;
+        return !choice['correct_answer'];
     });
 
     timeLeft = TIMERLENGTH * 1000;
@@ -157,42 +157,40 @@ var renderGameOver = function() {
     var $stopButtons = $content.find('.jp-stop');
 
     // Set up question audio players
-    if (_.where(quizData['questions'], {audio: null}).length < quizData['questions'].length > 0){
-        $players.jPlayer({
-            ready: function () {
-                $(this).jPlayer('setMedia', {
-                    mp3: $(this).data('audio'),
-                    oga: 'http://s.npr.org/news/specials/2014/wolves/wolf-ambient-draft.ogg'
-                });
-            },
-            ended: function() {
-                onQuestionStopButtonClick();
-            },
-            swfPath: 'js/lib',
-            supplied: 'mp3, oga',
-            loop: false
-        });
-
-        $playButtons.each(function(){
-            $(this).on('click', function(){
-                console.log($(this).closest('.jp-audio').prev());
-                $players.jPlayer('stop');
-                $stopButtons.hide();
-                $playButtons.show();
-                $(this).closest('.jp-audio').prev().jPlayer('play');
-                $(this).hide().next().show();
+    $players.jPlayer({
+        ready: function () {
+            $(this).jPlayer('setMedia', {
+                mp3: $(this).data('audio'),
+                oga: 'http://s.npr.org/news/specials/2014/wolves/wolf-ambient-draft.ogg'
             });
+        },
+        ended: function() {
+            onQuestionStopButtonClick();
+        },
+        swfPath: 'js/lib',
+        supplied: 'mp3, oga',
+        loop: false
+    });
 
+    $playButtons.each(function(){
+        $(this).on('click', function(){
+            console.log($(this).closest('.jp-audio').prev());
+            $players.jPlayer('stop');
+            $stopButtons.hide();
+            $playButtons.show();
+            $(this).closest('.jp-audio').prev().jPlayer('play');
+            $(this).hide().next().show();
         });
 
-        $stopButtons.each(function(){
-            $(this).on('click', function(){
-                $(this).closest('.jp-audio').prev().jPlayer('stop');
-                $(this).hide().prev().show();
-            });
+    });
 
+    $stopButtons.each(function(){
+        $(this).on('click', function(){
+            $(this).closest('.jp-audio').prev().jPlayer('stop');
+            $(this).hide().prev().show();
         });
-    }
+
+    });
 
     $showResults.on('click', onShowResultsClick);
 
