@@ -2,7 +2,7 @@
     <div class="col-lg-8 col-md-offset-2 col-s-12">
         <div class="input-group">
             <span class="input-group-addon">
-                <input class="correct" type="radio" name="q1-answers" <% if (choice.get('correct_answer')) { %> checked="checked" <% } %></input>
+                <input class="correct" type="radio" name="q<%=choice.question.id%>-answers" <% if (choice.get('correct_answer')) { %> checked="checked" <% } %></input>
             </span>
             <input type="text" class="form-control answer" placeholder="Choice" value="<%= choice.get('text') || '' %>">
             <span class="input-group-btn">
