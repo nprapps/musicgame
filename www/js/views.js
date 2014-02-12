@@ -1,3 +1,64 @@
+var QuizListView = Backbone.View.extend({
+    el: '#admin',
+    events: {
+        'click #add-quiz': 'addQuiz'
+    },
+
+    initialize: function() {
+        this.$quizzes = null;
+        this.quizzes = new Quizzes();
+        this.quizViews = {};
+
+        _.bindAll(this);
+
+        this.quizzes.fetch({
+            success: _.bind(function() {
+                this.render();
+            }, this),
+            error: function() {
+                console.log('error');
+            }
+        });
+    },
+    render: function() {
+        this.$el.empty();
+
+        this.$el.html(JST.admin_quiz_list);
+
+        this.$quizzes = $('.quizzes');
+        this.quizzes.each(_.bind(function(quiz) {
+            this.addQuizView(quiz);
+        }, this));
+    },
+    addQuizView: function(quiz) {
+        console.log(quiz);
+        var quizView = new QuizView({model: quiz});
+        quizView.render();
+
+        this.$quizzes.append(quizView.el)
+    },
+});
+
+var QuizView = Backbone.View.extend({
+    el: '.quizzes',
+    events: {
+        'click .delete-quiz': 'rmQuiz'
+    },
+
+    initialize: function() {
+        _.bindAll(this);
+
+        this.render();
+    },
+
+    render: function() {
+        this.$el.empty();
+
+        this.$el.html(JST.admin_quizzes({'quiz': this.model}));
+    }
+});
+
+
 /*
  * QuizDetailView
  */

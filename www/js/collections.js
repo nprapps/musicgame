@@ -3,7 +3,13 @@
  */
 var Quizzes = Backbone.Collection.extend({
 	url: APP_CONFIG['SERVER_BASE_URL'] + '/api/quiz/',
-	model: Quiz
+	model: Quiz,
+
+	parse: function(response) {
+        //this.meta = response.meta;
+
+        return response.objects;
+	}
 });
 
 /*

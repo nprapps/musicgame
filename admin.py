@@ -9,7 +9,7 @@ from render_utils import make_context
 
 admin = Blueprint('admin', __name__)
 
-@admin.route('/admin/quiz/')
+@admin.route('/admin/')
 def admin_quiz_list():
     """
     List view of quizzes in the DB, sorted by insertion order.
@@ -20,7 +20,7 @@ def admin_quiz_list():
 
     context['quizzes'] = models.Quiz.select()
 
-    return render_template('admin/admin.html', **context)
+    return render_template('admin/admin_index.html', **context)
 
 @admin.route('/admin/quiz/<quiz_id>/')
 def admin_quiz_detail(quiz_id):
@@ -36,4 +36,4 @@ def admin_quiz_detail(quiz_id):
     context['quiz'] = quiz
     context['quiz_json'] = flask.json.dumps(quiz.flatten())
 
-    return render_template('admin/admin.html', **context)
+    return render_template('admin/admin_detail.html', **context)
