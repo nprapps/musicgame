@@ -143,7 +143,6 @@ var Choice = Backbone.Model.extend({
     },
     toJSON: function() {
         var data = _.clone(this.attributes);
-        console.log(data);
         data['question'] = this.question.id;
 
         delete data['photo'];

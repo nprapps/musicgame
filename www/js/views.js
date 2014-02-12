@@ -9,12 +9,11 @@ var QuizDetailView = Backbone.View.extend({
         'click #add-question': 'addQuestionModel'
     },
 
-    $questions: null,
-
-    quiz: null,
-    questionViews: {},
-
     initialize: function() {
+        this.questionViews = {};
+        this.$questions = null;
+        this.quiz = null;
+
         _.bindAll(this);
 
         this.render();
@@ -44,6 +43,7 @@ var QuizDetailView = Backbone.View.extend({
 
         this.model.save(properties, {
             success: _.bind(function() {
+                console.log('success');
                 _.each(this.questionViews, function(question) {
                     question.saveQuestion();
                 });
@@ -91,13 +91,11 @@ var QuestionView = Backbone.View.extend({
         'click .rm-question': 'close',
         'click #save-quiz': 'saveQuestion'
     },
-    model: null,
-
-    $choices: null,
-
-    choiceViews: {},
 
     initialize: function() {
+        this.choiceViews = {};
+        this.$choices = null;
+
         _.bindAll(this);
 
         this.render();
@@ -130,7 +128,7 @@ var QuestionView = Backbone.View.extend({
         var choice = new Choice();
         choice.question = this.model;
 
-        this.model.choices.add(new Choice());
+        this.model.choices.add(choice);
     },
 
     addChoiceView: function(choice) {
@@ -165,6 +163,9 @@ var QuestionView = Backbone.View.extend({
     },
 
     close: function() {
+        _.each(this.choiceViews, function(choiceView) {
+            choiceView.close();
+        });
         this.model.destroy();
         this.remove();
         this.unbind();
@@ -173,6 +174,7 @@ var QuestionView = Backbone.View.extend({
     serialize: function() {
         var properties = {
             text: this.$('.interrogative').text(),
+            order: 0, // TODO
         };
 
         return properties;
@@ -186,8 +188,6 @@ var ChoiceView = Backbone.View.extend({
     tagName: 'div',
 
     className: 'choice',
-
-    model: null,
 
     initialize: function() {
         _.bindAll(this);
@@ -215,7 +215,8 @@ var ChoiceView = Backbone.View.extend({
     serialize: function() {
         var properties = {
             'text': this.$('.answer').val(),
-            'correct_answer': false
+            'correct_answer': false,
+            'order': 0
         };
         if (this.$('.correct').is(':checked')) {
             properties['correct_answer'] = true;
