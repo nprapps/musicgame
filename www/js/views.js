@@ -38,21 +38,30 @@ var QuizListView = Backbone.View.extend({
         this.$quizzes.append(quizView.el);
     },
     addQuizModel: function() {
-        var quiz = this.quizzes.create({
+        var properties = this.serialize();
+
+        var quiz = this.quizzes.create(properties, {
+            success: function() {
+                window.location.replace('/musicgame/admin/quiz/' + quiz.get('id'));
+            }
+        });
+    },
+    serialize: function() {
+        var properties = {
             title: 'Put Title Here',
             text: 'Put description here.',
             created: '2014-02-12',
             updated: '2014-02-12'
-        });
+        };
 
-        _.debounce(window.location.replace('/musicgame/admin/quiz/' + quiz.get('id')), 500);
+        return properties;
     }
 });
 
 var QuizView = Backbone.View.extend({
     className: 'quiz',
     events: {
-        'click .delete-quiz': 'rmQuiz'
+        'click .delete-quiz': 'close'
     },
 
     tagName: 'tr',
