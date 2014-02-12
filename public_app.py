@@ -72,12 +72,12 @@ def index():
 
     return render_template('index.html', **context)
 
-@app.route('/%s/quiz/<quiz_id>/' % app_config.PROJECT_SLUG)
-def _test_quiz(quiz_id):
+@app.route('/%s/quiz/<quiz_slug>/' % app_config.PROJECT_SLUG)
+def _test_quiz(quiz_slug):
     """
-    Get a serialized version of a quiz for testing. 
+    Get a serialized version of a quiz for testing.
     """
-    quiz = models.Quiz.get(id=quiz_id)
+    quiz = models.Quiz.get(slug=quiz_slug)
 
     return jsonify(quiz.flatten())
 

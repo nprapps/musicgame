@@ -42,7 +42,7 @@ var QuizListView = Backbone.View.extend({
 
         var quiz = this.quizzes.create(properties, {
             success: function() {
-                window.location.replace('/musicgame/admin/quiz/' + quiz.get('id'));
+                window.location.replace('/' + APP_CONFIG['PROJECT_SLUG'] + '/admin/quiz/' + quiz.get('id'));
             }
         });
     },

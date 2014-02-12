@@ -1,5 +1,6 @@
 import datetime
 import os
+import re
 import time
 
 import boto
@@ -254,6 +255,7 @@ class Quiz(PSQLMODEL):
     Quizzes have Questions.
     """
     category = ForeignKeyField(Category, null=True, related_name='quizzes')
+    slug = TextField()
     title = TextField()
     text = TextField()
     tags = TextField(null=True)
@@ -286,6 +288,39 @@ class Quiz(PSQLMODEL):
                 choice_flat['photo'] = choice.photo.to_dict() if choice.photo else None
 
         return flat
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slugify()
+
+        super(Quiz, self).save(*args, **kwargs)
+
+    def slugify(self):
+        """
+        Generate a slug for this playground.
+        """
+        bits = []
+
+        for field in ['title']:
+            attr = getattr(self, field)
+
+            if attr:
+                attr = attr.lower()
+                attr = re.sub(r"[^\w\s]", '', attr)
+                attr = re.sub(r"\s+", '-', attr)
+
+                bits.append(attr)
+
+        base_slug = '-'.join(bits)
+
+        slug = base_slug
+        i = 1
+
+        while Quiz.select().where(Quiz.slug == slug).count():
+            i += 1
+            slug = '%s-%i' % (base_slug, i)
+
+        self.slug = slug
 
 
     # TODO:
