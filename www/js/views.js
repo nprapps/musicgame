@@ -244,6 +244,8 @@ var QuestionView = Backbone.View.extend({
     saveQuestion: function() {
         var properties = this.serialize();
 
+        console.log(properties['after_text']);
+
         this.model.save(properties, {
             success: _.bind(function() {
                 _.each(this.choiceViews, function(choiceView) {
@@ -269,6 +271,7 @@ var QuestionView = Backbone.View.extend({
         var properties = {
             text: this.$('.interrogative').text(),
             order: 0, // TODO
+            after_text: this.$('.after-text').text()
         };
 
         return properties;
