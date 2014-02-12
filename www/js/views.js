@@ -123,6 +123,12 @@ var QuizDetailView = Backbone.View.extend({
         _.each(this.questionViews, function(view) {
             view.render();
         });
+
+        if (this.model.questions.length === 0) {
+            for (i=0; i<4; i++) {
+                this.addQuestionModel();
+            }
+        }
     },
 
     saveQuiz: function() {
