@@ -1,7 +1,7 @@
 var QuizListView = Backbone.View.extend({
     el: '#admin',
     events: {
-        'click #add-quiz': 'addQuiz'
+        'click .add-quiz': 'addQuizModel'
     },
 
     initialize: function() {
@@ -26,24 +26,36 @@ var QuizListView = Backbone.View.extend({
         this.$el.html(JST.admin_quiz_list);
 
         this.$quizzes = $('.quizzes');
+        console.log(this.quizzes);
         this.quizzes.each(_.bind(function(quiz) {
             this.addQuizView(quiz);
         }, this));
     },
     addQuizView: function(quiz) {
-        console.log(quiz);
         var quizView = new QuizView({model: quiz});
         quizView.render();
 
-        this.$quizzes.append(quizView.el)
+        this.$quizzes.append(quizView.el);
     },
+    addQuizModel: function() {
+        var quiz = this.quizzes.create({
+            title: 'Put Title Here',
+            text: 'Put description here.',
+            created: '2014-02-12',
+            updated: '2014-02-12'
+        });
+
+        _.debounce(window.location.replace('/musicgame/admin/quiz/' + quiz.get('id')), 500);
+    }
 });
 
 var QuizView = Backbone.View.extend({
-    el: '.quizzes',
+    className: 'quiz',
     events: {
         'click .delete-quiz': 'rmQuiz'
     },
+
+    tagName: 'tr',
 
     initialize: function() {
         _.bindAll(this);
@@ -54,7 +66,12 @@ var QuizView = Backbone.View.extend({
     render: function() {
         this.$el.empty();
 
-        this.$el.html(JST.admin_quizzes({'quiz': this.model}));
+        this.$el.append(JST.admin_quizzes({'quiz': this.model}));
+    },
+    close: function() {
+        this.model.destroy();
+        this.remove();
+        this.unbind();
     }
 });
 
