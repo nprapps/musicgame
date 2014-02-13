@@ -1,12 +1,15 @@
 import datetime
+import gzip
 import os
 import re
+from StringIO import StringIO
 import time
 
 import boto
 from boto.s3.key import Key
 import envoy
-from peewee import *
+from flask import json 
+from peewee import Model, PostgresqlDatabase, BooleanField, DateTimeField, ForeignKeyField, IntegerField, TextField
 import requests
 
 import app_config
@@ -294,6 +297,36 @@ class Quiz(PSQLMODEL):
             self.slugify()
 
         super(Quiz, self).save(*args, **kwargs)
+
+        self.deploy()
+
+    def deploy(self):
+        """
+        Deploy this quiz JSON to S3.
+        """
+        data = json.dumps(self.flatten())
+
+        s3 = boto.connect_s3()
+
+        gzip_buffer = StringIO()
+
+        with gzip.GzipFile(fileobj=gzip_buffer, mode='w') as f:
+            f.write(data)
+
+        data = gzip_buffer.getvalue()
+
+        s3 = boto.connect_s3()
+
+        for bucket_name in app_config.S3_BUCKETS:
+            bucket = s3.get_bucket(bucket_name)
+
+            k = Key(bucket, '%s/live-data/games/%s' % (app_config.PROJECT_SLUG, self.slug))
+            k.set_contents_from_string(data, headers={
+                'Content-Type': 'application/json',
+                'Content-Encoding': 'gzip',
+                'Cache-Control': 'max-age=5'
+            })
+            k.set_acl('public-read')
 
     def slugify(self):
         """

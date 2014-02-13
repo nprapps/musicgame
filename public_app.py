@@ -81,38 +81,6 @@ def _test_quiz(quiz_slug):
 
     return jsonify(quiz.flatten())
 
-@app.route('/%s/publish/' % app_config.PROJECT_SLUG)
-def _publish_game():
-    """
-    Publish game JSON to S3.
-    """
-    slug = request.args.get('quiz', '')
-
-    # TODO: get real quiz data from filesystem/database
-    data = '{ "placeholder": "TKTK" }'
-
-    gzip_buffer = StringIO()
-
-    with gzip.GzipFile(fileobj=gzip_buffer, mode='w') as f:
-        f.write(data)
-
-    data = gzip_buffer.getvalue()
-
-    s3 = boto.connect_s3()
-
-    for bucket_name in app_config.S3_BUCKETS:
-        bucket = s3.get_bucket(bucket_name)
-
-        k = Key(bucket, '%s/live-data/games/%s' % (app_config.PROJECT_SLUG, slug))
-        k.set_contents_from_string(data, headers={
-            'Content-Type': 'application/json',
-            'Content-Encoding': 'gzip',
-            'Cache-Control': 'max-age=5'
-        })
-        k.set_acl('public-read')
-
-    return redirect(url_for('games.preview'))
-
 # Scout uptime test route
 @app.route('/%s/test/' % app_config.PROJECT_SLUG, methods=['GET'])
 def _test_app():
