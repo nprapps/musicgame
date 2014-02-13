@@ -39,7 +39,7 @@ var renderStart = function() {
 
     $content.html(html);
 
-    $content.addClass('start').css('height', $(window).height());
+    $content.addClass('start').css('height', $(document).height());
 
     $startQuizButton = $content.find('#start-quiz');
     $startQuizButton.on('click', function(e){
@@ -129,7 +129,7 @@ var renderQuestion = function() {
         }
     }
 
-
+    $content.css('height', $(document).height());
     sendHeightToParent();
 };
 
@@ -149,7 +149,7 @@ var renderGameOver = function() {
     var html = JST.gameover(context);
 
     $content.html(html);
-    $content.addClass('end').css('height', $(window).height());
+    $content.addClass('end').css('height', $(document).height());
     $showResults = $content.find('#show-results');
     $responses = $content.find('.responses');
     var $players = $content.find('.jp-player')
