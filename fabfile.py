@@ -728,7 +728,8 @@ def init_tables():
     """
     Uses the ORM to create tables.
     """
-    models.db.init(app_config.PROJECT_SLUG, user=app_config.PROJECT_SLUG)
+    secrets = app_config.get_secrets()
+    models.db.init(app_config.PROJECT_SLUG, user=app_config.PROJECT_SLUG, password=secrets['MUSICGAME_POSTGRES_PASSWORD'])
 
     with settings(warn_only=True):
         for model_name in model_names:
