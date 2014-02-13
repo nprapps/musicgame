@@ -17,7 +17,7 @@ var $showScoreButton = null;
 var $startQuizButton = null;
 var $progressBar = null;
 var $responses = null;
-var timer = true;
+var timer = false;
 
 // Game state
 var quizData = null;
@@ -39,7 +39,7 @@ var renderStart = function() {
 
     $content.html(html);
 
-    $content.addClass('start').css('height', $(window).height());
+    $content.addClass('start').css('height', $(document).height());
 
     $startQuizButton = $content.find('#start-quiz');
     $startQuizButton.on('click', function(e){
@@ -109,7 +109,7 @@ var renderQuestion = function() {
                 }).jPlayer('play');
             },
             play: function() {
-                if (timer !== 'false'){
+                if (timer === 'true'){
                     runTimer();
                 }
             },
@@ -124,12 +124,12 @@ var renderQuestion = function() {
         $content.find('.jp-play').hide();
         $content.find('.jp-stop').show();
     } else { // Start the timer immediately if no audio.
-        if (timer !== 'false'){
+        if (timer === 'true'){
             runTimer();
         }
     }
 
-
+    $content.css('height', $(document).height());
     sendHeightToParent();
 };
 
@@ -149,7 +149,7 @@ var renderGameOver = function() {
     var html = JST.gameover(context);
 
     $content.html(html);
-    $content.addClass('end').css('height', $(window).height());
+    $content.addClass('end').css('height', $(document).height());
     $showResults = $content.find('#show-results');
     $responses = $content.find('.responses');
     var $players = $content.find('.jp-player')
