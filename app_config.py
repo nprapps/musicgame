@@ -124,9 +124,7 @@ def get_secrets():
     A method for accessing our secrets.
     """
     secrets = [
-        'MUSIC_POSTGRES_USER',
-        'MUSIC_POSTGRES_PASS',
-        'MUSIC_POSTGRES_DB'
+        'MUSICGAME_POSTGRES_PASSWORD'
     ]
 
     secrets_dict = {}
