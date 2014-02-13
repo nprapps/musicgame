@@ -720,7 +720,7 @@ def local_init_db():
     """
     with settings(warn_only=True):
         local('dropdb %s' % app_config.PROJECT_SLUG)
-        local('echo "CREATE USER %s WITH PASSWORD \'%S\';" | psql' % (app_config.PROJECT_SLUG, app_config.PROJECT_SLUG))
+        local('echo "CREATE USER %s WITH PASSWORD \'%s\';" | psql' % (app_config.PROJECT_SLUG, app_config.PROJECT_SLUG))
         local('createuser -s %s' % app_config.PROJECT_SLUG)
         local('createdb %s' % app_config.PROJECT_SLUG)
 

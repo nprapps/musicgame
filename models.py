@@ -14,7 +14,8 @@ import requests
 
 import app_config
 
-db = PostgresqlDatabase(None)
+secrets = app_config.get_secrets()
+db = PostgresqlDatabase(app_config.PROJECT_SLUG, user=app_config.PROJECT_SLUG, password=secrets.get('MUSICGAME_POSTGRES_PASS', None))
 
 class PSQLMODEL(Model):
     """
