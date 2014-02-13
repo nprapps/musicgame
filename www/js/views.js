@@ -205,6 +205,8 @@ var QuestionView = Backbone.View.extend({
 
         this.$choices = this.$('.choices');
 
+        $('.fileinput').fileinput();
+
         _.each(this.choiceViews, function(view) {
             view.render();
         });

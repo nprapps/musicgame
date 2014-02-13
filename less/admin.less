@@ -21,6 +21,9 @@
 // Icon font
 @import "less/lib/font-awesome/font-awesome.less";
 
+// File input (from Jasny)
+@import "less/lib/bootstrap/fileinput.less";
+
 // NPR colors
 // -------------------------
 @inlineLink: #4774cc;
@@ -59,10 +62,6 @@
     outline:none;
 }
 
-[contenteditable="true"]:hover {
-
-}
-
 .header {
     margin: 50px 0;
 }
@@ -85,12 +84,16 @@
     top: -20px;
 }
 
-.choice {
-    margin-bottom: 10px;
-    margin-left: 10px;
+.question-info {
+    margin-bottom: 50px;
 }
 
-.tags {
+.choice-text {
+    margin-bottom: 20px;
+}
+
+.choice {
+    margin-left: 10px;
     margin-bottom: 50px;
 }
 
@@ -102,6 +105,10 @@
     padding: 10px 0;
     border-top: 2px solid @heavyGray;
     text-align: center;
+}
+
+.fileinput-filename {
+    font-size: 50%;
 }
 
 @media (min-width: 1024px) {
