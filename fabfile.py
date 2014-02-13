@@ -691,8 +691,18 @@ def bootstrap_data():
     """
     Sets up the app from scratch.
     """
-    local('pip install -r requirements.txt')
+    fabcast('assets_sync')
+    init_db()
+    fabcast('init_tables')
+    fabcast('load_quizzes')
+
+def local_bootstrap_data():
+    """
+    Sets up the app from scratch.
+    """
     assets_sync()
+    local_init_db()
+    init_tables()
     load_quizzes()
 
 def init_db():
@@ -700,7 +710,17 @@ def init_db():
     Prepares a user and db for the project.
     """
     with settings(warn_only=True):
+        sudo('dropdb %s' % app_config.PROJECT_SLUG, user='postgres')
+        sudo('echo "CREATE USER $MUSIC_POSTGRES_USER WITH PASSWORD \'$MUSIC_POSTGRES_PASS\';" | psql' % (app_config.PROJECT_SLUG, app_config.PROJECT_SLUG), user='postgres')
+        sudo('createdb %s' % app_config.PROJECT_SLUG, user='postgres')
+
+def local_init_db():
+    """
+    Prepares a user and db for the project.
+    """
+    with settings(warn_only=True):
         local('dropdb %s' % app_config.PROJECT_SLUG)
+        local('echo "CREATE USER %s WITH PASSWORD \'%S\';" | psql' % (app_config.PROJECT_SLUG, app_config.PROJECT_SLUG))
         local('createuser -s %s' % app_config.PROJECT_SLUG)
         local('createdb %s' % app_config.PROJECT_SLUG)
 
@@ -755,8 +775,6 @@ def load_quizzes():
     """
     You know, some sample data.
     """
-    init_db()
-    init_tables()
 
     models.db.init(app_config.PROJECT_SLUG, user=app_config.PROJECT_SLUG)
 
