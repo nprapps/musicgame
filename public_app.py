@@ -2,13 +2,9 @@
 
 import argparse
 import datetime
-import gzip
 import logging
-from StringIO import StringIO
 
-import boto
-from boto.s3.key import Key
-from flask import Flask, jsonify, redirect, request, render_template, url_for
+from flask import Flask, jsonify, redirect, render_template, url_for
 from flask_peewee.rest import RestAPI, Authentication
 
 import admin
@@ -58,8 +54,6 @@ api.register(models.Question, allowed_methods=['GET', 'POST', 'PUT', 'DELETE'])
 api.register(models.Choice, allowed_methods=['GET', 'POST', 'PUT', 'DELETE'])
 api.register(models.Photo, allowed_methods=['GET', 'POST', 'PUT', 'DELETE'])
 api.register(models.Audio, allowed_methods=['GET', 'POST', 'PUT', 'DELETE'])
-
-models.db.init(app_config.PROJECT_SLUG, user=app_config.PROJECT_SLUG)
 
 api.setup()
 
