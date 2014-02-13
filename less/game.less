@@ -186,9 +186,6 @@ body {
 
 				.answer {
 					padding: 5px 40px 0 10px;
-					border-width: 0 0 0 10px;
-					border-style: solid;
-					border-color: @primaryControl;
 					font-size: @font-size-small;
 
 					@media screen and (min-width: @screen-sm){
@@ -210,8 +207,6 @@ body {
 
 			&.correct {
 				.answer {
-					border-color: @correct;
-
 					&:after {
 						content: "\f00c";
 						color: @correct;
@@ -221,8 +216,6 @@ body {
 
 			&.incorrect {
 				.answer {
-					border-color: @incorrect;
-
 					&:after {
 						content: "\f00d";
 						color: @incorrect;
