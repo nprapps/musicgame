@@ -711,6 +711,7 @@ def init_db():
     """
     with settings(warn_only=True):
         sudo('dropdb %s' % app_config.PROJECT_SLUG, user='postgres')
+        sudo('dropuser %s' % app_config.PROJECT_SLUG, user='postgres')
         sudo('echo "CREATE USER %s WITH PASSWORD \'$MUSICGAME_POSTGRES_PASSWORD\';" | psql' % (app_config.PROJECT_SLUG), user='postgres')
         sudo('createdb %s' % app_config.PROJECT_SLUG, user='postgres')
 
@@ -720,6 +721,7 @@ def local_init_db():
     """
     with settings(warn_only=True):
         local('dropdb %s' % app_config.PROJECT_SLUG)
+        local('dropuser %s' % app_config.PROJECT_SLUG)
         local('echo "CREATE USER %s WITH PASSWORD \'%s\';" | psql' % (app_config.PROJECT_SLUG, app_config.PROJECT_SLUG))
         local('createuser -s %s' % app_config.PROJECT_SLUG)
         local('createdb %s' % app_config.PROJECT_SLUG)
