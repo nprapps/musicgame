@@ -731,7 +731,7 @@ def init_tables():
     Uses the ORM to create tables.
     """
     secrets = app_config.get_secrets()
-    models.db.init(app_config.PROJECT_SLUG, user=app_config.PROJECT_SLUG, password=secrets['MUSICGAME_POSTGRES_PASSWORD'])
+    models.db.init(app_config.PROJECT_SLUG, user=app_config.PROJECT_SLUG, password=secrets.get('MUSICGAME_POSTGRES_PASS', None))
 
     with settings(warn_only=True):
         for model_name in model_names:
@@ -778,11 +778,6 @@ def load_quizzes():
     """
     You know, some sample data.
     """
-
-    models.db.init(app_config.PROJECT_SLUG, user=app_config.PROJECT_SLUG)
-
-    install_brew_requirements()
-
     quiz_list = [
         'drum_fill_friday.json'
     ]
