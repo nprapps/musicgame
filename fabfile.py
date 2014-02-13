@@ -14,6 +14,7 @@ import app_config
 import copy
 from etc import github
 from etc.gdocs import GoogleDoc
+import games    # Necessary for render()
 import models
 
 """
