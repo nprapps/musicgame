@@ -17,7 +17,7 @@ var $showScoreButton = null;
 var $startQuizButton = null;
 var $progressBar = null;
 var $responses = null;
-var timer = true;
+var timer = false;
 
 // Game state
 var quizData = null;
@@ -109,7 +109,7 @@ var renderQuestion = function() {
                 }).jPlayer('play');
             },
             play: function() {
-                if (timer !== 'false'){
+                if (timer === 'true'){
                     runTimer();
                 }
             },
@@ -124,7 +124,7 @@ var renderQuestion = function() {
         $content.find('.jp-play').hide();
         $content.find('.jp-stop').show();
     } else { // Start the timer immediately if no audio.
-        if (timer !== 'false'){
+        if (timer === 'true'){
             runTimer();
         }
     }
