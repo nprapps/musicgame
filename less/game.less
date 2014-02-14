@@ -332,7 +332,8 @@ body {
 
 		h2 {
 			text-transform: uppercase;
-			font-size: @font-size-large;
+			font-weight: bold;
+			font-size: @font-size-base;
 		}
 
 		p {
@@ -477,6 +478,13 @@ body {
 
 			h2 {
 				font-size: @font-size-base;
+				line-height: 1;
+				margin-bottom: @line-height-computed / 2;
+			}
+
+			h3 {
+				font-size: @font-size-large;
+				line-height: 1;
 			}
 
 			p {
@@ -494,6 +502,10 @@ body {
 					color: #999;
 				}
 			}
+		}
+
+		.next-up {
+			border-top: 2px solid @lightGray;
 		}
 
 		#show-score {

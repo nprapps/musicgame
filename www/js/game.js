@@ -277,6 +277,8 @@ var onAnswerClick = function(){
         $this.parent().parent().addClass('incorrect');
     }
 
+    $answers.off("click");
+
     onQuestionComplete(points, $this.text(), this);
     return false;
 };
@@ -356,11 +358,11 @@ var resizeWindow = function(){
 
     if(images.length > 0){
         $(images).load(function(){
-            $content.css('height', $(document).height());
+            $content.css('height', $content.find('.container').height());
             sendHeightToParent();
         });
     } else {
-        $content.css('height', $(document).height());
+        $content.css('height', $content.find('.container').height());
         sendHeightToParent();
     }
 };
