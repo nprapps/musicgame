@@ -148,7 +148,6 @@ var renderGameOver = function() {
 
     $content.html(html);
     $content.addClass('end');
-    $showResults = $content.find('#show-results');
     $responses = $content.find('.responses');
     var $players = $content.find('.jp-player')
     var $playButtons = $content.find('.jp-play');
@@ -189,8 +188,6 @@ var renderGameOver = function() {
         });
 
     });
-
-    $showResults.on('click', onShowResultsClick);
 
     resizeWindow();
 };
@@ -342,14 +339,6 @@ var onNextQuestionClick = function() {
 }
 
 /*
-* Go to the next question
-*/
-var onShowResultsClick = function() {
-    $responses.removeClass('hide');
-    return false;
-}
-
-/*
  * Scroll to a given element.
  */
 var scrollTo = function($el) {
@@ -362,9 +351,9 @@ var scrollTo = function($el) {
 /*
  * Check for images in content and size window after load
  */
-
 var resizeWindow = function(){
     var images = $content.find('img');
+
     if(images.length > 0){
         $(images).load(function(){
             $content.css('height', $(document).height());

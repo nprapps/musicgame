@@ -10,12 +10,11 @@
 			<div class="quiz-title">
 				<h1>You scored:</h1>
 				<p class="score"><%= score %>/100</p>
-				<p><a id="show-results" href="#"><i class="fa fa-list"></i> Review Quiz</a></p>
 			</div>
 		</div>
 	</div>
 	<div class="row">
-		<ul class="responses list-unstyled hide <% if (_.where(quizData['questions'], {audio: null}).length < quizData['questions'].length){ %>audio<% } %>">
+		<ul class="responses list-unstyled <% if (_.where(quizData['questions'], {audio: null}).length < quizData['questions'].length){ %>audio<% } %>">
 		<% _.each(quizData['questions'], function(question, index){ %>
 			<li class="<%= answers[index] === correctAnswers[index] ? 'correct' : 'incorrect' %>">
 				<% if (_.where(question['choices'], {correct_answer: true})[0]['photo']['file_path']) { %>
