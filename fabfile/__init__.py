@@ -517,7 +517,7 @@ def deploy(remote='origin'):
         checkout_latest(remote)
         
         fabcast('update_copy')
-        fabcast('assets_sync')
+        fabcast('assets.sync')
         fabcast('update_data')
 
         if app_config.DEPLOY_CRONTAB:
@@ -538,7 +538,7 @@ def bootstrap_data():
     """
     Sets up the app from scratch.
     """
-    fabcast('assets_sync')
+    fabcast('assets.sync')
     init_db()
     fabcast('init_tables')
     fabcast('load_quizzes')
