@@ -28,7 +28,7 @@ var onDocumentReady = function() {
     renderEmbedCode(slug);
 
     $('#preview').responsiveIframe({
-        src: 'game.html?quiz=' + slug
+        src: APP_CONFIG['SERVER_BASE_URL'] + '/game.html?quiz=' + slug
     });
 }
 

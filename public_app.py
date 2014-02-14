@@ -18,7 +18,7 @@ app = Flask(app_config.PROJECT_NAME)
 
 app.jinja_env.filters['urlencode'] = urlencode_filter
 
-app.register_blueprint(admin.admin, url_prefix='/%s' % app_config.PROJECT_SLUG)
+app.register_blueprint(admin.admin, url_prefix='/%s/admin' % app_config.PROJECT_SLUG)
 app.register_blueprint(games.games, url_prefix='/%s' % app_config.PROJECT_SLUG)
 app.register_blueprint(static.static, url_prefix='/%s' % app_config.PROJECT_SLUG)
 

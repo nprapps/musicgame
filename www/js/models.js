@@ -67,7 +67,7 @@ var Quiz = Backbone.Model.extend({
         return data;
     },
     getPreviewUrl: function() {
-        return '/' + APP_CONFIG['PROJECT_SLUG'] + '/preview.html?quiz=' + this.get('slug');
+        return '/' + APP_CONFIG['PROJECT_SLUG'] + '/admin/preview.html?quiz=' + this.get('slug');
     }
 });
 

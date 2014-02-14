@@ -1,0 +1,19 @@
+{% extends 'admin/_base.html' %}
+
+{% block content %}
+    <h3>Preview</h3>
+
+    <div id='preview'>
+    </div>
+
+    <h3>Embed</h3>
+
+    <textarea id="embed" readonly="readonly" rows="10" cols="50">
+    </textarea>
+{% endblock %}
+
+{% block extra_js %}
+{{ JS.push('js/lib/parent.js') }}
+{{ JS.push('js/admin_preview.js') }}
+{{ JS.render('js/admin-preview.min.js') }}
+{% endblock %}

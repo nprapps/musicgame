@@ -16,9 +16,3 @@ def game():
 
     return render_template('game.html', **context)
 
-@games.route('/preview.html')
-def preview():
-    """
-    Render a game preview page.
-    """
-    return render_template('preview.html', **make_context())
