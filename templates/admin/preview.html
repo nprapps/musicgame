@@ -1,15 +1,21 @@
 {% extends 'admin/_base.html' %}
 
 {% block content %}
-    <h3>Preview</h3>
+<div class="container">
+    <div class="row">
+        <a href="./">&laquo; Back to quiz list</a>
+        <h3>Preview</h3>
 
-    <div id='preview'>
+        <div id="preview">
+        </div>
     </div>
+    <div class="row">
+        <h3>Embed</h3>
 
-    <h3>Embed</h3>
-
-    <textarea id="embed" readonly="readonly" rows="10" cols="50">
-    </textarea>
+        <textarea id="embed" readonly="readonly" rows="10" cols="100">
+        </textarea>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
