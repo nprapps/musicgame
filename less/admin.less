@@ -48,20 +48,6 @@
   -ms-transform: translateY(-50%);
   transform: translateY(-50%);
 }
-
-[contenteditable=true]:empty:before{
-    content: attr(placeholder);
-}
-
-[contenteditable="true"]:active,
-[contenteditable="true"]:focus,
-[contenteditable="true"]:hover
-{
-    border: none;
-    border-bottom: 1px solid black;
-    outline:none;
-}
-
 .header {
     margin: 50px 0;
 }
@@ -73,6 +59,10 @@
     td {
         text-align: center;
     }
+}
+
+#quiz-form {
+    margin-top: 50px;
 }
 
 .question {

@@ -1,40 +1,44 @@
 <div class="question">
-    <div class="question-number row">
-        <div class="col-lg-8 col-lg-offset-2">
-        </div>
-    </div>
     <div class="question-title row">
-        <div class="col-lg-8 col-lg-offset-2">
-            <h3>
-                <span class="interrogative" contenteditable="true"><%= question.get('text') || 'Put question text here' %></span>
-            </h3>
-        </div>
-    </div>
-    <div class="question-files row">
-        <div class="audio col-lg-4 col-lg-offset-2">
-        </div>
-        <div class="photo col-lg-4">
-        </div>
-    </div>
-    <div class="question-info row">
-        <div class="col-lg-8 col-lg-offset-2">
-            <p>
-                <span class="after-text" contenteditable="true" placeholder='Put information about the question that the user will see after they answer here.'><% if (question.attributes['after_text'] == 'null') {
-                    question.get('after_text')
-                }%></span>
-            </p>
-        </div>
-    </div>
-    <div class="choices">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2">
-                <h4>Choices</h4>
+        <div class="col-lg-12">
+            <div class="form-group">
+                <label for="interrogative" class="col-sm-2 control-label">Question</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control interrogative" placeholder="Question" value="<%= question.get('text') || '' %>">
+                </div>
             </div>
         </div>
     </div>
+    <div class="question-files row">
+        <div class="col-lg-12">
+            <div class="form-group">
+                <label for="files" class="col-sm-2 control-label">Files</label>
+                <div class="audio col-sm-5">
+                </div>
+                <div class="photo col-sm-5">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="question-info row">
+        <div class="col-lg-12">
+            <div class="form-group">
+                <label for="after-text" class="col-sm-2 control-label">After text</label>
+                <div class="col-sm-10">
+                    <textarea class="form-control" rows='3'>
+                        <% if (question.attributes['after_text'] == 'null') {
+                            question.get('after_text')
+                        }%>
+                    </textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="choices">
+    </div>
     </div>
     <div class="choice-btns row">
-        <div class="col-lg-8 col-md-offset-2 col-s-12">
+        <div class="col-lg-10 col-md-offset-2 col-s-12">
             <div class="pull-right">
                 <a class="btn btn-success add-choice"><i class="fa fa-plus"></i></a>
                 <a class="btn btn-danger rm-choice"><i class="fa fa-minus"></i></a>
