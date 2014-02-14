@@ -51,55 +51,63 @@ class Photo(PSQLMODEL):
     def __unicode__(self):
         return self.credit, self.caption
 
-    def render_image_file(self):
+    def write_photo(self):
         """
-        Right now, this just uploads it to S3.
+        Accepts base64-encoded string from the admin form.
+        If s3 buckets are available, deploys to s3.
+        If not, deploys to www/live-data/img/.
         """
 
-        # Make a timestamp so we can have unique filenames.
+        decoded_file = base64.b64decode(self.file_string)
+
         now = datetime.datetime.now()
         timestamp = int(time.mktime(now.timetuple()))
-
-        # Timestamp for uniqueness.
         file_name = '%s-%s' % (timestamp, self.file_name)
 
-        # Set an S3 path for uploading.
-        s3_path = '%s/live-data/img/%s%s' % (app_config.PROJECT_SLUG, file_name, file_extension)
+        rendered_path = 'live-data/img/%s' % (file_name)
 
         # Connect to S3.
         s3 = boto.connect_s3()
 
         buckets = app_config.S3_BUCKETS
 
-        if not app_config.DEPLOYMENT_TARGET:
-            buckets = ['stage-apps.npr.org']
+        if len(buckets) > 0:
 
-        # Loop over our buckets.
-        for bucket_name in buckets:
-            bucket = s3.get_bucket(bucket_name)
+            rendered_path = '%s/%s' % (app_config.PROJECT_SLUG, rendered_path)
 
-            # Set the key as a content_from_filename
-            # CHRIST CONTENT TYPES SUCK
-            k = Key(bucket, s3_path)
-            k.set_contents_from_filename('%s' % (self.file_path), headers={
-                'Cache-Control': 'max-age=5'
-            })
+            # Loop over our buckets.
+            for bucket_name in buckets:
+                bucket = s3.get_bucket(bucket_name)
 
-            # Everyone can read it.
-            k.set_acl('public-read')
+                # Set the key as a content_from_filename
+                # CHRIST CONTENT TYPES SUCK
+                k = Key(bucket, rendered_path)
+                k.set_contents_from_string(decoded_file, headers={
+                    'Cache-Control': 'max-age=5'
+                })
 
-        # Set the rendered file path as the S3 bucket path.
-        setattr(self, 'rendered_file_path', 'http://%s.s3.amazonaws.com/%s' % (
-            buckets[0],
-            s3_path))
+                # Everyone can read it.
+                k.set_acl('public-read')
+
+            # Set the rendered file path as the S3 bucket path.
+            self.rendered_file_path = 'http://%s.s3.amazonaws.com/%s' % (buckets[0], rendered_path)
+
+        else:
+
+            rendered_path = '%s/%s' % (app_config.PROJECT_SLUG, rendered_path)
+
+            with open(rendered_path, 'wb') as writefile:
+                writefile.write(decoded_file)
+
+            self.rendered_file_path = rendered_path
+
+        self.file_string = ''
+        self.render = False
+
 
     def save(self, *args, **kwargs):
-        """
-        Do things on save.
-        """
-
         if self.render:
-            self.render_image_file()
+            self.write_photo()
 
         super(Photo, self).save(*args, **kwargs)
 
@@ -132,69 +140,27 @@ class Audio(PSQLMODEL):
             now = datetime.datetime.now()
             timestamp = int(time.mktime(now.timetuple()))
 
-            # Set the unrendered file path to none in case this all fails.
-            unrendered_file = None
+            # The other path is a local file, delivered to us via flash or something.
+            # Get the path using os.
+            unrendered_path, unrendered_file = os.path.split(self.file_path)
 
-            # If this is a legacy file path, e.g., from an old game, it's a Web URL.
-            if "http://" in self.file_path:
+            # Get the name and extension from the filename.
+            file_name, file_extension = os.path.splitext(unrendered_file)
 
-                # Get the file.
-                r = requests.get(self.file_path)
+            # Timestamp for uniqueness.
+            file_name = '%s-%s' % (timestamp, file_name)
 
-                # Hope it's still there.
-                if r.status_code == 200:
-
-                    # Get the file name.
-                    file_name = self.file_path.split('/')[::-1][0].split('.mp3')[0]
-
-                    # Yeah, they're all MP3s.
-                    file_extension = 'mp3'
-
-                    # Time stamp it.
-                    file_name = '%s-%s' % (timestamp, file_name)
-
-                    # Write the temp file.
-                    with open('%s-temp.mp3' % file_name, 'wb') as writefile:
-                        writefile.write(r.content)
-
-                    # Write a wav file so that oggenc can convert mumblemumblehateyoumumble
-                    envoy.run('mpg123 -w "%s-temp.wav" "%s-temp.mp3"' % (
-                        file_name, file_name))
-
-                    # Have oggenc encode against the temp wav file.
-                    envoy.run('oggenc -m 96 -M 96 -o "%s.oga" --downmix "%s-temp.wav"' % (
-                        file_name, file_name))
-
-                    # Have lame encode against the original mp3 just in case it's huge.
-                    envoy.run('lame -m m -b 96 "%s-temp.mp3" "%s.mp3"' % (
-                        file_name, file_name))
-
-                else:
-                    pass
-
-            else:
-
-                # The other path is a local file, delivered to us via flash or something.
-                # Get the path using os.
-                unrendered_path, unrendered_file = os.path.split(self.file_path)
-
-                # Get the name and extension from the filename.
-                file_name, file_extension = os.path.splitext(unrendered_file)
-
-                # Timestamp for uniqueness.
-                file_name = '%s-%s' % (timestamp, file_name)
-
-                # Write a wav file so that oggenc can convert mumblemumblehateyoumumble
-                envoy.run('mpg123 -w "%s-temp.wav" "%s"' % (
-                        file_name, self.file_path))
-
-                # Write an ogg file.
-                envoy.run('oggenc -m 96 -M 96 -o "%s.oga" --downmix "%s"' % (
+            # Write a wav file so that oggenc can convert mumblemumblehateyoumumble
+            envoy.run('mpg123 -w "%s-temp.wav" "%s"' % (
                     file_name, self.file_path))
 
-                # Write an mp3 file.
-                envoy.run('lame -m m -b 96 "%s" "%s.mp3"' % (
-                    self.file_path, file_name))
+            # Write an ogg file.
+            envoy.run('oggenc -m 96 -M 96 -o "%s.oga" --downmix "%s"' % (
+                file_name, self.file_path))
+
+            # Write an mp3 file.
+            envoy.run('lame -m m -b 96 "%s" "%s.mp3"' % (
+                self.file_path, file_name))
 
             # Loop over our ogg/mp3 files and do stuff.
             for extension, content_type in [('oga', 'audio/ogg'), ('mp3', 'audio/mpeg')]:
