@@ -159,7 +159,7 @@ def _assets_download(s3_key, local_path):
 
     dirname = os.path.dirname(local_path)
 
-    if not (os.path.exists(dirname)):
+    if not os.path.exists(dirname):
         os.makedirs(dirname)
     
     s3_key.get_contents_to_filename(local_path)

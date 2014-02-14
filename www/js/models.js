@@ -59,6 +59,9 @@ var Quiz = Backbone.Model.extend({
         var data = _.clone(this.attributes);
 
         delete data['questions'];
+        delete data['created'];
+        delete data['updated'];
+
         return data;
     },
     forTemplate: function() {
@@ -113,11 +116,12 @@ var Question = Backbone.Model.extend({
     },
     toJSON: function() {
         var data = _.clone(this.attributes);
+
         data['quiz'] = this.quiz.id;
+        data['photo'] = this.photo ? this.photo.id : null
+        data['audio'] = this.audio ? this.audio.id : null
 
         delete data['choices'];
-        delete data['photo'];
-        delete data['audio'];
 
         return data;
     },

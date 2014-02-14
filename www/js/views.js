@@ -26,7 +26,7 @@ var QuizListView = Backbone.View.extend({
         this.$el.html(JST.admin_quiz_list);
 
         this.$quizzes = $('.quizzes');
-        console.log(this.quizzes);
+
         this.quizzes.each(_.bind(function(quiz) {
             this.addQuizView(quiz);
         }, this));
@@ -256,7 +256,7 @@ var QuestionView = Backbone.View.extend({
     },
 
     addPhotoView: function(photo) {
-        var photoView = new PhotoView({ model: photo });
+        var photoView = new PhotoView({ model: photo, parent: this });
         photoView.render();
 
         this.$photo.append(photoView.el);
@@ -337,7 +337,6 @@ var ChoiceView = Backbone.View.extend({
 
         this.model.photos.on('add', this.addPhotoView);
         this.model.audios.on('add', this.addAudioView);
-
     },
 
     render: function() {
@@ -347,7 +346,6 @@ var ChoiceView = Backbone.View.extend({
 
         this.$photo = this.$('.choice-files .photo');
         this.$audio = this.$('.choice-files .audio');
-
 
         this.model.photos.each(_.bind(function(photo) {
             this.addPhotoView(photo);
@@ -371,7 +369,7 @@ var ChoiceView = Backbone.View.extend({
     },
 
     addPhotoView: function(photo) {
-        var photoView = new PhotoView({ model: photo });
+        var photoView = new PhotoView({ model: photo, parent: this });
         photoView.render();
 
         this.$photo.append(photoView.el);
@@ -412,13 +410,13 @@ var ChoiceView = Backbone.View.extend({
 var PhotoView = Backbone.View.extend({
     tagName: 'div',
     events: {
-        'change input[type="file"]': 'uploadPhoto'
+        'change input[type="file"]': 'upload'
     },
     className: 'fileinput fileinput-new',
 
-
     initialize: function() {
         _.bindAll(this);
+
         this.$photo_file = null;
         this.$photo_name = null;
 
@@ -431,11 +429,9 @@ var PhotoView = Backbone.View.extend({
         this.$el.html(JST.admin_photo({ 'photo': this.model }));
         this.$photo_file = this.$('input[type="file"]');
         this.$photo_name = this.$('.fileinput-filename');
-
     },
 
-    uploadPhoto: function() {
-        console.log('fire');
+    upload: function() {
         var file = this.$photo_file[0].files[0];
 
         var reader = new FileReader();
@@ -444,17 +440,20 @@ var PhotoView = Backbone.View.extend({
         var properties = this.serialize();
 
         reader.onloadend = _.bind(function() {
-            properties['file_path'] = reader.result;
+            properties['file_string'] = reader.result;
 
-            var photo = this.photos.create(properties, {
-                success: function() {
-                    console.log('yay');
-                },
-                error: function() {
-                    console.log('haha');
+            $.ajax({
+                'url': '/musicgame/admin/upload-photo/',
+                'type': 'POST',
+                'data': properties,
+                'success': _.bind(function(data) {
+                    this.options.parent.model.photo = new Photo(data);
+                    console.log('Photo created.');
+                }, this),
+                'error': function() {
+                    console.log('Failed to create photo.');
                 }
             });
-
         }, this);
     },
 
@@ -469,11 +468,9 @@ var PhotoView = Backbone.View.extend({
             credit: 'TK',
             caption: 'TK',
             file_name: this.$photo_name.text(),
-            file_string: null,
             render: true
         };
 
-        console.log(properties);
         return properties;
     }
 });

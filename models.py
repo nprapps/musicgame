@@ -11,7 +11,6 @@ from boto.s3.key import Key
 import envoy
 from flask import json
 from peewee import Model, PostgresqlDatabase, BooleanField, DateTimeField, ForeignKeyField, IntegerField, TextField
-import requests
 
 import app_config
 
@@ -44,21 +43,21 @@ class Photo(PSQLMODEL):
     credit = TextField()
     caption = TextField()
     file_name = TextField(null=True)
-    file_string = TextField(null=True)
     rendered_file_path = TextField(null=True)
-    render = BooleanField(default=False)
 
     def __unicode__(self):
         return self.credit, self.caption
 
-    def write_photo(self):
+    def write_photo(self, file_string):
         """
         Accepts base64-encoded string from the admin form.
         If s3 buckets are available, deploys to s3.
         If not, deploys to www/live-data/img/.
         """
+        file_type, data = file_string.split(';')
+        prefix, data = data.split(',')
 
-        decoded_file = base64.b64decode(self.file_string)
+        decoded_file = base64.b64decode(data)
 
         now = datetime.datetime.now()
         timestamp = int(time.mktime(now.timetuple()))
@@ -69,13 +68,11 @@ class Photo(PSQLMODEL):
         # Connect to S3.
         s3 = boto.connect_s3()
 
-        buckets = app_config.S3_BUCKETS
-
-        if len(buckets) > 0:
-
+        # Deployed
+        if app_config.S3_BUCKETS:
             rendered_path = '%s/%s' % (app_config.PROJECT_SLUG, rendered_path)
 
-            for bucket_name in buckets:
+            for bucket_name in app_config.S3_BUCKETS:
                 bucket = s3.get_bucket(bucket_name)
 
                 k = Key(bucket, rendered_path)
@@ -85,26 +82,20 @@ class Photo(PSQLMODEL):
 
                 k.set_acl('public-read')
 
-            self.rendered_file_path = 'http://%s.s3.amazonaws.com/%s' % (buckets[0], rendered_path)
-
+            self.rendered_file_path = 'http://%s.s3.amazonaws.com/%s' % (app_config.S3_BUCKETS[0], rendered_path)
+        # Local
         else:
+            rendered_path = 'www/%s' % (app_config.PROJECT_SLUG, rendered_path)
 
-            rendered_path = '%s/%s' % (app_config.PROJECT_SLUG, rendered_path)
+            dirname = os.path.dirname(rendered_path)
+
+            if not os.path.exists(dirname):
+                os.makedirs(dirname)
 
             with open(rendered_path, 'wb') as writefile:
                 writefile.write(decoded_file)
 
             self.rendered_file_path = rendered_path
-
-        self.file_string = ''
-        self.render = False
-
-
-    def save(self, *args, **kwargs):
-        if self.render:
-            self.write_photo()
-
-        super(Photo, self).save(*args, **kwargs)
 
 class Audio(PSQLMODEL):
     """
@@ -260,7 +251,6 @@ class Quiz(PSQLMODEL):
         if not self.created:
             self.created = now
             self.updated = now
-
         else:
             self.updated = now
 
@@ -326,12 +316,6 @@ class Quiz(PSQLMODEL):
             slug = '%s-%i' % (base_slug, i)
 
         self.slug = slug
-
-
-    # TODO:
-    # 1. Handle serializing/deserializing tags.
-    # 2. Handle auto-stamping updated/created fields.
-    # 3. Handle the image field save.
 
 class Question(PSQLMODEL):
     """

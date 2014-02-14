@@ -93,8 +93,6 @@ class Includer(object):
 
         del self.includes[:]
 
-        print markup
-
         return markup
 
 class JavascriptIncluder(Includer):

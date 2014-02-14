@@ -618,7 +618,7 @@ def _create_audio(path):
     }
 
     audio = models.Audio(**audio)
-    audio.render_audio = False
+    audio.render_audio = True
     audio.save()
 
     print "Saved audio: %s" % audio
@@ -630,7 +630,6 @@ def _create_photo(path):
     file_name, file_extension = os.path.splitext(file_name)
 
     image = {
-        'file_string': '',
         'file_name': '%s%s' % (file_name, file_extension),
         'rendered_image_path': path,
         'caption': 'TKTK',
@@ -638,7 +637,6 @@ def _create_photo(path):
     }
 
     image = models.Photo(**image)
-    image.render_image = False
     image.save()
 
     print "Saved image: %s" % image
@@ -656,8 +654,6 @@ def load_quizzes():
 
     qc = models.Category(name="Drum Fill Friday")
     qc.save()
-
-    now = datetime.datetime.now()
 
     for quiz in quiz_list:
         with open('www/assets/data/%s' % quiz, 'rb') as readfile:

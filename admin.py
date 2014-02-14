@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 import flask
-from flask import Blueprint, render_template
+from flask import Blueprint, json, jsonify, render_template, request
+from flask_peewee.serializer import Serializer
 
 import models
 from render_utils import make_context
@@ -40,4 +41,25 @@ def preview():
     """
     return render_template('admin/preview.html', **make_context())
 
+@admin.route('/upload-photo/', methods=['POST'])
+def upload_photo():
+    """
+    Upload a photo, bypassing the API for cleaner invocation.
+    """
+    data = request.form
 
+    photo = {
+        'credit': data.get('credit', ''),
+        'caption': data.get('caption', ''),
+        'file_name': data.get('file_name', ''),
+    }
+
+    photo = models.Photo(**photo)
+    photo.write_photo(data['file_string'])
+
+    photo.save()
+
+    serializer = Serializer()
+    data = serializer.serialize_object(photo)
+
+    return jsonify(data)
