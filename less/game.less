@@ -62,6 +62,10 @@ body {
 }
 
 #content {
+	.container {
+		padding: 0;
+	}
+
 	.progress {
 		height: 30px;
 		background: fade(@musicMedium, 50%);
@@ -104,7 +108,7 @@ body {
 	h1 {
 		margin: 15px 0 0 0;
 		font-size: @font-size-base;
-		font-weight: 400;
+		font-weight: 700;
 		line-height: 1.2;
 
 		@media screen and (min-width: @screen-sm){
@@ -122,7 +126,7 @@ body {
 	h3 {
 		text-transform: uppercase;
 		font-size: 16px;
-		color: hsl(213, 9%, 79%);
+		color: #999;
 	}
 
 	.answers {
@@ -152,12 +156,11 @@ body {
 				width: 100%;
 				overflow: hidden;
 				min-height: 60px;
-				background: @heavyGray;
-				color: @text-color;
+				background: @lightGray;
 
 				&:hover {
 					text-decoration: none;
-					background: darken(@heavyGray, 10%);
+					background: darken(@lightGray, 10%);
 				}
 
 				&:focus {
@@ -187,6 +190,7 @@ body {
 				.answer {
 					padding: 5px 40px 0 10px;
 					font-size: @font-size-small;
+					font-weight: bold;
 
 					@media screen and (min-width: @screen-sm){
 						font-size: @font-size-base;
@@ -224,7 +228,17 @@ body {
 			}
 
 			&.has-cover {
-				@media screen and (min-width: @screen-sm){
+				@media screen and (min-width: 480px) and (max-width: @screen-xs-max){
+					width: 25%;
+
+					a {
+						.answer {
+							font-size: @font-size-base * 0.8;
+						}
+					}
+				}
+
+				@media screen and (min-width: 480px){
 					.make-sm-column(3);
 
 					padding-left: @grid-gutter-width / 4;
@@ -301,7 +315,6 @@ body {
 		.cover {
 			img {
 				.img-circle;
-				border: 5px solid #fff;
 			}
 		}
 
@@ -374,7 +387,11 @@ body {
 			// }
 
 			.score {
-				font-size: @font-size-base * 5;
+				font-size: @font-size-base * 2;
+
+				@media screen and (min-width: 480px){
+					font-size: @font-size-base * 5;
+				}
 			}
 		}
 
@@ -386,20 +403,13 @@ body {
 			.make-md-column-offset(2);
 		}
 
-		.next-up {
-			h2 {
-				border-top: 1px solid lighten(@musicDark, 20%);
-				padding-top: @line-height-computed;
-			}
-		}
-
 		ul {
 			text-align: left;
 			list-style: none;
 
 			li {
 				margin-bottom: @line-height-computed / 2;
-				background: rgba(0,0,0,0.3);
+				background: @lightGray;
 				border-width: 0 0 0 10px;
 				border-style: solid;
 				padding: @grid-gutter-width / 2;
@@ -414,9 +424,13 @@ body {
 				}
 
 				img {
-					max-width: 100px;
+					max-width: 50px;
 					.pull-left;
 					margin-right: @grid-gutter-width / 2;
+
+					@media screen and (min-width: 480px){
+						max-width: 100px;
+					}
 				}
 
 
