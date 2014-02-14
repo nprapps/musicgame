@@ -17,7 +17,7 @@
 		<ul class="responses list-unstyled <% if (_.where(quizData['questions'], {audio: null}).length < quizData['questions'].length){ %>audio<% } %>">
 		<% _.each(quizData['questions'], function(question, index){ %>
 			<li class="<%= answers[index] === correctAnswers[index] ? 'correct' : 'incorrect' %>">
-				<% if (_.where(question['choices'], {correct_answer: true})[0]['photo']['file_path']) { %>
+				<% if (_.where(question['choices'], { correct_answer: true })[0]['photo']) { %>
 					<img src="<%= _.where(question['choices'], {correct_answer: true})[0]['photo']['file_path'] %>">
 				<% } %>
 				<% if (question.audio){ %>
