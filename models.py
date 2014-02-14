@@ -321,7 +321,7 @@ class Quiz(PSQLMODEL):
         for bucket_name in app_config.S3_BUCKETS:
             bucket = s3.get_bucket(bucket_name)
 
-            k = Key(bucket, '%s/live-data/games/%s' % (app_config.PROJECT_SLUG, self.slug))
+            k = Key(bucket, '%s/live-data/games/%s.json' % (app_config.PROJECT_SLUG, self.slug))
             k.set_contents_from_string(data, headers={
                 'Content-Type': 'application/json',
                 'Content-Encoding': 'gzip',
