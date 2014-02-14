@@ -1,3 +1,4 @@
+import base64
 import datetime
 import gzip
 import os
@@ -42,9 +43,10 @@ class Photo(PSQLMODEL):
     """
     credit = TextField()
     caption = TextField()
-    file_path = TextField(null=True)
+    file_name = TextField(null=True)
+    file_string = TextField(null=True)
     rendered_file_path = TextField(null=True)
-    render_image = BooleanField(default=False)
+    render = BooleanField(default=False)
 
     def __unicode__(self):
         return self.credit, self.caption
@@ -54,18 +56,12 @@ class Photo(PSQLMODEL):
         Right now, this just uploads it to S3.
         """
 
-        # Get the file path.
-        unrendered_path, unrendered_file = os.path.split(self.file_path)
-
-        # Get the name and extension from the filename.
-        file_name, file_extension = os.path.splitext(unrendered_file)
-
         # Make a timestamp so we can have unique filenames.
         now = datetime.datetime.now()
         timestamp = int(time.mktime(now.timetuple()))
 
         # Timestamp for uniqueness.
-        file_name = '%s-%s' % (timestamp, file_name)
+        file_name = '%s-%s' % (timestamp, self.file_name)
 
         # Set an S3 path for uploading.
         s3_path = '%s/live-data/img/%s%s' % (app_config.PROJECT_SLUG, file_name, file_extension)
@@ -102,7 +98,7 @@ class Photo(PSQLMODEL):
         Do things on save.
         """
 
-        if self.render_image:
+        if self.render:
             self.render_image_file()
 
         super(Photo, self).save(*args, **kwargs)
@@ -114,9 +110,10 @@ class Audio(PSQLMODEL):
     credit = TextField()
     caption = TextField()
     file_string = TextField(null=True)
+    file_name = TextField(null=True)
     rendered_oga_path = TextField(null=True, default=None)
     rendered_mp3_path = TextField(null=True, default=None)
-    render_audio = BooleanField(default=False)
+    render = BooleanField(default=False)
 
     def __unicode__(self):
         return self.credit, self.caption
@@ -247,7 +244,7 @@ class Audio(PSQLMODEL):
         Do things on save.
         """
 
-        if self.render_audio:
+        if self.render:
             self.render_audio_files()
 
         super(Audio, self).save(*args, **kwargs)

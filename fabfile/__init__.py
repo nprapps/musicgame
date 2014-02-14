@@ -606,8 +606,12 @@ def install_brew_requirements():
         local('brew install mpg123 vorbis-tools lame')
 
 def _create_audio(path):
+    file_path, file_name = os.path.split(path)
+    file_name, file_extension = os.path.splitext(file_name)
+
     audio = {
-        'file_path': path,
+        'file_string': '',
+        'file_name': '%s%s' % (file_name, file_extension),
         'rendered_mp3_path': path,
         'caption': 'TKTK',
         'credit': 'TKTK'
@@ -622,9 +626,13 @@ def _create_audio(path):
     return audio
 
 def _create_photo(path):
+    file_path, file_name = os.path.split(path)
+    file_name, file_extension = os.path.splitext(file_name)
+
     image = {
-        'file_path': path,
-        'rendered_file_path': path,
+        'file_string': '',
+        'file_name': '%s%s' % (file_name, file_extension),
+        'rendered_image_path': path,
         'caption': 'TKTK',
         'credit': 'TKTK'
     }
