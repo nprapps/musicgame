@@ -75,21 +75,16 @@ class Photo(PSQLMODEL):
 
             rendered_path = '%s/%s' % (app_config.PROJECT_SLUG, rendered_path)
 
-            # Loop over our buckets.
             for bucket_name in buckets:
                 bucket = s3.get_bucket(bucket_name)
 
-                # Set the key as a content_from_filename
-                # CHRIST CONTENT TYPES SUCK
                 k = Key(bucket, rendered_path)
                 k.set_contents_from_string(decoded_file, headers={
                     'Cache-Control': 'max-age=5'
                 })
 
-                # Everyone can read it.
                 k.set_acl('public-read')
 
-            # Set the rendered file path as the S3 bucket path.
             self.rendered_file_path = 'http://%s.s3.amazonaws.com/%s' % (buckets[0], rendered_path)
 
         else:
