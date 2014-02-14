@@ -1,13 +1,13 @@
 var $preview;
 var $embed;
 
+var urlRoot = APP_CONFIG['SERVER_BASE_URL'];
+
+if (APP_CONFIG['DEPLOYMENT_TARGET']) {
+    urlRoot = APP_CONFIG['S3_BASE_URL']
+}
+
 var renderEmbedCode = function(slug) {
-    var urlRoot = APP_CONFIG['SERVER_BASE_URL'];
-
-    if (APP_CONFIG['DEPLOYMENT_TARGET']) {
-        urlRoot = APP_CONFIG['S3_BASE_URL']
-    }
-
     $embed.text(JST.embed({
         'urlRoot': urlRoot,
         'slug': slug
@@ -28,7 +28,7 @@ var onDocumentReady = function() {
     renderEmbedCode(slug);
 
     $('#preview').responsiveIframe({
-        src: APP_CONFIG['SERVER_BASE_URL'] + '/game.html?quiz=' + slug
+        src: urlRoot + '/game.html?quiz=' + slug
     });
 }
 

@@ -374,11 +374,11 @@ var onDocumentReady = function() {
     }
 
     if (slug !== null) {
-        var url = APP_CONFIG['S3_BASE_URL'] + '/live-data/game/' + slug + '.json';
+        var url = APP_CONFIG['SERVER_BASE_URL'] + '/quiz/' + slug + '/';
 
-        // Local testing
-        if (!APP_CONFIG.DEPLOYMENT_TARGET) {
-            url = APP_CONFIG['SERVER_BASE_URL'] + '/quiz/' + slug + '/';
+        // Deployed
+        if (APP_CONFIG.DEPLOYMENT_TARGET) {
+            url = APP_CONFIG['S3_BASE_URL'] + '/live-data/game/' + slug + '.json';
         }
 
         $.ajax({
