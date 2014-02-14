@@ -1,23 +1,22 @@
 var $preview;
-var $production;
-var $localhost;
+var $embed;
 
 var renderEmbedCode = function(slug) {
-    $production.text(JST.embed({
-        'urlRoot': 'http://' + APP_CONFIG.PRODUCTION_S3_BUCKETS[0] + '/' + APP_CONFIG.PROJECT_SLUG,
-        'slug': slug
-    }));
+    var urlRoot = APP_CONFIG['SERVER_BASE_URL'];
 
-    $localhost.text(JST.embed({
-        'urlRoot': 'http://localhost:8000/' + APP_CONFIG.PROJECT_SLUG,
+    if (APP_CONFIG['DEPLOYMENT_TARGET']) {
+        urlRoot = APP_CONFIG['S3_BASE_URL']
+    }
+
+    $embed.text(JST.embed({
+        'urlRoot': urlRoot,
         'slug': slug
     }));
 }
 
 var onDocumentReady = function() {
     $preview = $('#preview');
-    $production = $('#production');
-    $localhost = $('#localhost');
+    $embed = $('#embed');
 
     var slug = getParameterByName('quiz');
 
