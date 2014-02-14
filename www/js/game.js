@@ -104,7 +104,7 @@ var renderQuestion = function() {
         $questionPlayer.jPlayer({
             ready: function () {
                 $(this).jPlayer('setMedia', {
-                    mp3: question['audio']['file_path'],
+                    mp3: question['audio']['rendered_mp3_path'],
                     // TODO
                     //oga: 'http://s.npr.org/news/specials/2014/wolves/wolf-ambient-draft.ogg'
                 }).jPlayer('play');
@@ -277,6 +277,8 @@ var onAnswerClick = function(){
         $this.parent().parent().addClass('incorrect');
     }
 
+    $answers.off("click");
+
     onQuestionComplete(points, $this.text(), this);
     return false;
 };
@@ -356,11 +358,11 @@ var resizeWindow = function(){
 
     if(images.length > 0){
         $(images).load(function(){
-            $content.css('height', $(document).height());
+            $content.css('height', $content.find('.container').height());
             sendHeightToParent();
         });
     } else {
-        $content.css('height', $(document).height());
+        $content.css('height', $content.find('.container').height());
         sendHeightToParent();
     }
 };

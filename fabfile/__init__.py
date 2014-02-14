@@ -5,7 +5,7 @@ import datetime
 from glob import glob
 import os
 
-from fabric.api import local, put, require, run, settings, sudo, task 
+from fabric.api import local, put, require, run, settings, sudo, task
 from fabric.state import env
 from flask import json
 from jinja2 import Template
@@ -523,7 +523,7 @@ def deploy(remote='origin'):
 
     if app_config.DEPLOY_TO_SERVERS:
         checkout_latest(remote)
-        
+
         fabcast('update_copy')
         fabcast('assets.sync')
         fabcast('update_data')
@@ -572,12 +572,13 @@ def init_db():
 
         sudo('dropdb %s' % app_config.PROJECT_SLUG, user='postgres')
         sudo('dropuser %s' % app_config.PROJECT_SLUG, user='postgres')
-        
+
     sudo('echo "CREATE USER %s WITH PASSWORD \'$MUSICGAME_POSTGRES_PASSWORD\';" | psql' % (app_config.PROJECT_SLUG), user='postgres')
     sudo('createdb %s' % app_config.PROJECT_SLUG, user='postgres')
 
     sudo('service %s start' % service_name)
 
+@task
 def local_init_db():
     """
     Prepares a user and db for the project.
@@ -615,7 +616,7 @@ def _create_audio(path):
     audio = models.Audio(**audio)
     audio.render_audio = False
     audio.save()
-    
+
     print "Saved audio: %s" % audio
 
     return audio
@@ -629,7 +630,7 @@ def _create_photo(path):
     }
 
     image = models.Photo(**image)
-    image.render_image = False 
+    image.render_image = False
     image.save()
 
     print "Saved image: %s" % image
@@ -658,8 +659,6 @@ def load_quizzes():
             'category': qc,
             'title': quiz_json['title'],
             'text': 'TKTK',
-            'created': now,
-            'updated': now,
             'photo': None
         }
 
