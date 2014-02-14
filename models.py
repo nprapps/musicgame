@@ -8,7 +8,7 @@ import time
 import boto
 from boto.s3.key import Key
 import envoy
-from flask import json 
+from flask import json
 from peewee import Model, PostgresqlDatabase, BooleanField, DateTimeField, ForeignKeyField, IntegerField, TextField
 import requests
 
@@ -113,7 +113,7 @@ class Audio(PSQLMODEL):
     """
     credit = TextField()
     caption = TextField()
-    file_path = TextField(null=True)
+    file_string = TextField(null=True)
     rendered_oga_path = TextField(null=True, default=None)
     rendered_mp3_path = TextField(null=True, default=None)
     render_audio = BooleanField(default=False)
@@ -391,4 +391,3 @@ class Choice(PSQLMODEL):
 
     def __unicode__(self):
         return self.text
-
