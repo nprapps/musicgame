@@ -378,11 +378,11 @@ var onDocumentReady = function() {
     }
 
     if (slug !== null) {
-        var url = 'TKTK'; // TODO: deployed url
+        var url = APP_CONFIG['SERVER_BASE_URL'] + '/quiz/' + slug + '/';
 
-        if (!APP_CONFIG.DEPLOYMENT_TARGET) {
-            url = '/musicgame/quiz/' + slug + '/';
-            //url = '/musicgame/assets/data/' + slug + '.json';
+        // Deployed
+        if (APP_CONFIG.DEPLOYMENT_TARGET) {
+            url = APP_CONFIG['S3_BASE_URL'] + '/live-data/games/' + slug + '.json';
         }
 
         $.ajax({

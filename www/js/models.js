@@ -66,6 +66,9 @@ var Quiz = Backbone.Model.extend({
 
         return data;
     },
+    getPreviewUrl: function() {
+        return '/' + APP_CONFIG['PROJECT_SLUG'] + '/admin/preview.html?quiz=' + this.get('slug');
+    }
 });
 
 /*
@@ -75,11 +78,13 @@ var Question = Backbone.Model.extend({
 
     quiz: null,
     choices: null,
-    audio: null,
-    photo: null,
+    audios: null,
+    photos: null,
 
     initialize: function(attributes) {
         this.choices = new Choices();
+        this.audios = new Audios();
+        this.photos = new Photos();
 
         if (attributes) {
             if ("choices" in attributes) {
@@ -91,10 +96,13 @@ var Question = Backbone.Model.extend({
                 }, this));
             }
             if ("audio" in attributes) {
-                this.audio = new Audio(attributes.audio);
+                var audio = new Audio(attributes.audio);
+                this.audios.add(audio);
             }
             if ("photo" in attributes) {
-                this.photo = new Photo(attributes.photo);
+                var photo = new Photo(attributes.photo);
+
+                this.photos.add(photo);
             }
         }
     },

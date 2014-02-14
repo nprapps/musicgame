@@ -221,7 +221,15 @@ def render():
             g.compile_includes = True
             g.compiled_includes = compiled_includes
 
-            view = app.__dict__[name]
+            bits = name.split('.')
+
+            # Determine which module the view resides in
+            if len(bits) > 1:
+                module, name = bits
+            else:
+                module = 'app'
+
+            view = globals()[module].__dict__[name]
             content = view()
 
             compiled_includes = g.compiled_includes
@@ -517,7 +525,7 @@ def deploy(remote='origin'):
         checkout_latest(remote)
         
         fabcast('update_copy')
-        fabcast('assets_sync')
+        fabcast('assets.sync')
         fabcast('update_data')
 
         if app_config.DEPLOY_CRONTAB:
@@ -538,7 +546,7 @@ def bootstrap_data():
     """
     Sets up the app from scratch.
     """
-    fabcast('assets_sync')
+    fabcast('assets.sync')
     init_db()
     fabcast('init_tables')
     fabcast('load_quizzes')
@@ -559,10 +567,16 @@ def init_db():
     Prepares a user and db for the project.
     """
     with settings(warn_only=True):
+        service_name = _get_installed_service_name('uwsgi')
+        sudo('service %s stop' % service_name)
+
         sudo('dropdb %s' % app_config.PROJECT_SLUG, user='postgres')
         sudo('dropuser %s' % app_config.PROJECT_SLUG, user='postgres')
-        sudo('echo "CREATE USER %s WITH PASSWORD \'$MUSICGAME_POSTGRES_PASSWORD\';" | psql' % (app_config.PROJECT_SLUG), user='postgres')
-        sudo('createdb %s' % app_config.PROJECT_SLUG, user='postgres')
+        
+    sudo('echo "CREATE USER %s WITH PASSWORD \'$MUSICGAME_POSTGRES_PASSWORD\';" | psql' % (app_config.PROJECT_SLUG), user='postgres')
+    sudo('createdb %s' % app_config.PROJECT_SLUG, user='postgres')
+
+    sudo('service %s start' % service_name)
 
 def local_init_db():
     """
