@@ -7,13 +7,6 @@ if (APP_CONFIG['DEPLOYMENT_TARGET']) {
     urlRoot = APP_CONFIG['S3_BASE_URL']
 }
 
-var renderEmbedCode = function(slug) {
-    $embed.text(JST.embed({
-        'urlRoot': urlRoot,
-        'slug': slug
-    }));
-}
-
 var onDocumentReady = function() {
     $preview = $('#preview');
     $embed = $('#embed');
@@ -25,8 +18,27 @@ var onDocumentReady = function() {
         return;
     }
 
-    renderEmbedCode(slug);
+    var embed = JST.embed({
+        'urlRoot': urlRoot,
+        'slug': slug
+    });
 
+    $embed.text(embed);
+
+    ZeroClipboard.setDefaults({
+        moviePath: urlRoot + "/js/lib/ZeroClipboard.swf"
+    });
+
+    var clipper = new ZeroClipboard($('.clipper'));
+
+    clipper.on('complete', function() {
+        alert('Embed code copied to your clipboard!');
+    });
+
+    clipper.on('dataRequested', function(client, args) {
+        client.setText(embed);
+    });
+    
     $('#preview').responsiveIframe({
         src: urlRoot + '/game.html?quiz=' + slug
     });

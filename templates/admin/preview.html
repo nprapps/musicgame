@@ -4,13 +4,13 @@
 <div class="container">
     <div class="row">
         <a href="./">&laquo; Back to quiz list</a>
-        <h3>Preview</h3>
+        <h3>Quiz preview</h3>
 
         <div id="preview">
         </div>
     </div>
     <div class="row">
-        <h3>Embed</h3>
+        <h3>Seamus embed code (<a class="clipper" href="#">click to copy</a>)</h3>
 
         <textarea id="embed" readonly="readonly" rows="10" cols="100">
         </textarea>
@@ -20,6 +20,7 @@
 
 {% block extra_js %}
 {{ JS.push('js/lib/parent.js') }}
+{{ JS.push('js/lib/ZeroClipboard.js') }}
 {{ JS.push('js/admin_preview.js') }}
 {{ JS.render('js/admin-preview.min.js') }}
 {% endblock %}
