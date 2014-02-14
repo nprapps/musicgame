@@ -24,7 +24,7 @@
 				<a href="#">
 				<% if (choice.photo) { %>
 					<div class="cover">
-						<img class="img-responsive" src="<%= choice.photo.file_path %>">
+						<img class="img-responsive" src="<%= choice['photo']['rendered_file_path'] %>">
 					</div>
 				<% } %>
 					<div class="answer"><%= choice.text %></div>

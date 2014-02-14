@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import copy
-import datetime
 from glob import glob
 import os
 
@@ -631,7 +630,7 @@ def _create_photo(path):
 
     image = {
         'file_name': '%s%s' % (file_name, file_extension),
-        'rendered_image_path': path,
+        'rendered_file_path': path,
         'caption': 'TKTK',
         'credit': 'TKTK'
     }

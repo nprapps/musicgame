@@ -3,7 +3,7 @@
 		<div class="quiz-info<% if (quizData['photo']){ %> has-cover<% } %>">
 			<% if (quizData['photo']){ %>
 				<div class="cover">
-					<img class="img-responsive" src="<%= quizData['photo']['file_path'] %>">
+					<img class="img-responsive" src="<%= quizData['photo']['rendered_file_path'] %>">
 				</div>
 			<% } %>
 

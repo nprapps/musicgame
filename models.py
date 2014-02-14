@@ -46,7 +46,7 @@ class Photo(PSQLMODEL):
     rendered_file_path = TextField(null=True)
 
     def __unicode__(self):
-        return self.credit, self.caption
+        return self.rendered_file_path
 
     def write_photo(self, file_string):
         """
@@ -110,7 +110,7 @@ class Audio(PSQLMODEL):
     render = BooleanField(default=False)
 
     def __unicode__(self):
-        return self.credit, self.caption
+        return self.file_name
 
     def render_audio_files(self):
         """
