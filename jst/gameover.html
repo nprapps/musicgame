@@ -17,11 +17,8 @@
 		<ul class="responses list-unstyled <% if (_.where(quizData['questions'], {audio: null}).length < quizData['questions'].length){ %>audio<% } %>">
 		<% _.each(quizData['questions'], function(question, index){ %>
 			<li class="<%= answers[index] === correctAnswers[index] ? 'correct' : 'incorrect' %>">
-				<% if (_.where(question['choices'], { correct_answer: true })[0]['photo']) { %>
-					<img src="<%= _.where(question['choices'], {correct_answer: true})[0]['photo']['file_path'] %>">
-				<% } %>
 				<% if (question.audio){ %>
-				<div id="player_<%= index %>" class="jp-player" data-audio="<%= question.audio.file_path %>"></div>
+				<div id="player_<%= index %>" class="jp-player" data-audio="<%= question.audio.rendered_mp3_path %>"></div>
 				<div id="jp_container_<%= index %>" class="jp-audio pull-left">
 				    <div class="jp-type-single">
 				        <div class="jp-gui jp-interface">
@@ -34,6 +31,9 @@
 				</div> <!-- end .jp-audio -->
 				<% } %>
 				<h2><%= question.text %></h2>
+				<% if (_.where(question['choices'], { correct_answer: true })[0]['photo']) { %>
+					<img src="<%= _.where(question['choices'], {correct_answer: true})[0]['photo']['file_path'] %>">
+				<% } %>
 				<% if (answers[index] !== correctAnswers[index]){ %>
 					<p class="answer correct-answer"><i class="fa fa-check"></i> <%= correctAnswers[index] %></p>
 				<% }%>

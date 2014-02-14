@@ -245,6 +245,7 @@ var QuestionView = Backbone.View.extend({
         choiceView.render();
 
         this.$choices.append(choiceView.el);
+
         this.choiceViews[choice.cid] = choiceView;
     },
 
@@ -327,19 +328,65 @@ var ChoiceView = Backbone.View.extend({
     className: 'choice',
 
     initialize: function() {
+        this.$photo = null;
+        this.$audio = null;
+
         _.bindAll(this);
 
         this.render();
+
+        this.model.photos.on('add', this.addPhotoView);
+        this.model.audios.on('add', this.addAudioView);
+
     },
 
     render: function() {
         this.$el.html(JST.admin_choice({ 'choice': this.model }));
+
+        $('.fileinput').fileinput();
+
+        this.$photo = this.$('.choice-files .photo');
+        this.$audio = this.$('.choice-files .audio');
+
+
+        this.model.photos.each(_.bind(function(photo) {
+            this.addPhotoView(photo);
+        }, this));
+
+        this.model.audios.each(_.bind(function(audio) {
+            this.addAudioView(audio);
+        }, this));
     },
 
     saveChoice: function() {
         var properties = this.serialize();
 
         this.model.save(properties);
+    },
+
+    addPhotoModel: function() {
+        var photo = new Photo();
+
+        this.model.photos.add(photo);
+    },
+
+    addPhotoView: function(photo) {
+        var photoView = new PhotoView({ model: photo });
+        photoView.render();
+
+        this.$photo.append(photoView.el);
+    },
+
+    addAudioModel: function() {
+        var audio = new Audio();
+        this.model.audios.add(audio);
+    },
+
+    addAudioView: function(audio) {
+        var audioView = new AudioView({ model: audio });
+        audioView.render();
+
+        this.$audio.append(audioView.el);
     },
 
     close: function() {
@@ -363,13 +410,17 @@ var ChoiceView = Backbone.View.extend({
 });
 
 var PhotoView = Backbone.View.extend({
+    tagName: 'div',
     events: {
         'change input[type="file"]': 'uploadPhoto'
     },
+    className: 'fileinput fileinput-new',
+
 
     initialize: function() {
         _.bindAll(this);
         this.$photo_file = null;
+        this.$photo_name = null;
 
         this.photos = new Photos();
 
@@ -378,8 +429,8 @@ var PhotoView = Backbone.View.extend({
 
     render: function() {
         this.$el.html(JST.admin_photo({ 'photo': this.model }));
-
         this.$photo_file = this.$('input[type="file"]');
+        this.$photo_name = this.$('.fileinput-filename');
 
     },
 
@@ -417,7 +468,9 @@ var PhotoView = Backbone.View.extend({
         var properties = {
             credit: 'TK',
             caption: 'TK',
-            file_path: null
+            file_name: this.$photo_name.text(),
+            file_string: null,
+            render: true
         };
 
         console.log(properties);
@@ -426,14 +479,17 @@ var PhotoView = Backbone.View.extend({
 });
 
 var AudioView = Backbone.View.extend({
+    tagName: 'div',
     events: {
         'change input[type="file"]': 'uploadAudio'
     },
+    className: 'fileinput fileinput-new',
 
     initialize: function() {
         _.bindAll(this);
 
         this.$audio_file = null;
+        this.$audio_name = null;
 
         this.audios = new Audios();
 
@@ -443,7 +499,8 @@ var AudioView = Backbone.View.extend({
     render: function() {
         this.$el.html(JST.admin_audio({ 'audio': this.model }));
 
-        this.$audio_file = this.$('input[type="file"]')
+        this.$audio_file = this.$('input[type="file"]');
+        this.$audio_name = this.$('.fileinput-filename');
 
     },
 
@@ -455,16 +512,18 @@ var AudioView = Backbone.View.extend({
 
         var properties = this.serialize();
 
+        console.log(properties);
+
         reader.onloadend = _.bind(function() {
             properties['file_string'] = reader.result;
-            var audio = this.audios.create(properties, {
-                success: function() {
-                    console.log('yay');
-                },
-                error: function() {
-                    console.log('haha');
-                }
-            });
+            // var audio = this.audios.create(properties, {
+            //     success: function() {
+            //         console.log('yay');
+            //     },
+            //     error: function() {
+            //         console.log('haha');
+            //     }
+            // });
         }, this);
     },
 
@@ -478,7 +537,9 @@ var AudioView = Backbone.View.extend({
         var properties = {
             credit: 'TK',
             caption: 'TK',
-            file_string: null
+            file_name: this.$audio_name.text(),
+            file_string: null,
+            render: true
         };
 
         return properties;
