@@ -221,7 +221,15 @@ def render():
             g.compile_includes = True
             g.compiled_includes = compiled_includes
 
-            view = app.__dict__[name]
+            bits = name.split('.')
+
+            # Determine which module the view resides in
+            if len(bits) > 1:
+                module, name = bits
+            else:
+                module = 'app'
+
+            view = globals()[module].__dict__[name]
             content = view()
 
             compiled_includes = g.compiled_includes
@@ -517,7 +525,7 @@ def deploy(remote='origin'):
         checkout_latest(remote)
         
         fabcast('update_copy')
-        fabcast('assets_sync')
+        fabcast('assets.sync')
         fabcast('update_data')
 
         if app_config.DEPLOY_CRONTAB:
@@ -538,7 +546,7 @@ def bootstrap_data():
     """
     Sets up the app from scratch.
     """
-    fabcast('assets_sync')
+    fabcast('assets.sync')
     init_db()
     fabcast('init_tables')
     fabcast('load_quizzes')
