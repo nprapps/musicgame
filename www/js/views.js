@@ -427,7 +427,7 @@ var PhotoView = Backbone.View.extend({
 
 var AudioView = Backbone.View.extend({
     events: {
-        'change .audio input[type="file"]': 'uploadAudio'
+        'change input[type="file"]': 'uploadAudio'
     },
 
     initialize: function() {
@@ -435,15 +435,16 @@ var AudioView = Backbone.View.extend({
 
         this.$audio_file = null;
 
-        this.audio = new Audios();
+        this.audios = new Audios();
 
         this.render();
     },
 
     render: function() {
-        this.$audio_file = this.$('.audio input[type="file"]')
-
         this.$el.html(JST.admin_audio({ 'audio': this.model }));
+
+        this.$audio_file = this.$('input[type="file"]')
+
     },
 
     uploadAudio: function() {
@@ -455,8 +456,8 @@ var AudioView = Backbone.View.extend({
         var properties = this.serialize();
 
         reader.onloadend = _.bind(function() {
-            properties['file_path'] = reader.result;
-            var audio = this.photos.create(properties, {
+            properties['file_string'] = reader.result;
+            var audio = this.audios.create(properties, {
                 success: function() {
                     console.log('yay');
                 },
@@ -477,7 +478,7 @@ var AudioView = Backbone.View.extend({
         var properties = {
             credit: 'TK',
             caption: 'TK',
-            file_path: null
+            file_string: null
         };
 
         return properties;
