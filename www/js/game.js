@@ -104,7 +104,7 @@ var renderQuestion = function() {
         $questionPlayer.jPlayer({
             ready: function () {
                 $(this).jPlayer('setMedia', {
-                    mp3: question['audio']['file_path'],
+                    mp3: question['audio']['rendered_mp3_path'],
                     // TODO
                     //oga: 'http://s.npr.org/news/specials/2014/wolves/wolf-ambient-draft.ogg'
                 }).jPlayer('play');

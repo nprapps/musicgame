@@ -374,6 +374,8 @@ body {
 					.make-sm-column-offset(1);
 					.make-md-column(2);
 					.make-md-column-offset(2);
+
+					margin-bottom: @line-height-computed;
 				}
 				.quiz-title {
 					.make-xs-column(9);
@@ -388,6 +390,7 @@ body {
 
 			.score {
 				font-size: @font-size-base * 2;
+				line-height: 1;
 
 				@media screen and (min-width: 480px){
 					font-size: @font-size-base * 5;
@@ -409,19 +412,9 @@ body {
 
 			li {
 				margin-bottom: @line-height-computed / 2;
-				background: @lightGray;
-				border-width: 0 0 0 10px;
-				border-style: solid;
-				padding: @grid-gutter-width / 2;
+				padding: @line-height-computed 0;
+				border-top: 2px solid @lightGray;
 				overflow: hidden;
-
-				&.correct {
-					border-color: @correct;
-				}
-
-				&.incorrect {
-					border-color: @incorrect;
-				}
 
 				img {
 					max-width: 50px;
@@ -436,7 +429,9 @@ body {
 
 				h2 {
 					text-transform: none;
-					margin-top: 0;
+					font-weight: bold;
+					margin-top: @line-height-computed / 2;
+					margin-bottom: @line-height-computed;
 				}
 
 				.jp-audio {
@@ -445,7 +440,6 @@ body {
 
 				.your-answer,
 				.correct-answer {
-					color: @musicLight;
 					position: relative;
 					margin-bottom: @line-height-computed / 2;
 
@@ -497,7 +491,7 @@ body {
 				}
 
 				&.correct-answer {
-					color: fade(@musicMedium, 50%);
+					color: #999;
 				}
 			}
 		}
