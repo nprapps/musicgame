@@ -1,7 +1,6 @@
 <td><a href="quiz/<%= quiz.get('id') %>/"><%= quiz.get('title') %></a></td>
 <td><a href="quiz/<%= quiz.get('id') %>"><%= quiz.get('created') %></a></td>
 <td>
-    <a class="btn btn-xs btn-primary embed-quiz"><i class="fa fa-share"></i> Embed quiz</a>
-    <a class="btn btn-xs btn-info preview-quiz" href="<%= quiz.getPreviewUrl() %>"><i class="fa fa-play"></i> Preview quiz</a>
+    <a class="btn btn-xs btn-primary embed-quiz" href="<%= quiz.getPreviewUrl() %>"><i class="fa fa-play"></i> Preview & embed quiz</a>
     <a class="btn btn-xs btn-danger delete-quiz"><i class="fa fa-times"></i> Delete quiz</a>
 </td>
