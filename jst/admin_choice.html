@@ -1,46 +1,16 @@
-<div class="choice">
-    <div class="choice-text row">
-        <div class="col-lg-10 col-md-offset-2 col-s-12">
-            <div class="input-group">
-                <span class="input-group-addon">
-                    <input class="correct" type="radio" name="q<%=choice.question.id%>-answers" <% if (choice.get('correct_answer')) { %> checked="checked" <% } %></input>
-                </span>
-                <input type="text" class="form-control answer" placeholder="Choice" value="<%= choice.get('text') || '' %>">
-            </div>
+<div class="choice-text row">
+    <div class="col-lg-10 col-md-offset-2 col-s-12">
+        <div class="input-group">
+            <span class="input-group-addon">
+                <input class="correct" type="radio" name="q<%=choice.question.id%>-answers" <% if (choice.get('correct_answer')) { %> checked="checked" <% } %></input>
+            </span>
+            <input type="text" class="form-control answer" placeholder="Choice" value="<%= choice.get('text') || '' %>">
         </div>
     </div>
-    <div class="choice-files row">
-        <div class="col-lg-5 col-lg-offset-2">
-            <div class="fileinput fileinput-new pull-right">
-                <div class="input-group">
-                    <div class="form-control uneditable-input span3" data-trigger="fileinput">
-                        <i class="glyphicon glyphicon-file fileinput-exists"></i>
-                        <span class="fileinput-filename"></span>
-                    </div>
-                    <span class="input-group-addon btn btn-default btn-file">
-                        <span class="fileinput-new"><i class="fa fa-volume-up"></i> Select file</span>
-                        <span class="fileinput-exists">Change</span>
-                        <input type="file" name="...">
-                    </span>
-                    <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-5">
-            <div class="fileinput fileinput-new pull-right">
-                <div class="input-group">
-                    <div class="form-control uneditable-input span3" data-trigger="fileinput">
-                        <i class="glyphicon glyphicon-file fileinput-exists"></i>
-                        <span class="fileinput-filename"></span>
-                    </div>
-                    <span class="input-group-addon btn btn-default btn-file">
-                        <span class="fileinput-new"><i class="fa fa-camera"></i> Select file</span>
-                        <span class="fileinput-exists">Change</span>
-                        <input type="file" name="...">
-                    </span>
-                    <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
-                </div>
-            </div>
-        </div>
+</div>
+<div class="choice-files row">
+    <div class="audio col-lg-5 col-lg-offset-2">
+    </div>
+    <div class="photo col-lg-5">
     </div>
 </div>

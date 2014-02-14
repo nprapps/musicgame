@@ -131,16 +131,22 @@ var Question = Backbone.Model.extend({
 var Choice = Backbone.Model.extend({
 
     question: null,
-    audio: null,
-    photo: null,
+    audios: null,
+    photos: null,
 
     initialize: function(attributes) {
+        this.audios = new Audios();
+        this.photos = new Photos();
+
         if (attributes) {
             if ("audio" in attributes) {
-                this.audio = new Audio(attributes.audio);
+                var audio = new Audio(attributes.audio);
+                this.audios.add(audio);
             }
             if ("photo" in attributes) {
-                this.photo = new Photo(attributes.photo);
+                var photo = new Photo(attributes.photo);
+
+                this.photos.add(photo);
             }
         }
     },
