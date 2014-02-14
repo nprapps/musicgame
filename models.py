@@ -280,6 +280,9 @@ class Quiz(PSQLMODEL):
         flat['category'] = self.category.to_dict() if self.category else None
         flat['photo'] = self.photo.to_dict() if self.photo else None
 
+        flat['created'] = time.mktime(self.created.timetuple())
+        flat['updated'] = time.mktime(self.updated.timetuple())
+
         for i, question in enumerate(self.questions):
             question_flat = flat['questions'][i]
             question_flat['choices'] = [c.to_dict() for c in question.choices]
@@ -294,12 +297,22 @@ class Quiz(PSQLMODEL):
         return flat
 
     def save(self, *args, **kwargs):
+        now = datetime.datetime.now()
+
+        if not self.created:
+            self.created = now
+            self.updated = now
+
+        else:
+            self.updated = now
+
         if not self.slug:
             self.slugify()
 
         super(Quiz, self).save(*args, **kwargs)
 
-        self.deploy()
+        if app_config.DEPLOYMENT_TARGET in ['production', 'staging']:
+            self.deploy()
 
     def deploy(self):
         """
