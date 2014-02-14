@@ -62,6 +62,10 @@ body {
 }
 
 #content {
+	.container {
+		padding: 0;
+	}
+
 	.progress {
 		height: 30px;
 		background: fade(@musicMedium, 50%);
@@ -104,7 +108,7 @@ body {
 	h1 {
 		margin: 15px 0 0 0;
 		font-size: @font-size-base;
-		font-weight: 400;
+		font-weight: 700;
 		line-height: 1.2;
 
 		@media screen and (min-width: @screen-sm){
@@ -122,7 +126,7 @@ body {
 	h3 {
 		text-transform: uppercase;
 		font-size: 16px;
-		color: hsl(213, 9%, 79%);
+		color: #999;
 	}
 
 	.answers {
@@ -153,7 +157,6 @@ body {
 				overflow: hidden;
 				min-height: 60px;
 				background: @heavyGray;
-				color: @text-color;
 
 				&:hover {
 					text-decoration: none;
@@ -187,6 +190,7 @@ body {
 				.answer {
 					padding: 5px 40px 0 10px;
 					font-size: @font-size-small;
+					font-weight: bold;
 
 					@media screen and (min-width: @screen-sm){
 						font-size: @font-size-base;
@@ -301,7 +305,6 @@ body {
 		.cover {
 			img {
 				.img-circle;
-				border: 5px solid #fff;
 			}
 		}
 

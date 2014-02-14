@@ -39,7 +39,7 @@ var renderStart = function() {
 
     $content.html(html);
 
-    $content.addClass('start').css('height', $(document).height());
+    $content.addClass('start');
 
     $startQuizButton = $content.find('#start-quiz');
     $startQuizButton.on('click', function(e){
@@ -48,7 +48,7 @@ var renderStart = function() {
         return false;
     });
 
-    sendHeightToParent();
+    resizeWindow();
 };
 
 /*
@@ -74,6 +74,7 @@ var renderQuestion = function() {
 
     $content.html(html);
     $content.removeClass();
+    resizeWindow();
 
     if (question['audio']) {
         $content.addClass('audio');
@@ -128,9 +129,6 @@ var renderQuestion = function() {
             runTimer();
         }
     }
-
-    $content.css('height', $(document).height());
-    sendHeightToParent();
 };
 
 /*
@@ -149,7 +147,7 @@ var renderGameOver = function() {
     var html = JST.gameover(context);
 
     $content.html(html);
-    $content.addClass('end').css('height', $(document).height());
+    $content.addClass('end');
     $showResults = $content.find('#show-results');
     $responses = $content.find('.responses');
     var $players = $content.find('.jp-player')
@@ -194,7 +192,7 @@ var renderGameOver = function() {
 
     $showResults.on('click', onShowResultsClick);
 
-    sendHeightToParent();
+    resizeWindow();
 };
 
 /*
@@ -253,7 +251,7 @@ var onQuestionComplete = function(points, selectedAnswer, element){
         $showScoreButton.addClass('show');
     }
 
-    sendHeightToParent();
+    resizeWindow();
 };
 
 /*
@@ -359,6 +357,23 @@ var scrollTo = function($el) {
     $('html,body').animate({
         scrollTop: top
     }, 1000);
+};
+
+/*
+ * Check for images in content and size window after load
+ */
+
+var resizeWindow = function(){
+    var images = $content.find('img');
+    if(images.length > 0){
+        $(images).load(function(){
+            $content.css('height', $(document).height());
+            sendHeightToParent();
+        });
+    } else {
+        $content.css('height', $(document).height());
+        sendHeightToParent();
+    }
 };
 
 /*
