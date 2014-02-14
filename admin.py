@@ -17,7 +17,7 @@ def admin_quiz_list():
 
     context['quizzes'] = models.Quiz.select()
 
-    return render_template('admin/admin_index.html', **context)
+    return render_template('admin/index.html', **context)
 
 @admin.route('/admin/quiz/<quiz_id>/')
 def admin_quiz_detail(quiz_id):
@@ -31,4 +31,4 @@ def admin_quiz_detail(quiz_id):
     context['quiz'] = quiz
     context['quiz_json'] = flask.json.dumps(quiz.flatten())
 
-    return render_template('admin/admin_detail.html', **context)
+    return render_template('admin/detail.html', **context)
