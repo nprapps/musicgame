@@ -336,7 +336,7 @@ def bootstrap_issues():
     github.create_milestones(auth)
     github.create_hipchat_hook(auth)
 
-def bootstrap():
+def local_bootstrap():
     """
     Bootstrap this project. Should only need to be run once.
     """

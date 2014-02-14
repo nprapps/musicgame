@@ -84,13 +84,13 @@ Then bootstrap the project:
 cd musicgame
 mkvirtualenv --no-site-packages musicgame
 pip install -r requirements.txt
-fab bootstrap
+fab local_bootstrap
 ```
 
 Last, bootstrap your database:
 
 ```
-fab bootstrap_data
+fab local_bootstrap_data
 ```
 
 Hide project secrets
