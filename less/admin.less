@@ -82,23 +82,54 @@
 
 .question {
     margin: 50px 0;
-    border-top: 3px solid #ddd;
     background-color: #eee;
-    padding: 50px 20px;
+    
+    
+    .question-settings {
+	    position: relative;
+	    
+	    .rm-question {
+		   float: right; 
+		   margin-bottom: 20px; 
+		   font-size: 12px;
+	    }
+    }
+    
+    .form-group{
+	    padding: 0 20px;
+    }
 }
 
 .question-info {
     margin-bottom: 20px;
 }
 
-.choice-text {
-    margin-bottom: 20px;
+
+.choices {
+	padding-right: 20px;
+	
+	
+	.choice {
+	    margin: 10px 0 10px 15px;
+	}
+	
+	.choice-text {
+	    margin-bottom: 20px;
+	}
+	
+	.choice-btns {
+		h5 {
+			margin-left: 15px;
+			border-top: 2px solid #ccc;
+			padding: 10px;
+			background-color: #ddd;
+		}
+		a {margin: 0 5px;}
+	}
+	
 }
 
-.choice {
-    margin-left: 10px;
-    margin-bottom: 50px;
-}
+
 
 /* audio and photo select */
 .audio {

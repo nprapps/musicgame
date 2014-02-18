@@ -1,4 +1,8 @@
 <div class="question-title row">
+	<div class="col-lg-12 question-settings">
+         <a class="btn btn-danger rm-question"><i class="fa fa-times"></i> Remove question</a>
+    </div>
+
     <div class="col-lg-12">
         <div class="form-group">
             <label for="interrogative" class="col-sm-2 control-label">Question</label>
@@ -22,7 +26,7 @@
 <div class="question-info row">
     <div class="col-lg-12">
         <div class="form-group">
-            <label for="after-text" class="col-sm-2 control-label">After text</label>
+            <label for="after-text" class="col-sm-2 control-label">Answer description</label>
             <div class="col-sm-10">
                 <textarea class="form-control after-text" rows='3'>
                     <% if (question.attributes['after_text'] == 'null') {
@@ -34,15 +38,18 @@
     </div>
 </div>
 <div class="choices">
-	<h5 class="col-lg-10 col-md-offset-2 col-s-12">Add answers</h5>
+	<div class="choice-btns row">
+		<div  class="col-lg-10 col-md-offset-2 col-s-12">
+			<h5>
+				Answers:
+				<a class="btn btn-success add-choice"><i class="fa fa-plus"></i></a>
+		        <a class="btn btn-danger rm-choice"><i class="fa fa-minus"></i></a>
+			</h5>
+			
+		</div>
+	</div>
 </div>
 </div>
-<div class="choice-btns row">
-    <div class="col-lg-10 col-md-offset-2 col-s-12">
-        <div class="pull-right">
-            <a class="btn btn-success add-choice"><i class="fa fa-plus"></i></a>
-            <a class="btn btn-danger rm-choice"><i class="fa fa-minus"></i></a>
-            <a class="btn btn-danger rm-question"><i class="fa fa-times"></i> Remove question</a>
-        </div>
-    </div>
-</div>
+
+   
+
