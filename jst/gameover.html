@@ -32,7 +32,7 @@
 				<% } %>
 				<h2><%= question.text %></h2>
 				<% if (_.where(question['choices'], { correct_answer: true })[0]['photo']) { %>
-					<img src="<%= _.where(question['choices'], {correct_answer: true})[0]['photo']['file_path'] %>">
+					<img src="<%= _.where(question['choices'], {correct_answer: true})[0]['photo']['rendered_file_path'] %>">
 				<% } %>
 				<% if (answers[index] !== correctAnswers[index]){ %>
 					<p class="answer correct-answer"><i class="fa fa-check"></i> <%= correctAnswers[index] %></p>
