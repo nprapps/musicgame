@@ -1,7 +1,7 @@
 var $preview;
 var $embed;
 
-var urlRoot = APP_CONFIG['SERVER_BASE_URL'];
+var urlRoot = '/' + APP_CONFIG['PROJECT_SLUG'];
 
 if (APP_CONFIG['DEPLOYMENT_TARGET']) {
     urlRoot = APP_CONFIG['S3_BASE_URL']
@@ -26,7 +26,7 @@ var onDocumentReady = function() {
     $embed.text(embed);
 
     ZeroClipboard.setDefaults({
-        moviePath: urlRoot + "/js/lib/ZeroClipboard.swf"
+        moviePath: urlRoot + '/js/lib/ZeroClipboard.swf'
     });
 
     var clipper = new ZeroClipboard($('.clipper'));
