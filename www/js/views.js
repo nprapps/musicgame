@@ -171,8 +171,6 @@ var QuizDetailView = Backbone.View.extend({
             text: this.$('.description').val(),
         };
 
-        console.log(properties);
-
         return properties;
     }
 });
@@ -286,8 +284,6 @@ var QuestionView = Backbone.View.extend({
 
     saveQuestion: function() {
         var properties = this.serialize();
-
-        console.log(properties['after_text']);
 
         this.model.save(properties, {
             success: _.bind(function() {
@@ -538,8 +534,6 @@ var AudioView = Backbone.View.extend({
             file_string: null,
             render: true
         };
-
-        console.log(properties);
 
         return properties;
     }
