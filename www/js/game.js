@@ -380,7 +380,7 @@ var onDocumentReady = function() {
     }
 
     if (slug !== null) {
-        var url = APP_CONFIG['SERVER_BASE_URL'] + '/quiz/' + slug + '/';
+        var url = '/' + APP_CONFIG['PROJECT_SLUG'] + '/quiz/' + slug + '/';
 
         // Deployed
         if (APP_CONFIG.DEPLOYMENT_TARGET) {

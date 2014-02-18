@@ -2,7 +2,7 @@
  * Quizzes
  */
 var Quizzes = Backbone.Collection.extend({
-	url: APP_CONFIG['SERVER_BASE_URL'] + '/api/quiz/',
+	url: '/' + APP_CONFIG['PROJECT_SLUG'] + '/api/quiz/',
 	model: Quiz,
 
 	parse: function(response) {
@@ -16,7 +16,7 @@ var Quizzes = Backbone.Collection.extend({
  * Questions
  */
 var Questions = Backbone.Collection.extend({
-    url: APP_CONFIG['SERVER_BASE_URL'] + '/api/question/',
+    url: '/' + APP_CONFIG['PROJECT_SLUG'] + '/api/question/',
     model: Question
 });
 
@@ -24,17 +24,6 @@ var Questions = Backbone.Collection.extend({
 * Choices
 */
 var Choices = Backbone.Collection.extend({
-    url: APP_CONFIG['SERVER_BASE_URL'] + '/api/choice/',
+    url: '/' + APP_CONFIG['PROJECT_SLUG'] + '/api/choice/',
     model: Choice
 })
-
-var Audios = Backbone.Collection.extend({
-    url: APP_CONFIG['SERVER_BASE_URL'] + '/api/audio/',
-    model: Audio
-})
-
-var Photos = Backbone.Collection.extend({
-    url: APP_CONFIG['SERVER_BASE_URL'] + '/api/photo/',
-    model: Photo
-})
-

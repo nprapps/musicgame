@@ -25,7 +25,7 @@ var QuizCategory = Backbone.Model.extend({
         var data = _.clone(this.attributes);
 
         return data;
-    },
+    }
 });
 
 
@@ -81,13 +81,13 @@ var Question = Backbone.Model.extend({
 
     quiz: null,
     choices: null,
-    audios: null,
-    photos: null,
+    audio: null,
+    photo: null,
 
     initialize: function(attributes) {
         this.choices = new Choices();
-        this.audios = new Audios();
-        this.photos = new Photos();
+        this.audio = new Audio();
+        this.photo = new Photo();
 
         if (attributes) {
             if ("choices" in attributes) {
@@ -98,14 +98,13 @@ var Question = Backbone.Model.extend({
                     this.choices.add(choice);
                 }, this));
             }
-            if ("audio" in attributes) {
-                var audio = new Audio(attributes.audio);
-                this.audios.add(audio);
-            }
-            if ("photo" in attributes) {
-                var photo = new Photo(attributes.photo);
 
-                this.photos.add(photo);
+            if ("audio" in attributes) {
+                this.audio = new Audio(attributes.audio);
+            }
+            
+            if ("photo" in attributes) {
+                this.photo = new Photo(attributes.photo);
             }
         }
     },
@@ -135,22 +134,20 @@ var Question = Backbone.Model.extend({
 var Choice = Backbone.Model.extend({
 
     question: null,
-    audios: null,
-    photos: null,
+    audio: null,
+    photo: null,
 
     initialize: function(attributes) {
-        this.audios = new Audios();
-        this.photos = new Photos();
+        this.audio = new Audio();
+        this.photo = new Photo();
 
         if (attributes) {
             if ("audio" in attributes) {
-                var audio = new Audio(attributes.audio);
-                this.audios.add(audio);
+                this.audio = new Audio(attributes.audio);
             }
-            if ("photo" in attributes) {
-                var photo = new Photo(attributes.photo);
 
-                this.photos.add(photo);
+            if ("photo" in attributes) {
+                this.photo = new Photo(attributes.photo);
             }
         }
     },
