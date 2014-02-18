@@ -167,9 +167,11 @@ var QuizDetailView = Backbone.View.extend({
 
     serialize: function() {
         var properties = {
-            title: this.$('.title h1 span').text(),
-            text: this.$('.desc h4 span').text(),
+            title: this.$('.title').val(),
+            text: this.$('.description').val(),
         };
+
+        console.log(properties);
 
         return properties;
     }
@@ -310,9 +312,9 @@ var QuestionView = Backbone.View.extend({
 
     serialize: function() {
         var properties = {
-            text: this.$('.interrogative').text(),
+            text: this.$('.interrogative').val(),
             order: 0, // TODO
-            after_text: this.$('.after-text').text()
+            after_text: this.$('.after-text').val()
         };
 
         return properties;
@@ -509,8 +511,6 @@ var AudioView = Backbone.View.extend({
 
         var properties = this.serialize();
 
-        console.log(properties);
-
         reader.onloadend = _.bind(function() {
             properties['file_string'] = reader.result;
             // var audio = this.audios.create(properties, {
@@ -538,6 +538,8 @@ var AudioView = Backbone.View.extend({
             file_string: null,
             render: true
         };
+
+        console.log(properties);
 
         return properties;
     }
