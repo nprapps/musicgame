@@ -85,7 +85,7 @@ class Photo(PSQLMODEL):
             self.rendered_file_path = 'http://%s.s3.amazonaws.com/%s' % (app_config.S3_BUCKETS[0], rendered_path)
         # Local
         else:
-            rendered_path = 'www/%s' % (app_config.PROJECT_SLUG, rendered_path)
+            rendered_path = 'www/%s' % (rendered_path)
 
             dirname = os.path.dirname(rendered_path)
 
