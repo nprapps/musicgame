@@ -285,7 +285,7 @@ var QuestionView = Backbone.View.extend({
     saveQuestion: function() {
         var properties = this.serialize();
 
-        this.model.save(properties, /*{
+        this.model.save(properties/*, {
             success: _.bind(function() {
                 _.each(this.choiceViews, function(choiceView) {
                     choiceView.saveChoice();
