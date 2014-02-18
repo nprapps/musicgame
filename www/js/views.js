@@ -167,8 +167,8 @@ var QuizDetailView = Backbone.View.extend({
 
     serialize: function() {
         var properties = {
-            title: this.$('.title h1 span').text(),
-            text: this.$('.desc h4 span').text(),
+            title: this.$('.title').val(),
+            text: this.$('.description').val(),
         };
 
         return properties;
@@ -285,8 +285,6 @@ var QuestionView = Backbone.View.extend({
     saveQuestion: function() {
         var properties = this.serialize();
 
-        console.log(properties['after_text']);
-
         this.model.save(properties, {
             success: _.bind(function() {
                 _.each(this.choiceViews, function(choiceView) {
@@ -310,9 +308,9 @@ var QuestionView = Backbone.View.extend({
 
     serialize: function() {
         var properties = {
-            text: this.$('.interrogative').text(),
+            text: this.$('.interrogative').val(),
             order: 0, // TODO
-            after_text: this.$('.after-text').text()
+            after_text: this.$('.after-text').val()
         };
 
         return properties;
@@ -508,8 +506,6 @@ var AudioView = Backbone.View.extend({
         reader.readAsDataURL(file);
 
         var properties = this.serialize();
-
-        console.log(properties);
 
         reader.onloadend = _.bind(function() {
             properties['file_string'] = reader.result;

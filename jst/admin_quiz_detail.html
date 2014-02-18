@@ -1,6 +1,6 @@
 <div class="container">
     <form id="quiz-form" class="form-horizontal">
-        <div class="title row">
+        <div class="row">
             <div class="col-lg-12">
                 <div class="form-group">
                     <label for="title" class="col-sm-2 control-label">Title</label>
@@ -10,12 +10,12 @@
                 </div>
             </div>
         </div>
-        <div class="desc row">
+        <div class="row">
             <div class="col-lg-12">
                 <div class="form-group">
                     <label for="description" class="col-sm-2 control-label">Description</label>
                     <div class="col-sm-10">
-                      <textarea class="form-control" rows='3'><%= quiz.get('text') %></textarea>
+                      <textarea class="form-control description" rows='3'><%= quiz.get('text') %></textarea>
                     </div>
                 </div>
             </div>
