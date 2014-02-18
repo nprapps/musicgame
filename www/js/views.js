@@ -259,7 +259,7 @@ var QuestionView = Backbone.View.extend({
         // if (this.model.choices.length > 1) {
             var model = this.model.choices.last();
             this.choiceViews[model.cid].close();
-            delete this.choiceViews[choice.cid];
+            delete this.choiceViews[model.cid];
         // }
     },
 
@@ -380,8 +380,6 @@ var PhotoView = Backbone.View.extend({
         this.$photo_file = null;
         this.$photo_name = null;
 
-        this.photo = new Photo();
-
         this.render();
     },
 
@@ -408,6 +406,9 @@ var PhotoView = Backbone.View.extend({
                 'data': properties,
                 'success': _.bind(function(data) {
                     this.options.parent.model.photo = new Photo(data);
+                    this.model = this.options.parent.model.photo;
+                    this.render();
+
                     console.log('Photo created.');
                 }, this),
                 'error': function() {
@@ -448,8 +449,6 @@ var AudioView = Backbone.View.extend({
         this.$audio_file = null;
         this.$audio_name = null;
 
-        this.audio = new Audio();
-
         this.render();
     },
 
@@ -458,7 +457,6 @@ var AudioView = Backbone.View.extend({
 
         this.$audio_file = this.$('input[type="file"]');
         this.$audio_name = this.$('.fileinput-filename');
-
     },
 
     uploadAudio: function() {

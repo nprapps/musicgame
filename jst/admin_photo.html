@@ -1,3 +1,6 @@
+<% if (photo.get('rendered_file_path')) { %>
+<img class="preview" src="<%= photo.get('rendered_file_path') %>"></img>
+<% } %>
 <div class="input-group">
     <div class="form-control uneditable-input span3" data-trigger="fileinput">
         <i class="glyphicon glyphicon-file fileinput-exists"></i>

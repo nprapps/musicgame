@@ -95,7 +95,7 @@ class Photo(PSQLMODEL):
             with open(local_path, 'wb') as writefile:
                 writefile.write(decoded_file)
 
-            self.rendered_file_path = rendered_path
+            self.rendered_file_path = '%s/%s' % (app_config.SERVER_BASE_URL, rendered_path)
 
 class Audio(PSQLMODEL):
     """
