@@ -27,14 +27,3 @@ var Choices = Backbone.Collection.extend({
     url: '/' + APP_CONFIG['PROJECT_SLUG'] + '/api/choice/',
     model: Choice
 })
-
-var Audios = Backbone.Collection.extend({
-    url: '/' + APP_CONFIG['PROJECT_SLUG'] + '/api/audio/',
-    model: Audio
-})
-
-var Photos = Backbone.Collection.extend({
-    url: '/' + APP_CONFIG['PROJECT_SLUG'] + '/api/photo/',
-    model: Photo
-})
-
