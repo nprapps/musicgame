@@ -158,10 +158,10 @@ var Choice = Backbone.Model.extend({
     },
     toJSON: function() {
         var data = _.clone(this.attributes);
-        data['question'] = this.question.id;
 
-        delete data['photo'];
-        delete data['audio'];
+        data['question'] = this.question.id;
+        data['photo'] = this.photo ? this.photo.id : null
+        data['audio'] = this.audio ? this.audio.id : null
 
         return data;
     },
