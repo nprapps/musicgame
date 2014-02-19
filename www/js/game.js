@@ -242,11 +242,11 @@ var onQuestionComplete = function(points, selectedAnswer, element){
                 $content.find('.after-text').slideDown({
                     duration: 'fast',
                     progress: function(){
-                        $content.css('height', $content.find('.container').height());
+                        $content.attr('style','').css('height', $content.height());
                         sendHeightToParent();
                     },
                     done: function(){
-                        $content.css('height', $content.find('.container').height());
+                        $content.attr('style','').css('height', $content.height());
                         sendHeightToParent();
                     }
                 });
@@ -369,11 +369,11 @@ var resizeWindow = function(){
 
     if(images.length > 0){
         $(images).load(function(){
-            $content.css('height', $content.find('.container').height());
+            $content.attr('style','').css('height', $content.height());
             sendHeightToParent();
         });
     } else {
-        $content.css('height', $content.find('.container').height());
+        $content.attr('style','').css('height', $content.height());
         sendHeightToParent();
     }
 };
