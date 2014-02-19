@@ -500,8 +500,7 @@ var AudioView = Backbone.View.extend({
                 ready: _.bind(function () {
                     this.$audioPlayer.jPlayer('setMedia', {
                         mp3: this.model.get('rendered_mp3_path'),
-                        // TODO
-                        //oga: 'http://s.npr.org/news/specials/2014/wolves/wolf-ambient-draft.ogg'
+                        oga: this.model.get('rendered_oga_path') 
                     });
                 }, this),
                 play: function() {

@@ -173,7 +173,7 @@ class Audio(PSQLMODEL):
             envoy.run('mv %s.mp3 www/live-data/audio/' % file_name)
 
             self.rendered_mp3_path = '/%s/live-data/audio/%s.mp3' % (app_config.PROJECT_SLUG, file_name)
-            self.rendered_ogg_path = '/%s/live-data/audio/%s.ogg' % (app_config.PROJECT_SLUG, file_name)
+            self.rendered_oga_path = '/%s/live-data/audio/%s.oga' % (app_config.PROJECT_SLUG, file_name)
 
         # Clean up the nasty bits.
         os.system('rm -f *.wav *.mp3 *.oga')

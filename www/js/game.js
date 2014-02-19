@@ -105,8 +105,7 @@ var renderQuestion = function() {
             ready: function () {
                 $(this).jPlayer('setMedia', {
                     mp3: question['audio']['rendered_mp3_path'],
-                    // TODO
-                    //oga: 'http://s.npr.org/news/specials/2014/wolves/wolf-ambient-draft.ogg'
+                    oga: question['audio']['rendered_oga_path']
                 }).jPlayer('play');
             },
             play: function() {
@@ -157,8 +156,8 @@ var renderGameOver = function() {
     $players.jPlayer({
         ready: function () {
             $(this).jPlayer('setMedia', {
-                mp3: $(this).data('audio'),
-                oga: 'http://s.npr.org/news/specials/2014/wolves/wolf-ambient-draft.ogg'
+                mp3: $(this).data('mp3'),
+                oga: $(this).data('ogg') 
             });
         },
         ended: function() {

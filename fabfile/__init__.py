@@ -621,7 +621,7 @@ def _create_audio(path):
         'file_string': '',
         'file_name': '%s%s' % (file_name, file_extension),
         'rendered_mp3_path': '/%s/assets/audio/%s' % (app_config.PROJECT_SLUG, path),
-        'rendered_ogg_path': '/%s/assets/audio/%s' % (app_config.PROJECT_SLUG, path.replace('.mp3', '.ogg')),
+        'rendered_oga_path': '/%s/assets/audio/%s' % (app_config.PROJECT_SLUG, path.replace('.mp3', '.oga')),
         'caption': 'TKTK',
         'credit': 'TKTK'
     }
