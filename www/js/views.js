@@ -252,14 +252,14 @@ var QuestionView = Backbone.View.extend({
         var photoView = new PhotoView({ model: photo, parent: this });
         photoView.render();
 
-        this.$photo.append(photoView.el);
+        this.$photo.html(photoView.el);
     },
 
     addAudioView: function(audio) {
         var audioView = new AudioView({ model: audio });
         audioView.render();
 
-        this.$audio.append(audioView.el);
+        this.$audio.html(audioView.el);
     },
 
     rmChoiceView: function() {
@@ -344,14 +344,14 @@ var ChoiceView = Backbone.View.extend({
         var photoView = new PhotoView({ model: photo, parent: this });
         photoView.render();
 
-        this.$photo.append(photoView.el);
+        this.$photo.html(photoView.el);
     },
 
     addAudioView: function(audio) {
         var audioView = new AudioView({ model: audio });
         audioView.render();
 
-        this.$audio.append(audioView.el);
+        this.$audio.html(audioView.el);
     },
 
     close: function() {
@@ -404,7 +404,7 @@ var PhotoView = Backbone.View.extend({
         } else {
             this.$el.addClass('fileinput-new');
         }
-        
+
         this.$el.fileinput();
     },
 
@@ -460,36 +460,86 @@ var PhotoView = Backbone.View.extend({
 var AudioView = Backbone.View.extend({
     tagName: 'div',
     events: {
-        'change input[type="file"]': 'uploadAudio'
+        'change input[type="file"]': 'uploadAudio',
+        'click .play': 'play',
+        'click .stop': 'stop'
     },
     className: 'fileinput',
 
     initialize: function() {
         _.bindAll(this);
 
-        this.$audio_file = null;
-        this.$audio_name = null;
+        this.$audioFile = null;
+        this.$audioName = null;
+        this.$audioPlayer = null;
+        this.$play = null;
+        this.$stop = null;
 
         this.render();
     },
 
     render: function() {
+        if (this.$audioPlayer) {
+            this.$audioPlayer.jPlayer('destroy');
+        }
+
         this.$el.html(JST.admin_audio({ 'audio': this.model }));
 
-        this.$audio_file = this.$('input[type="file"]');
-        this.$audio_name = this.$('.fileinput-filename');
+        this.$audioFile = this.$('input[type="file"]');
+        this.$audioName = this.$('.fileinput-filename');
+        this.$audioPlayer = this.$('#jp-player-' + this.model.id);
+        this.$play = this.$('.play');
+        this.$stop = this.$('.stop');
         
         if (this.model.id) {
             this.$el.addClass('fileinput-exists');
         } else {
             this.$el.addClass('fileinput-new');
         }
-        
+
         this.$el.fileinput();
+
+        if (this.model.id){
+            this.$audioPlayer.jPlayer({
+                ready: _.bind(function () {
+                    this.$audioPlayer.jPlayer('setMedia', {
+                        mp3: this.model.get('rendered_mp3_path'),
+                        // TODO
+                        //oga: 'http://s.npr.org/news/specials/2014/wolves/wolf-ambient-draft.ogg'
+                    });
+                }, this),
+                play: function() {
+                    $(this).jPlayer('pauseOthers', 0);
+                },
+                ended: _.bind(function() {
+                    this.$audioPlayer.jPlayer('stop');
+                    this.$stop.hide();
+                    this.$play.show();
+                }, this),
+                swfPath: 'js/lib',
+                supplied: 'mp3, oga',
+                loop: false,
+            });
+
+            this.$play.show();
+            this.$stop.hide();
+        }
+    },
+
+    play: function() {
+        this.$audioPlayer.jPlayer('play');
+        this.$play.hide();
+        this.$stop.show();
+    },
+
+    stop: function() {
+        this.$audioPlayer.jPlayer('stop');
+        this.$stop.hide();
+        this.$play.show();
     },
 
     uploadAudio: function() {
-        var file = this.$audio_file[0].files[0];
+        var file = this.$audioFile[0].files[0];
 
         var reader = new FileReader();
         reader.readAsDataURL(file);
@@ -498,18 +548,27 @@ var AudioView = Backbone.View.extend({
 
         reader.onloadend = _.bind(function() {
             properties['file_string'] = reader.result;
-            // var audio = this.audios.create(properties, {
-            //     success: function() {
-            //         console.log('yay');
-            //     },
-            //     error: function() {
-            //         console.log('haha');
-            //     }
-            // });
+            $.ajax({
+                'url': '/musicgame/admin/upload-audio/',
+                'type': 'POST',
+                'data': properties,
+                'success': _.bind(function(data) {
+                    this.options.parent.model.audio = new Audio(data);
+                    this.model = this.options.parent.model.audio;
+                    this.render();
+
+                    console.log('Audio created.');
+                }, this),
+                'error': function() {
+                    console.log('Failed to create audio.');
+                }
+            });
         }, this);
     },
 
     close: function() {
+        this.$audioPlayer.jPlayer('destroy');
+
         this.model.destroy();
         this.remove();
         this.unbind();
@@ -519,7 +578,7 @@ var AudioView = Backbone.View.extend({
         var properties = {
             credit: 'TKTK',
             caption: 'TKTK',
-            file_name: this.$audio_name.text()
+            file_name: this.$audioName.text()
         };
 
         return properties;

@@ -1,6 +1,14 @@
 <% if (audio.id) { %>
+
+<div id="jp-player-<%= audio.id %>" class="jp-player"></div>
+<div class="jp-controls">
+    <a href="javascript:;" class="play nav-btn" tabindex="1" title="play"><i class="fa fa-play"></i></i></a>
+    <a href="javascript:;" class="stop nav-btn" tabindex="1" style="display: none;" title="stop"><i class="fa fa-stop"></i></a>
+</div>
+
 <span><%= audio.get('file_name') %></span>
 <% } %>
+
 <div class="input-group">
     <span class="input-group-addon btn btn-default btn-file">
         <span class="fileinput-new"><i class="fa fa-volume-up"></i> add audio</span>
