@@ -61,6 +61,10 @@ body {
 	-webkit-font-smoothing: antialiased;
 }
 
+h1,h2,h3,h4,h5,h6 {
+	margin-top: 0;
+}
+
 #content {
 	.container {
 		padding: 0;
@@ -127,6 +131,25 @@ body {
 		text-transform: uppercase;
 		font-size: 16px;
 		color: #999;
+	}
+
+	.after-text {
+		background: rgba(68, 77, 88,0.9);
+		display:none;
+		clear: both;
+		padding: @line-height-computed;
+		overflow: hidden;
+		margin-top: @line-height-computed;
+
+		h3 {
+			font-weight: bold;
+			margin-top: 0;
+			color: #fff;
+		}
+
+		p {
+			color: #fff;
+		}
 	}
 
 	.answers {
@@ -283,8 +306,8 @@ body {
 		}
 	}
 
-	#next-question,
-	#show-score {
+	.next-question,
+	.show-score {
 		visibility: hidden;
 		position: relative;
 		z-index: 1000;
@@ -349,6 +372,11 @@ body {
 
 	&.start {
 		.quiz-info {
+			.quiz-title {
+				.make-xs-column(12);
+			}
+
+
 			&.has-cover {
 				.cover {
 					.make-xs-column(4);
@@ -368,6 +396,11 @@ body {
 
 	&.end {
 		.quiz-info {
+
+			.quiz-title {
+				.make-xs-column(12);
+			}
+
 			&.has-cover {
 				.cover {
 					.make-xs-column(3);
@@ -394,7 +427,7 @@ body {
 				line-height: 1;
 
 				@media screen and (min-width: 480px){
-					font-size: @font-size-base * 5;
+					font-size: @font-size-base * 3;
 				}
 			}
 		}
@@ -506,6 +539,7 @@ body {
 
 		.next-up {
 			border-top: 2px solid @lightGray;
+			padding-top: @line-height-computed;
 		}
 
 		#show-score {

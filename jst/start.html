@@ -13,7 +13,9 @@
 					<p><i class="fa fa-clock-o"></i> You'll have <%= TIMERLENGTH %> seconds to answer each question.</p>
 				<% } %>
 
-				<p><i class="fa fa-headphones"></i> Make sure your speakers or headphones are turned up.</p>
+				<% if (_.where(quizData['questions'], {audio: null}).length < quizData['questions'].length){ %>
+					<p><i class="fa fa-headphones"></i> Make sure your speakers or headphones are turned up.</p>
+				<% } %>
 				<a id="start-quiz" class="btn btn-large btn-primary" href="#">Start Quiz</a>
 			</div>
 		</div>

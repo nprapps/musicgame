@@ -89,8 +89,8 @@ var renderQuestion = function() {
     $timerContainer = $content.find('.timer-container');
     $timerBg = $content.find('#timer-bg');
     $timer = $content.find('#timer');
-    $nextQuestionButton = $content.find('#next-question');
-    $showScoreButton = $content.find('#show-score');
+    $nextQuestionButton = $content.find('.next-question');
+    $showScoreButton = $content.find('.show-score');
 
     $questionPlayButton.on('click', onQuestionPlayButtonClick);
     $questionStopButton.on('click', onQuestionStopButtonClick);
@@ -240,13 +240,25 @@ var onQuestionComplete = function(points, selectedAnswer, element){
         .bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",
             function(){
                 $(this).parent().remove();
+                $content.find('.after-text').slideDown({
+                    duration: 'fast',
+                    progress: function(){
+                        $content.css('height', $content.find('.container').height());
+                        sendHeightToParent();
+                    },
+                    done: function(){
+                        $content.css('height', $content.find('.container').height());
+                        sendHeightToParent();
+                    }
+                });
+                if (currentQuestion + 1 < quizData['questions'].length){
+                    $nextQuestionButton.addClass('show');
+                } else {
+                    $showScoreButton.addClass('show');
+                }
         });
 
-    if (currentQuestion + 1 < quizData['questions'].length){
-        $nextQuestionButton.addClass('show');
-    } else {
-        $showScoreButton.addClass('show');
-    }
+
 
     resizeWindow();
 };
@@ -267,7 +279,7 @@ var onAnswerClick = function(){
         if(timer !== 'false'){
             points = 100 / quizData['questions'].length * (timeLeft / (TIMERLENGTH * 1000));
         } else {
-            points = 100 / quizData['questions'].length;
+            points = 1;
         }
 
         points = Math.round(points);
