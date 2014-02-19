@@ -23,7 +23,7 @@
 
 	<div class="question-info row">
 	        <div class="col-md-12">
-	            <textarea placeholder="Description" class="form-control after-text" rows="3"><% if (question.attributes['after_text'] == 'null') {
+	            <textarea placeholder="Description (appears after a choice is made)" class="form-control after-text" rows="3"><% if (question.attributes['after_text'] == 'null') {
 	                    question.get('after_text')
 	                }%></textarea>
 	        </div>
@@ -36,7 +36,7 @@
 <div class="add-answer row">
 	<div  class="col-md-12">
 		<h5>
-			<a class="btn btn-success add-choice"><i class="fa fa-plus"></i> Add answer</a>
+			<a class="btn btn-success add-choice"><i class="fa fa-plus"></i> add choice</a>
 		</h5>
 	</div>
 </div><!--/row -->
