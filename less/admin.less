@@ -134,7 +134,9 @@
 	    padding-top: 20px;
 	    border-bottom: 1px solid #bbb;
 	    
-	    .rm-choice {visibility: hidden;}
+	    .rm-choice {
+	    visibility: hidden;
+	    }
 	    
 	     &:hover {
 			.rm-choice {visibility: visible;}
@@ -145,6 +147,48 @@
 	
 	.choice-text {
 	    margin-bottom: 20px;
+	    
+	    
+	    
+	    .input-group-addon {
+		    padding: 5px 12px 3px 12px;
+		    
+		    label {margin: 0;}
+		    
+		    input[type="radio"] {
+			  display: none;
+			}
+			
+			input[type="radio"] + label span {
+			  display: inline-block;
+			  width: 25px;
+			  height: 25px;
+			  cursor: pointer;
+			  -moz-border-radius: 50%;
+			  border-radius: 50%;
+			 
+			}
+			
+			input[type="radio"] + label span {
+			  background-color: #292321;
+			}
+			
+			input[type="radio"] + label span:hover {
+			  background-color: #cc3300;
+			}
+			
+			input[type="radio"]:checked + label span {
+			  background-color: #cc3300;
+			}
+			
+			input[type="radio"] + label span,
+			input[type="radio"]:checked + label span {
+			  -webkit-transition: background-color 0.4s linear;
+			  -o-transition: background-color 0.4s linear;
+			  -moz-transition: background-color 0.4s linear;
+			  transition: background-color 0.4s linear;
+			}
+	    }
 	}
 	
 }
