@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
+import base64
+
 import flask
-from flask import Blueprint, json, jsonify, render_template, request
+from flask import Blueprint, jsonify, render_template, request
 from flask_peewee.serializer import Serializer
 
 import models
@@ -76,9 +78,17 @@ def upload_audio():
         'caption': data.get('caption', ''),
         'file_name': data.get('file_name', ''),
     }
+        
+    # Write file to disk
+    file_type, data = data['file_string'].split(';')
+    prefix, data = data.split(',')
 
+    with open('%s' % audio['file_name'], 'wb') as writefile:
+        writefile.write(base64.b64decode(data))
+
+    # Create the model
     audio = models.Audio(**audio)
-    audio.write_audio(data['file_string'])
+    audio.process_audio()
 
     print audio.rendered_mp3_file
     print audio.rendered_oga_file
