@@ -1,53 +1,46 @@
-<div class="question-title row">
-	<div class="col-lg-12 question-settings">
-         <a class="btn btn-danger rm-question"><i class="fa fa-times"></i> Remove question</a>
-    </div>
-
-    <div class="col-lg-12">
-        <div class="form-group">
-            <label for="interrogative" class="col-sm-2 control-label">Question</label>
-            <div class="col-sm-10">
-              <input type="text" class="form-control interrogative" placeholder="Question" value="<%= question.get('text') || '' %>">
-            </div>
-        </div>
-    </div>
-</div>
-<div class="question-files row">
-    <div class="col-lg-12">
-        <div class="form-group">
-            <label for="files" class="col-sm-2 control-label">Files</label>
-            <div class="audio col-sm-5">
-            </div>
-            <div class="photo col-sm-5">
-            </div>
-        </div>
-    </div>
-</div>
-<div class="question-info row">
-    <div class="col-lg-12">
-        <div class="form-group">
-            <label for="after-text" class="col-sm-2 control-label">Answer description</label>
-            <div class="col-sm-10">
-                <textarea placeholder="Answer description" class="form-control after-text" rows="3"><% if (question.attributes['after_text'] == 'null') {
-                        question.get('after_text')
-                    }%></textarea>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="choices">
-	<div class="choice-btns row">
-		<div  class="col-lg-10 col-md-offset-2 col-s-12">
-			<h5>
-				Answers:
-				<a class="btn btn-success add-choice"><i class="fa fa-plus"></i></a>
-		        <a class="btn btn-danger rm-choice"><i class="fa fa-minus"></i></a>
-			</h5>
-			
-		</div>
+<div class="row  question-settings">
+	<div class="col-md-12">
+	     <a class="btn btn-info rm-question"><i class="fa fa-times"></i></a>
 	</div>
+</div><!--/row -->
+<div class="question-details">
+	<div class="question-title row">
+	    <div class="col-md-12">
+	        	<input type="text" class="form-control interrogative" placeholder="Question" value="<%= question.get('text') || '' %>">
+	    </div>
+	</div> <!--/row -->
+	
+	<div class="question-files row">
+		<div class="col-md-3">
+	        <div class="audio">
+	        </div>
+	    </div>
+	    <div class="col-md-3">
+	        <div class="photo">
+	        </div>
+	    </div>
+	</div><!--/row -->
+
+	<div class="question-info row">
+	        <div class="col-md-12">
+	            <textarea placeholder="Description" class="form-control after-text" rows="3"><% if (question.attributes['after_text'] == 'null') {
+	                    question.get('after_text')
+	                }%></textarea>
+	        </div>
+	</div><!--/row -->
+</div>	<!--/question-details -->
+
+<div class="choices">
+	<h5>Answers</h5>
 </div>
-</div>
+<div class="add-answer row">
+	<div  class="col-md-12">
+		<h5>
+			<a class="btn btn-success add-choice"><i class="fa fa-plus"></i> Add Answer</a>
+		</h5>
+	</div>
+</div><!--/row -->
+
 
    
 
