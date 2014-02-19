@@ -164,15 +164,16 @@ class Audio(PSQLMODEL):
                     app_config.S3_BUCKETS[0],
                     s3_path))
 
-        # If local, write the file to www/audio.
+        # If local, write the file to www/live-data/audio.
         else:
+            if not os.path.exists('www/live-data/audio'):
+                os.makedirs('www/live-data/audio')
+
             envoy.run('mv %s.oga www/live-data/audio/' % file_name)
             envoy.run('mv %s.mp3 www/live-data/audio/' % file_name)
 
-            setattr(self, 'rendered_mp3_path', '%s/%s/live-data/audio/%s.mp3' % (
-                app_config.S3_BASE_URL, app_config.PROJECT_SLUG, file_name))
-            setattr(self, 'rendered_oga_path', '%s/%s/live-data/audio/%s.oga' % (
-                app_config.S3_BASE_URL, app_config.PROJECT_SLUG, file_name))
+            self.rendered_mp3_path = '/%s/live-data/audio/%s.mp3' % (app_config.PROJECT_SLUG, file_name)
+            self.rendered_ogg_path = '/%s/live-data/audio/%s.ogg' % (app_config.PROJECT_SLUG, file_name)
 
         # Clean up the nasty bits.
         os.system('rm -f *.wav *.mp3 *.oga')

@@ -90,9 +90,6 @@ def upload_audio():
     audio = models.Audio(**audio)
     audio.process_audio()
 
-    print audio.rendered_mp3_file
-    print audio.rendered_oga_file
-
     audio.save()
 
     serializer = Serializer()
