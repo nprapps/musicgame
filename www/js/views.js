@@ -469,14 +469,21 @@ var AudioView = Backbone.View.extend({
 
         reader.onloadend = _.bind(function() {
             properties['file_string'] = reader.result;
-            // var audio = this.audios.create(properties, {
-            //     success: function() {
-            //         console.log('yay');
-            //     },
-            //     error: function() {
-            //         console.log('haha');
-            //     }
-            // });
+            $.ajax({
+                'url': '/musicgame/admin/upload-audio/',
+                'type': 'POST',
+                'data': properties,
+                'success': _.bind(function(data) {
+                    this.options.parent.model.audio = new Audio(data);
+                    this.model = this.options.parent.model.audio;
+                    this.render();
+
+                    console.log('Audio created.');
+                }, this),
+                'error': function() {
+                    console.log('Failed to create audio.');
+                }
+            });
         }, this);
     },
 
@@ -492,7 +499,6 @@ var AudioView = Backbone.View.extend({
             caption: 'TK',
             file_name: this.$audio_name.text(),
             file_string: null,
-            render: true
         };
 
         return properties;

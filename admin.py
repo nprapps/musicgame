@@ -63,3 +63,26 @@ def upload_photo():
     data = serializer.serialize_object(photo)
 
     return jsonify(data)
+
+@admin.route('/upload-audio/', methods=['POST'])
+def upload_photo():
+    """
+    Upload some audio, bypassing the API for cleaner invocation.
+    """
+    data = request.form
+
+    audio = {
+        'credit': data.get('credit', ''),
+        'caption': data.get('caption', ''),
+        'file_name': data.get('file_name', ''),
+    }
+
+    audio = models.Audio(**audio)
+    audio.write_audio(data['file_string'])
+
+    audio.save()
+
+    serializer = Serializer()
+    data = serializer.serialize_object(audio)
+
+    return jsonify(data)
