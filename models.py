@@ -85,17 +85,17 @@ class Photo(PSQLMODEL):
             self.rendered_file_path = 'http://%s.s3.amazonaws.com/%s' % (app_config.S3_BUCKETS[0], rendered_path)
         # Local
         else:
-            rendered_path = 'www/%s' % (rendered_path)
+            local_path = 'www/%s' % rendered_path
 
-            dirname = os.path.dirname(rendered_path)
+            dirname = os.path.dirname(local_path)
 
             if not os.path.exists(dirname):
                 os.makedirs(dirname)
 
-            with open(rendered_path, 'wb') as writefile:
+            with open(local_path, 'wb') as writefile:
                 writefile.write(decoded_file)
 
-            self.rendered_file_path = rendered_path
+            self.rendered_file_path = '/%s/%s' % (app_config.PROJECT_SLUG, rendered_path)
 
 class Audio(PSQLMODEL):
     """
