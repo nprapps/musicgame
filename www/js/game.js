@@ -8,7 +8,7 @@ var $answers = null;
 var $answersContainer = null;
 var $questionPlayer = null;
 var $questionPlayButton = null;
-var $questionStopButton = null;
+var $questionPauseButton = null;
 var $timerContainer = null;
 var $timerBg = null;
 var $timer = null;
@@ -85,7 +85,7 @@ var renderQuestion = function() {
     $progressBar = $content.find('.progress .bar');
     $questionPlayer = $content.find('#player');
     $questionPlayButton = $content.find('.jp-play');
-    $questionStopButton = $content.find('.jp-stop');
+    $questionPauseButton = $content.find('.jp-pause');
     $timerContainer = $content.find('.timer-container');
     $timerBg = $content.find('#timer-bg');
     $timer = $content.find('#timer');
@@ -93,7 +93,7 @@ var renderQuestion = function() {
     $showScoreButton = $content.find('.show-score');
 
     $questionPlayButton.on('click', onQuestionPlayButtonClick);
-    $questionStopButton.on('click', onQuestionStopButtonClick);
+    $questionPauseButton.on('click', onQuestionPauseButtonClick);
     $answers.on('click', onAnswerClick);
     $nextQuestionButton.on('click', onNextQuestionClick);
     $showScoreButton.on('click', renderGameOver);
@@ -114,7 +114,7 @@ var renderQuestion = function() {
                 }
             },
             ended: function() {
-                onQuestionStopButtonClick();
+                onQuestionPauseButtonClick();
             },
             swfPath: 'js/lib',
             supplied: 'mp3, oga',
@@ -122,7 +122,7 @@ var renderQuestion = function() {
         });
 
         $content.find('.jp-play').hide();
-        $content.find('.jp-stop').show();
+        $content.find('.jp-pause').show();
     } else { // Start the timer immediately if no audio.
         if (timer === 'true'){
             runTimer();
@@ -150,7 +150,7 @@ var renderGameOver = function() {
     $responses = $content.find('.responses');
     var $players = $content.find('.jp-player')
     var $playButtons = $content.find('.jp-play');
-    var $stopButtons = $content.find('.jp-stop');
+    var $pauseButtons = $content.find('.jp-pause');
 
     // Set up question audio players
     $players.jPlayer({
@@ -161,7 +161,7 @@ var renderGameOver = function() {
             });
         },
         ended: function() {
-            onQuestionStopButtonClick();
+            onQuestionPauseButtonClick();
         },
         swfPath: 'js/lib',
         supplied: 'mp3, oga',
@@ -172,7 +172,7 @@ var renderGameOver = function() {
         $(this).on('click', function(){
             console.log($(this).closest('.jp-audio').prev());
             $players.jPlayer('stop');
-            $stopButtons.hide();
+            $pauseButtons.hide();
             $playButtons.show();
             $(this).closest('.jp-audio').prev().jPlayer('play');
             $(this).hide().next().show();
@@ -180,9 +180,9 @@ var renderGameOver = function() {
 
     });
 
-    $stopButtons.each(function(){
+    $pauseButtons.each(function(){
         $(this).on('click', function(){
-            $(this).closest('.jp-audio').prev().jPlayer('stop');
+            $(this).closest('.jp-audio').prev().jPlayer('pause');
             $(this).hide().prev().show();
         });
 
@@ -195,17 +195,17 @@ var renderGameOver = function() {
 * Click handler for the question player "play" button.
 */
 var onQuestionPlayButtonClick = function(e){
-    $questionPlayer.jPlayer('play', 0);
+    $questionPlayer.jPlayer('play');
     $content.find('.jp-play').hide();
-    $content.find('.jp-stop').show();
+    $content.find('.jp-pause').show();
 };
 
 /*
 * Click handler for the question player "stop" button.
 */
-var onQuestionStopButtonClick = function(e){
-    $questionPlayer.jPlayer('stop');
-    $content.find('.jp-stop').hide();
+var onQuestionPauseButtonClick = function(e){
+    $questionPlayer.jPlayer('pause');
+    $content.find('.jp-pause').hide();
     $content.find('.jp-play').show();
 };
 

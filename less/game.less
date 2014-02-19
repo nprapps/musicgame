@@ -59,6 +59,7 @@
 body {
 	color: @text-color;
 	-webkit-font-smoothing: antialiased;
+	background: #f5f5f5;
 }
 
 h1,h2,h3,h4,h5,h6 {
@@ -66,8 +67,9 @@ h1,h2,h3,h4,h5,h6 {
 }
 
 #content {
+	padding-top: @grid-gutter-width / 2;
 	.container {
-		padding: 0;
+		// padding: 0;
 	}
 
 	.progress {
@@ -95,17 +97,21 @@ h1,h2,h3,h4,h5,h6 {
 	}
 
 	.jp-controls {
-		font-size: @font-size-large * 1.5;
-		background: @primaryControl;
+		font-size: @font-size-large;
 		float: left;
+		margin-bottom: @line-height-computed;
+
 
 		a {
 			display: block;
-			color: @musicMedium;
-			width: 50px;
-			height: 50px;
+			color: #555;
+			width: 60px;
+			height: 60px;
 			line-height: 50px;
 			text-align: center;
+			border-radius: 60px;
+			border: 5px solid #9ba3be;
+
 		}
 	}
 
@@ -120,7 +126,7 @@ h1,h2,h3,h4,h5,h6 {
 		}
 
 		&.question-text {
-			margin: 0;
+			margin: 0 0 @line-height-computed;
 
 			.audio& {
 				padding-left: 50px + @grid-gutter-width/2;
@@ -129,8 +135,10 @@ h1,h2,h3,h4,h5,h6 {
 	}
 	h3 {
 		text-transform: uppercase;
-		font-size: 16px;
-		color: #999;
+		font-size: 12px;
+		color: #666;
+		font-weight: bold;
+		margin-bottom: @line-height-computed;
 	}
 
 	.after-text {
@@ -139,7 +147,7 @@ h1,h2,h3,h4,h5,h6 {
 		clear: both;
 		padding: @line-height-computed;
 		overflow: hidden;
-		margin-top: @line-height-computed;
+		margin-bottom: @line-height-computed;
 
 		h3 {
 			font-weight: bold;
@@ -153,7 +161,7 @@ h1,h2,h3,h4,h5,h6 {
 	}
 
 	.answers {
-		padding: @line-height-computed 0 0 0;
+		padding: 0;
 		overflow: hidden;
 		clear: both;
 		.make-row();
@@ -309,9 +317,21 @@ h1,h2,h3,h4,h5,h6 {
 	.next-question,
 	.show-score {
 		visibility: hidden;
-		position: relative;
+		position: absolute;
+		top: 0;
+		right: 0;
 		z-index: 1000;
 		-webkit-font-smoothing: antialiased;
+
+		&.btn.btn-large {
+			font-size: 12px;
+			padding: 12px;
+
+			&:after {
+				font-family: FontAwesome;
+				content: " \f054";
+			}
+		}
 
 		&.show {
 			visibility: visible;
@@ -338,6 +358,7 @@ h1,h2,h3,h4,h5,h6 {
 		.cover {
 			img {
 				.img-circle;
+				margin-bottom: @line-height-computed + @grid-gutter-width / 2;
 			}
 		}
 
