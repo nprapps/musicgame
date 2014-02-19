@@ -110,17 +110,13 @@ class Audio(PSQLMODEL):
     def __unicode__(self):
         return self.file_name
 
-    def write_audio(self, file_string):
+    def process_audio(self):
+        """
+        Processes an uploaded file with `self.file_name`, which
+        should exist in the temp directory.
+        """
         now = datetime.datetime.now()
         timestamp = int(time.mktime(now.timetuple()))
-
-        # Clean up the b64-encoded audio string.
-        file_type, data = file_string.split(';')
-        prefix, data = data.split(',')
-
-        # Write the file from the file_string and file_name fields.
-        with open('%s' % self.file_name, 'wb') as writefile:
-            writefile.write(base64.b64decode(data))
 
         # Determine the extension.
         file_name, file_extension = os.path.splitext(self.file_name)
@@ -139,12 +135,11 @@ class Audio(PSQLMODEL):
 
         # Encode an OGA.
         os.system('oggenc -m 96 -M 96 -o "%s.oga" --downmix "%s"' % (
-                file_name, wav_location))
-
+            file_name, wav_location))
 
         # No matter what, process to 96kb mp3.
         os.system('lame -m m -b 96 "%s" "%s.mp3"' % (
-                wav_location, file_name))
+            wav_location, file_name))
 
         # If on production/staging, write the file to S3.
         if app_config.DEPLOYMENT_TARGET in ['staging', 'production']:
@@ -174,10 +169,10 @@ class Audio(PSQLMODEL):
             envoy.run('mv %s.oga www/live-data/audio/' % file_name)
             envoy.run('mv %s.mp3 www/live-data/audio/' % file_name)
 
-            setattr(self, 'rendered_mp3_path', '%s/live-data/audio/%s.mp3' % (
-                app_config.PROJECT_SLUG, file_name))
-            setattr(self, 'rendered_oga_path', '%s/live-data/audio/%s.oga' % (
-                app_config.PROJECT_SLUG, file_name))
+            setattr(self, 'rendered_mp3_path', '%s/%s/live-data/audio/%s.mp3' % (
+                app_config.S3_BASE_URL, app_config.PROJECT_SLUG, file_name))
+            setattr(self, 'rendered_oga_path', '%s/%s/live-data/audio/%s.oga' % (
+                app_config.S3_BASE_URL, app_config.PROJECT_SLUG, file_name))
 
         # Clean up the nasty bits.
         os.system('rm -f *.wav *.mp3 *.oga')

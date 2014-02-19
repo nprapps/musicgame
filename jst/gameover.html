@@ -9,7 +9,7 @@
 
 			<div class="quiz-title">
 				<h1>You scored:</h1>
-				<p class="score"><%= score %>/100</p>
+				<p class="score"><%= score %>/<%= timer == 'true' ? '100' : quizData['questions'].length %></p>
 			</div>
 		</div>
 	</div>

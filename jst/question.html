@@ -17,6 +17,14 @@
 	</div> <!-- end .jp-audio -->
 	<% } %>
 	<h1 class="question-text"><%= text %></h1>
+	<% if (after_text){ %>
+	<div class="after-text">
+		<h3>Quizmaster says:</h3>
+		<p><%= after_text %></p>
+		<button class="next-question btn btn-large btn-primary">Next Question</button>
+		<button class="show-score btn btn-large btn-primary">Show My Score</button>
+	</div>
+	<% } %>
 	<ul class="answers">
 	<% _.each(_.shuffle(choices), function(choice){ %>
 		<% if (choice.text) { %>
@@ -36,7 +44,8 @@
 	<% }); %>
 	</ul>
 
-
-	<button id="next-question" class="btn btn-large btn-primary">Next Question</button>
-	<button id="show-score" class="btn btn-large btn-primary">Show My Score</button>
+	<% if (!after_text){ %>
+		<button class="next-question btn btn-large btn-primary">Next Question</button>
+		<button class="show-score btn btn-large btn-primary">Show My Score</button>
+	<% } %>
 </div>
