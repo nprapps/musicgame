@@ -164,6 +164,9 @@ class Audio(PSQLMODEL):
                     app_config.S3_BUCKETS[0],
                     s3_path))
 
+                print 'rendered_%s_path' % extension
+                print 'http://%s.s3.amazonaws.com/%s' % (app_config.S3_BUCKETS[0], s3_path)
+
         # If local, write the file to www/audio.
         else:
             envoy.run('mv %s.oga www/live-data/audio/' % file_name)
