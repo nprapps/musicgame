@@ -80,9 +80,16 @@
     
 }
 
+.question-details {
+	padding: 0 20px;
+}
+
+
 .question {
-    margin: 50px 0;
+    margin-top: 50px;
+    margin-bottom: 50px;
     background-color: #eee;
+    
     
     
     .question-settings {
@@ -92,12 +99,18 @@
 		   float: right; 
 		   margin-bottom: 20px; 
 		   font-size: 12px;
+		   background-color: #ccc;
+		   border: none;
+		   
+		   &:hover {
+				background-color: #aaa;
+			}
 	    }
     }
-    
-    .form-group{
-	    padding: 0 20px;
-    }
+}
+
+.question-files {
+	margin-top: 20px;
 }
 
 .question-info {
@@ -106,40 +119,56 @@
 
 
 .choices {
-	padding-right: 20px;
+	padding: 0 20px;
 	
 	
 	.choice {
-	    margin: 10px 0 10px 15px;
+	    
 	}
 	
 	.choice-text {
 	    margin-bottom: 20px;
 	}
 	
-	.choice-btns {
-		h5 {
-			margin-left: 15px;
-			border-top: 2px solid #ccc;
-			padding: 10px;
-			background-color: #ddd;
-		}
-		a {margin: 0 5px;}
-	}
-	
 }
 
-
+.add-answer {
+	h5 {
+		background-color: #e9e9e9;
+		padding: 10px;
+		text-align: center;
+		margin: 15px 0 0 0;
+		border-top: 1px solid #ccc;
+	}
+}
 
 /* audio and photo select */
-.audio,.photo {
+.audio {
+	.form-control {
+		display: none;
+	}
+}
+	
+.audio, .photo {
 	.btn-file {
-		border-left: 1px solid #ccc;
-		background-color: #ebf1fa;
+		border: none;
+		background-color: transparent;
+		text-align: left;
 	}
 }
 
 .photo {
+	.form-control {
+		display: none;
+	}
+	
+	.btn-file {
+		border: none;
+		background-color: transparent;
+		text-align: left;
+		
+	}
+	
     .preview {
         width: 64px;
         height: auto;
