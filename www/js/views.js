@@ -256,7 +256,7 @@ var QuestionView = Backbone.View.extend({
     },
 
     addAudioView: function(audio) {
-        var audioView = new AudioView({ model: audio });
+        var audioView = new AudioView({ model: audio, parent: this });
         audioView.render();
 
         this.$audio.html(audioView.el);
@@ -348,7 +348,7 @@ var ChoiceView = Backbone.View.extend({
     },
 
     addAudioView: function(audio) {
-        var audioView = new AudioView({ model: audio });
+        var audioView = new AudioView({ model: audio, parent: this });
         audioView.render();
 
         this.$audio.html(audioView.el);
@@ -578,7 +578,7 @@ var AudioView = Backbone.View.extend({
         var properties = {
             credit: 'TKTK',
             caption: 'TKTK',
-            file_name: this.$audioName.text()
+            file_name: this.$audioFile[0].files[0].name
         };
 
         return properties;
