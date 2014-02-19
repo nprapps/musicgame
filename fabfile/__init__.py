@@ -236,6 +236,13 @@ def render():
         with open(filename, 'w') as f:
             f.write(content.encode('utf-8'))
 
+def _cleanup_minified_includes():
+    """
+    Delete minified versions of JS/CSS assets so they don't clutter www/.
+    """
+    local('rm www/js/*.min.*.js')
+    local('rm www/css/*.min.*.css')
+
 @task
 def tests():
     """
@@ -536,6 +543,7 @@ def deploy(remote='origin'):
     render()
     _gzip('www', '.gzip')
     _deploy_to_s3()
+    _cleanup_minified_includes()
 
 """
 App-specific jobs

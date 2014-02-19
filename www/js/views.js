@@ -1,3 +1,6 @@
+/*
+ * QuizListView
+ */
 var QuizListView = Backbone.View.extend({
     el: '#admin',
     events: {
@@ -58,6 +61,9 @@ var QuizListView = Backbone.View.extend({
     }
 });
 
+/*
+ * QuizView
+ */
 var QuizView = Backbone.View.extend({
     className: 'quiz',
     events: {
@@ -175,6 +181,9 @@ var QuizDetailView = Backbone.View.extend({
     }
 });
 
+/*
+ * QuestionView
+ */
 var QuestionView = Backbone.View.extend({
     tagName: 'div',
     className: 'question',
@@ -211,8 +220,6 @@ var QuestionView = Backbone.View.extend({
         this.$choices = this.$('.choices');
         this.$photo = this.$('.photo');
         this.$audio = this.$('.audio');
-
-        $('.fileinput').fileinput();
 
         _.each(this.choiceViews, function(view) {
             view.render();
@@ -367,12 +374,15 @@ var ChoiceView = Backbone.View.extend({
     }
 });
 
+/*
+ * PhotoView
+ */
 var PhotoView = Backbone.View.extend({
     tagName: 'div',
     events: {
         'change input[type="file"]': 'upload'
     },
-    className: 'fileinput fileinput-new',
+    className: 'fileinput',
 
     initialize: function() {
         _.bindAll(this);
@@ -385,8 +395,17 @@ var PhotoView = Backbone.View.extend({
 
     render: function() {
         this.$el.html(JST.admin_photo({ 'photo': this.model }));
+
         this.$photo_file = this.$('input[type="file"]');
         this.$photo_name = this.$('.fileinput-filename');
+
+        if (this.model.id) {
+            this.$el.addClass('fileinput-exists');
+        } else {
+            this.$el.addClass('fileinput-new');
+        }
+        
+        this.$el.fileinput();
     },
 
     upload: function() {
@@ -426,22 +445,24 @@ var PhotoView = Backbone.View.extend({
 
     serialize: function() {
         var properties = {
-            credit: 'TK',
-            caption: 'TK',
-            file_name: this.$photo_name.text(),
-            render: true
+            credit: 'TKTK',
+            caption: 'TKTK',
+            file_name: this.$photo_name.text()
         };
 
         return properties;
     }
 });
 
+/*
+ * AudioView
+ */
 var AudioView = Backbone.View.extend({
     tagName: 'div',
     events: {
         'change input[type="file"]': 'uploadAudio'
     },
-    className: 'fileinput fileinput-new',
+    className: 'fileinput',
 
     initialize: function() {
         _.bindAll(this);
@@ -457,6 +478,14 @@ var AudioView = Backbone.View.extend({
 
         this.$audio_file = this.$('input[type="file"]');
         this.$audio_name = this.$('.fileinput-filename');
+        
+        if (this.model.id) {
+            this.$el.addClass('fileinput-exists');
+        } else {
+            this.$el.addClass('fileinput-new');
+        }
+        
+        this.$el.fileinput();
     },
 
     uploadAudio: function() {
@@ -488,11 +517,9 @@ var AudioView = Backbone.View.extend({
 
     serialize: function() {
         var properties = {
-            credit: 'TK',
-            caption: 'TK',
-            file_name: this.$audio_name.text(),
-            file_string: null,
-            render: true
+            credit: 'TKTK',
+            caption: 'TKTK',
+            file_name: this.$audio_name.text()
         };
 
         return properties;
