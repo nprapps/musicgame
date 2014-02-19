@@ -387,8 +387,7 @@ var PhotoView = Backbone.View.extend({
     initialize: function() {
         _.bindAll(this);
 
-        this.$photo_file = null;
-        this.$photo_name = null;
+        this.$photoFile = null;
 
         this.render();
     },
@@ -396,8 +395,7 @@ var PhotoView = Backbone.View.extend({
     render: function() {
         this.$el.html(JST.admin_photo({ 'photo': this.model }));
 
-        this.$photo_file = this.$('input[type="file"]');
-        this.$photo_name = this.$('.fileinput-filename');
+        this.$photoFile = this.$('input[type="file"]');
 
         if (this.model.id) {
             this.$el.addClass('fileinput-exists');
@@ -409,7 +407,7 @@ var PhotoView = Backbone.View.extend({
     },
 
     upload: function() {
-        var file = this.$photo_file[0].files[0];
+        var file = this.$photoFile[0].files[0];
 
         var reader = new FileReader();
         reader.readAsDataURL(file);
@@ -447,7 +445,7 @@ var PhotoView = Backbone.View.extend({
         var properties = {
             credit: 'TKTK',
             caption: 'TKTK',
-            file_name: this.$photo_name.text()
+            file_name: this.$photoFile[0].files[0].name
         };
 
         return properties;
@@ -470,7 +468,6 @@ var AudioView = Backbone.View.extend({
         _.bindAll(this);
 
         this.$audioFile = null;
-        this.$audioName = null;
         this.$audioPlayer = null;
         this.$play = null;
         this.$stop = null;
@@ -486,7 +483,6 @@ var AudioView = Backbone.View.extend({
         this.$el.html(JST.admin_audio({ 'audio': this.model }));
 
         this.$audioFile = this.$('input[type="file"]');
-        this.$audioName = this.$('.fileinput-filename');
         this.$audioPlayer = this.$('#jp-player-' + this.model.id);
         this.$play = this.$('.play');
         this.$stop = this.$('.stop');
@@ -504,8 +500,7 @@ var AudioView = Backbone.View.extend({
                 ready: _.bind(function () {
                     this.$audioPlayer.jPlayer('setMedia', {
                         mp3: this.model.get('rendered_mp3_path'),
-                        // TODO
-                        //oga: 'http://s.npr.org/news/specials/2014/wolves/wolf-ambient-draft.ogg'
+                        oga: this.model.get('rendered_oga_path') 
                     });
                 }, this),
                 play: function() {
