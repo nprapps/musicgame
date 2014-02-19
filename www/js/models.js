@@ -20,11 +20,6 @@ var QuizCategory = Backbone.Model.extend({
         var data = _.clone(this.attributes);
 
         return data;
-    },
-    forTemplate: function() {
-        var data = _.clone(this.attributes);
-
-        return data;
     }
 });
 
@@ -35,9 +30,11 @@ var QuizCategory = Backbone.Model.extend({
 var Quiz = Backbone.Model.extend({
 
     questions: null,
+    photo: null,
 
     initialize: function(attributes) {
         this.questions = new Questions();
+        this.photo = new Photo();
 
         if (attributes) {
             if ("questions" in attributes) {
@@ -47,6 +44,10 @@ var Quiz = Backbone.Model.extend({
 
                     this.questions.add(question);
                 }, this));
+            }
+            
+            if ("photo" in attributes) {
+                this.photo = new Photo(attributes.photo);
             }
         }
     },
@@ -58,14 +59,11 @@ var Quiz = Backbone.Model.extend({
     toJSON: function() {
         var data = _.clone(this.attributes);
 
+        data['photo'] = this.photo ? this.photo.id : null
+
         delete data['questions'];
         delete data['created'];
         delete data['updated'];
-
-        return data;
-    },
-    forTemplate: function() {
-        var data = _.clone(this.attributes);
 
         return data;
     },
@@ -123,11 +121,6 @@ var Question = Backbone.Model.extend({
         delete data['choices'];
 
         return data;
-    },
-    forTemplate: function() {
-        var data = _.clone(this.attributes);
-
-        return data;
     }
 });
 
@@ -164,11 +157,6 @@ var Choice = Backbone.Model.extend({
         data['audio'] = this.audio ? this.audio.id : null
 
         return data;
-    },
-    forTemplate: function() {
-        var data = _.clone(this.attributes);
-
-        return data;
     }
 });
 
@@ -182,11 +170,6 @@ var Audio = Backbone.Model.extend({
         var data = _.clone(this.attributes);
 
         return data;
-    },
-    forTemplate: function() {
-        var data = _.clone(this.attributes);
-
-        return data;
     }
 });
 
@@ -197,11 +180,6 @@ var Photo = Backbone.Model.extend({
         return origUrl + (origUrl.charAt(origUrl.length - 1) == '/' ? '' : '/');
     },
     toJSON: function() {
-        var data = _.clone(this.attributes);
-
-        return data;
-    },
-    forTemplate: function() {
         var data = _.clone(this.attributes);
 
         return data;

@@ -104,12 +104,15 @@ var QuizDetailView = Backbone.View.extend({
 
     initialize: function() {
         this.questionViews = {};
+
         this.$questions = null;
-        this.quiz = null;
+        this.$photo = null;
 
         _.bindAll(this);
 
         this.render();
+        
+        this.$photo = this.$('.photo');
 
         this.model.questions.each(_.bind(function(question) {
             this.addQuestionView(question);
@@ -117,6 +120,8 @@ var QuizDetailView = Backbone.View.extend({
 
         this.model.questions.on('add', this.addQuestionView);
         this.model.questions.on('remove', this.rmQuestionView);
+
+        this.addPhotoView(this.model.photo);
     },
 
     render: function() {
@@ -131,7 +136,7 @@ var QuizDetailView = Backbone.View.extend({
         });
 
         if (this.model.questions.length === 0) {
-            for (i=0; i<4; i++) {
+            for (i = 0; i < 4; i++) {
                 this.addQuestionModel();
             }
         }
@@ -155,7 +160,6 @@ var QuizDetailView = Backbone.View.extend({
 
     addQuestionModel: function() {
         var question = new Question();
-        question.quiz = this.model;
 
         this.model.questions.add(question);
     },
@@ -169,6 +173,13 @@ var QuizDetailView = Backbone.View.extend({
 
     rmQuestionView: function(question) {
         delete this.questionViews[question.cid];
+    },
+
+    addPhotoView: function(photo) {
+        var photoView = new PhotoView({ model: photo, parent: this });
+        photoView.render();
+
+        this.$photo.html(photoView.el);
     },
 
     serialize: function() {
@@ -226,7 +237,7 @@ var QuestionView = Backbone.View.extend({
         });
 
         if (this.model.choices.length === 0) {
-            for (i=0; i<1; i++) {
+            for (i = 0; i < 1; i++) {
                 this.addChoiceModel();
             }
         }
@@ -289,6 +300,7 @@ var QuestionView = Backbone.View.extend({
         _.each(this.choiceViews, function(choiceView) {
             choiceView.close();
         });
+
         this.model.destroy();
         this.remove();
         this.unbind();
@@ -408,9 +420,13 @@ var PhotoView = Backbone.View.extend({
 
     upload: function() {
         var file = this.$photoFile[0].files[0];
+        
+        console.log(file);
 
         var reader = new FileReader();
         reader.readAsDataURL(file);
+
+        console.log(reader.result);
 
         var properties = this.serialize();
 
