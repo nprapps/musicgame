@@ -1,10 +1,17 @@
+<% if (audio.id) { %>
+
+<div id="jp-player-<%= audio.id %>" class="jp-player"></div>
+<div class="jp-controls">
+    <a href="javascript:;" class="play nav-btn" tabindex="1" title="play"><i class="fa fa-play"></i></i></a>
+    <a href="javascript:;" class="stop nav-btn" tabindex="1" style="display: none;" title="stop"><i class="fa fa-stop"></i></a>
+</div>
+
+<span><%= audio.get('file_name') %></span>
+<% } %>
+
 <div class="input-group">
-    <div class="form-control uneditable-input span3" data-trigger="fileinput">
-        <i class="glyphicon glyphicon-file fileinput-exists"></i>
-        <span class="fileinput-filename"></span>
-    </div>
     <span class="input-group-addon btn btn-default btn-file">
-        <span class="fileinput-new"><i class="fa fa-volume-up"></i> Select file</span>
+        <span class="fileinput-new"><i class="fa fa-volume-up"></i> add audio</span>
         <span class="fileinput-exists">Change</span>
         <input type="file" name="...">
     </span>

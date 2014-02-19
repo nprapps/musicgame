@@ -85,14 +85,14 @@ class Photo(PSQLMODEL):
             self.rendered_file_path = 'http://%s.s3.amazonaws.com/%s' % (app_config.S3_BUCKETS[0], rendered_path)
         # Local
         else:
-            local_path = 'www/%s' % rendered_path
+            rendered_path = 'www/%s' % (rendered_path)
 
-            dirname = os.path.dirname(local_path)
+            dirname = os.path.dirname(rendered_path)
 
             if not os.path.exists(dirname):
                 os.makedirs(dirname)
 
-            with open(local_path, 'wb') as writefile:
+            with open(rendered_path, 'wb') as writefile:
                 writefile.write(decoded_file)
 
             self.rendered_file_path = rendered_path
@@ -103,103 +103,84 @@ class Audio(PSQLMODEL):
     """
     credit = TextField()
     caption = TextField()
-    file_string = TextField(null=True)
     file_name = TextField(null=True)
     rendered_oga_path = TextField(null=True, default=None)
     rendered_mp3_path = TextField(null=True, default=None)
-    render = BooleanField(default=False)
 
     def __unicode__(self):
         return self.file_name
 
-    def render_audio_files(self):
-        """
-        Render the audio using envoy and the file path.
-        Update the rendered_oga_path with the path to the ogg encoded file.
-        Update the rendered_mp3_path with the path to the mp3 encoded file.
-        If anything fails, just write null to those paths.
-        """
+    def write_audio(self, file_string):
+        now = datetime.datetime.now()
+        timestamp = int(time.mktime(now.timetuple()))
 
-        try:
+        # Clean up the b64-encoded audio string.
+        file_type, data = file_string.split(';')
+        prefix, data = data.split(',')
 
-            # Make a timestamp so we can have unique filenames.
-            now = datetime.datetime.now()
-            timestamp = int(time.mktime(now.timetuple()))
+        # Write the file from the file_string and file_name fields.
+        with open('%s' % self.file_name, 'wb') as writefile:
+            writefile.write(base64.b64decode(data))
 
-            # The other path is a local file, delivered to us via flash or something.
-            # Get the path using os.
-            unrendered_path, unrendered_file = os.path.split(self.file_path)
+        # Determine the extension.
+        file_name, file_extension = os.path.splitext(self.file_name)
 
-            # Get the name and extension from the filename.
-            file_name, file_extension = os.path.splitext(unrendered_file)
+        # Append the timestamp so we don't clobber similarly named files from the past.
+        file_name = '%s-%s' % (timestamp, file_name)
 
-            # Timestamp for uniqueness.
-            file_name = '%s-%s' % (timestamp, file_name)
+        # If mp3, convert to wav for processing in ogg.
+        if file_extension == ".mp3":
+            os.system('mpg123 -w "%s-temp.wav" "%s"' % (file_name, self.file_name))
+            wav_location = "%s-temp.wav" % file_name
 
-            # Write a wav file so that oggenc can convert mumblemumblehateyoumumble
-            envoy.run('mpg123 -w "%s-temp.wav" "%s"' % (
-                    file_name, self.file_path))
+        # If wav, go directly to processing in ogg.
+        if file_extension == ".wav":
+            wav_location = self.file_name
 
-            # Write an ogg file.
-            envoy.run('oggenc -m 96 -M 96 -o "%s.oga" --downmix "%s"' % (
-                file_name, self.file_path))
+        # Encode an OGA.
+        os.system('oggenc -m 96 -M 96 -o "%s.oga" --downmix "%s"' % (
+                file_name, wav_location))
 
-            # Write an mp3 file.
-            envoy.run('lame -m m -b 96 "%s" "%s.mp3"' % (
-                self.file_path, file_name))
 
-            # Loop over our ogg/mp3 files and do stuff.
+        # No matter what, process to 96kb mp3.
+        os.system('lame -m m -b 96 "%s" "%s.mp3"' % (
+                wav_location, file_name))
+
+        # If on production/staging, write the file to S3.
+        if app_config.DEPLOYMENT_TARGET in ['staging', 'production']:
+
             for extension, content_type in [('oga', 'audio/ogg'), ('mp3', 'audio/mpeg')]:
+                s3_path = '%s/live-data/audio/%s.%s' % (
+                    app_config.PROJECT_SLUG, file_name, extension)
 
-                # Like, for example, set an S3 path for uploading.
-                s3_path = '%s/live-data/audio/%s%s' % (app_config.PROJECT_SLUG, file_name, extension)
-
-                # Connect to S3.
                 s3 = boto.connect_s3()
 
-                # Loop over our buckets.
                 for bucket_name in app_config.S3_BUCKETS:
                     bucket = s3.get_bucket(bucket_name)
 
-                    # Set the key as a content_from_filename
                     k = Key(bucket, s3_path)
                     k.set_contents_from_filename('%s.%s' % (file_name, extension), headers={
                         'Content-Type': content_type,
                         'Cache-Control': 'max-age=5'
                     })
-
-                    # Everyone can read it.
                     k.set_acl('public-read')
 
-                # Set the rendered file path as the S3 bucket path.
                 setattr(self, 'rendered_%s_path' % extension, 'http://%s.s3.amazonaws.com/%s' % (
                     app_config.S3_BUCKETS[0],
                     s3_path))
 
-            # Flag this back to false.
-            self.render_audio = False
+        # If local, write the file to www/audio.
+        else:
+            envoy.run('mv %s.oga www/live-data/audio/' % file_name)
+            envoy.run('mv %s.mp3 www/live-data/audio/' % file_name)
 
-        except:
+            setattr(self, 'rendered_mp3_path', '%s/live-data/audio/%s.mp3' % (
+                app_config.S3_BASE_URL, file_name))
+            setattr(self, 'rendered_oga_path', '%s/live-data/audio/%s.oga' % (
+                app_config.S3_BASE_URL, file_name))
 
-            # NOTE: THIS MIGHT NEED TO BE RETHOUGHT.
-            # Put some mind grapes on this.
-            self.rendered_oga_path = None
-            self.rendered_mp3_path = None
-
-        # Clean up after ourselves. So messy.
-        envoy.run('rm -f *.wav')
-        envoy.run('rm -f *.mp3')
-        envoy.run('rm -f *.oga')
-
-    def save(self, *args, **kwargs):
-        """
-        Do things on save.
-        """
-
-        if self.render:
-            self.render_audio_files()
-
-        super(Audio, self).save(*args, **kwargs)
+        # Clean up the nasty bits.
+        os.system('rm -f *.wav *.mp3 *.oga')
 
 class Quiz(PSQLMODEL):
     """

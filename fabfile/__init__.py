@@ -236,6 +236,13 @@ def render():
         with open(filename, 'w') as f:
             f.write(content.encode('utf-8'))
 
+def _cleanup_minified_includes():
+    """
+    Delete minified versions of JS/CSS assets so they don't clutter www/.
+    """
+    local('rm www/js/*.min.*.js')
+    local('rm www/css/*.min.*.css')
+
 @task
 def tests():
     """
@@ -536,6 +543,7 @@ def deploy(remote='origin'):
     render()
     _gzip('www', '.gzip')
     _deploy_to_s3()
+    _cleanup_minified_includes()
 
 """
 App-specific jobs
@@ -558,6 +566,7 @@ def local_bootstrap_data():
     assets.sync()
     local_init_db()
     init_tables()
+    os.system('rm -f www/live-data/audio/*.oga www/live-data/audio/*.mp3')
     load_quizzes()
 
 @task
@@ -617,7 +626,6 @@ def _create_audio(path):
     }
 
     audio = models.Audio(**audio)
-    audio.render_audio = True
     audio.save()
 
     print "Saved audio: %s" % audio
@@ -645,7 +653,7 @@ def _create_photo(path):
 @task
 def load_quizzes():
     """
-    You know, some sample data.
+    Load sample quiz data.
     """
     quiz_list = [
         'drum_fill_friday.json'
