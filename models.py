@@ -174,10 +174,10 @@ class Audio(PSQLMODEL):
             envoy.run('mv %s.oga www/live-data/audio/' % file_name)
             envoy.run('mv %s.mp3 www/live-data/audio/' % file_name)
 
-            setattr(self, 'rendered_mp3_path', '%s/live-data/audio/%s.mp3' % (
-                app_config.S3_BASE_URL, file_name))
-            setattr(self, 'rendered_oga_path', '%s/live-data/audio/%s.oga' % (
-                app_config.S3_BASE_URL, file_name))
+            setattr(self, 'rendered_mp3_path', '%s/%s/live-data/audio/%s.mp3' % (
+                app_config.S3_BASE_URL, app_config.PROJECT_SLUG, file_name))
+            setattr(self, 'rendered_oga_path', '%s/%s/live-data/audio/%s.oga' % (
+                app_config.S3_BASE_URL, app_config.PROJECT_SLUG, file_name))
 
         # Clean up the nasty bits.
         os.system('rm -f *.wav *.mp3 *.oga')
