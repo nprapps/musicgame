@@ -384,7 +384,8 @@ var onDocumentReady = function() {
 
         // Deployed
         if (APP_CONFIG.DEPLOYMENT_TARGET) {
-            url = APP_CONFIG['S3_BASE_URL'] + '/live-data/games/' + slug + '.json';
+            var cacheBuster = (new Date()).getTime();
+            url = APP_CONFIG['S3_BASE_URL'] + '/live-data/games/' + slug + '.json?' + cacheBuster;
         }
 
         $.ajax({
