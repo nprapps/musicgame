@@ -1,15 +1,11 @@
 <% if (photo.get('rendered_file_path')) { %>
-<img class="preview" src="<%= photo.get('rendered_file_path') %>"></img>
+<img class="preview" title="<%= photo.get('file_name') || '' %>" src="<%= photo.get('rendered_file_path') %>"></img>
 <% } %>
 <div class="input-group">
-    <div class="form-control uneditable-input span3" data-trigger="fileinput">
-        <i class="glyphicon glyphicon-file fileinput-exists"></i>
-        <span class="fileinput-filename"><%= photo.get('file_name', '') %></span>
-    </div>
     <span class="input-group-addon btn btn-default btn-file">
-        <span class="fileinput-new"><i class="fa fa-camera"></i> Select file</span>
+        <span class="fileinput-new"><i class="fa fa-camera"></i> add photo</span>
         <span class="fileinput-exists">Change</span>
-        <input type="file" name="...">
+        <input type="file" name="..." value="<%= photo.get('file_name') || '' %>">
     </span>
     <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
 </div>
