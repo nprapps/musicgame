@@ -41,6 +41,8 @@
 @musicMedium: #e6ebf2;
 @musicLight: #dbe0e6;
 
+.container {padding-bottom: 40px;}
+
 .vertical-align {
   position: relative;
   top: 50%;
@@ -103,7 +105,7 @@
 		   border: none;
 		   
 		   &:hover {
-				background-color: #aaa;
+				background-color: #d9534f;
 			}
 	    }
     }
@@ -119,7 +121,13 @@
 
 
 .choices {
-	padding: 0 20px;
+	margin: 0 20px;
+	padding: 10px;
+	background-color: #dfdfdf;
+	
+	h5 {
+		
+	}
 	
 	
 	.choice {
@@ -134,11 +142,11 @@
 
 .add-answer {
 	h5 {
-		background-color: #e9e9e9;
+		background-color: #dfdfdf;
 		padding: 10px;
-		text-align: center;
-		margin: 15px 0 0 0;
-		border-top: 1px solid #ccc;
+		margin: 0 20px 20px 20px;		
+		a {font-size: 13px;}
+		
 	}
 }
 
@@ -155,20 +163,12 @@
 		background-color: transparent;
 		text-align: left;
 	}
-}
-
-.photo {
 	.form-control {
 		display: none;
 	}
-	
-	.btn-file {
-		border: none;
-		background-color: transparent;
-		text-align: left;
-		
-	}
-	
+}
+
+.photo {
     .preview {
         width: 64px;
         height: auto;
