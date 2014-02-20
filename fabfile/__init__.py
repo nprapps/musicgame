@@ -240,8 +240,9 @@ def _cleanup_minified_includes():
     """
     Delete minified versions of JS/CSS assets so they don't clutter www/.
     """
-    local('rm www/js/*.min.*.js')
-    local('rm www/css/*.min.*.css')
+    with settings(warn_only=True):
+        local('rm www/js/*.min.*.js')
+        local('rm www/css/*.min.*.css')
 
 @task
 def tests():
