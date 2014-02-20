@@ -225,7 +225,6 @@ var QuestionView = Backbone.View.extend({
         this.model.choices.on('add', this.addChoiceView);
     },
     render: function() {
-
         this.$el.html(JST.admin_question({ 'question': this.model }));
 
         this.$choices = this.$('.choices');
@@ -237,7 +236,7 @@ var QuestionView = Backbone.View.extend({
         });
 
         if (this.model.choices.length === 0) {
-            for (i = 0; i < 1; i++) {
+            for (i = 0; i < 4; i++) {
                 this.addChoiceModel();
             }
         }
@@ -246,6 +245,11 @@ var QuestionView = Backbone.View.extend({
     addChoiceModel: function() {
         var choice = new Choice();
         choice.question = this.model;
+
+        // First choice is always selected
+        if (this.model.choices.length === 0) {
+            choice.set('correct_answer', true);
+        }
 
         this.model.choices.add(choice);
     },
@@ -274,11 +278,9 @@ var QuestionView = Backbone.View.extend({
     },
 
     rmChoiceView: function() {
-        // if (this.model.choices.length > 1) {
-            var model = this.model.choices.last();
-            this.choiceViews[model.cid].close();
-            delete this.choiceViews[model.cid];
-        // }
+        var model = this.model.choices.last();
+        this.choiceViews[model.cid].close();
+        delete this.choiceViews[model.cid];
     },
 
     saveQuestion: function() {
