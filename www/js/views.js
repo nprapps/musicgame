@@ -99,7 +99,9 @@ var QuizDetailView = Backbone.View.extend({
     el: '#admin',
     events: {
         'click #save-quiz': 'saveQuiz',
-        'click #add-question': 'addQuestionModel'
+        'click #add-question': 'addQuestionModel',
+        'input .title': 'markNeedsSave',
+        'input .description': 'markNeedsSave'
     },
 
     initialize: function() {
@@ -108,12 +110,11 @@ var QuizDetailView = Backbone.View.extend({
 
         this.$questions = null;
         this.$photo = null;
+        this.$saveButton = null;
 
         _.bindAll(this);
 
         this.render();
-
-        this.$photo = this.$('.photo');
 
         this.model.questions.each(_.bind(function(question) {
             this.addQuestionView(question);
@@ -131,6 +132,8 @@ var QuizDetailView = Backbone.View.extend({
         this.$el.html(JST.admin_quiz_detail());
 
         this.$questions = this.$('.questions');
+        this.$photo = this.$('.photo');
+        this.$saveButton = this.$('#save-quiz');
 
         _.each(this.questionViews, function(view) {
             view.render();
@@ -143,18 +146,30 @@ var QuizDetailView = Backbone.View.extend({
         }
     },
 
+    markNeedsSave: function() {
+        this.$saveButton.removeAttr('disabled');
+        this.$saveButton.text('Save now');
+    },
+
+    markSaved: function() {
+        this.$saveButton.attr('disabled', 'disabled');
+        this.$saveButton.text('Saved');
+    },
+
     saveQuiz: function() {
         var properties = this.serialize();
 
         this.model.save(properties, {
             success: _.bind(function() {
-                console.log('success');
+                console.log('Quiz saved.');
                 _.each(this.questionViews, function(question) {
                     question.saveQuestion();
                 });
+
+                this.markSaved();
             }, this),
             error: _.bind(function() {
-                console.log('error');
+                console.log('Error saving quiz.');
             }, this)
         });
     },
@@ -174,6 +189,8 @@ var QuizDetailView = Backbone.View.extend({
 
     rmQuestionView: function(question) {
         delete this.questionViews[question.cid];
+
+        this.markNeedsSave();
     },
 
     addPhotoView: function(photo) {
@@ -205,6 +222,8 @@ var QuestionView = Backbone.View.extend({
         'click .add-choice': 'addChoiceModel',
         'click .rm-question': 'close',
         'click #save-quiz': 'saveQuestion',
+        'input .interrogative': 'markNeedsSave',
+        'input .after-text': 'markNeedsSave'
     },
 
     initialize: function() {
@@ -215,6 +234,8 @@ var QuestionView = Backbone.View.extend({
         this.$choices = null;
         this.$photo = null;
         this.$audio = null;
+        this.$question = null;
+        this.$afterText = null;
 
         _.bindAll(this);
 
@@ -237,6 +258,8 @@ var QuestionView = Backbone.View.extend({
         this.$choices = this.$('.choices');
         this.$photo = this.$('.photo');
         this.$audio = this.$('.audio');
+        this.$question = this.$('.interrogative');
+        this.$afterText = this.$('.after-text');
 
         _.each(this.choiceViews, function(view) {
             view.render();
@@ -272,6 +295,8 @@ var QuestionView = Backbone.View.extend({
 
     rmChoiceView: function(choice) {
         delete this.choiceViews[choice.cid];
+
+        this.markNeedsSave();
     },
 
     addPhotoView: function(photo) {
@@ -307,6 +332,10 @@ var QuestionView = Backbone.View.extend({
         });
     },
 
+    markNeedsSave: function() {
+        quizDetailView.markNeedsSave();
+    },
+
     close: function() {
         this.audioView.close();
         this.photoView.close();
@@ -322,9 +351,9 @@ var QuestionView = Backbone.View.extend({
 
     serialize: function() {
         var properties = {
-            text: this.$('.interrogative').val(),
+            text: this.$question.val(),
             order: this.model.collection.indexOf(this.model),
-            after_text: this.$('.after-text').val()
+            after_text: this.$afterText.val()
         };
 
         return properties;
@@ -340,6 +369,7 @@ var ChoiceView = Backbone.View.extend({
 
     events: {
         'click .rm-choice': 'close',
+        'input .answer': 'markNeedsSave'
     },
 
     initialize: function() {
@@ -385,6 +415,10 @@ var ChoiceView = Backbone.View.extend({
             'el': this.$audio
         });
         this.audioView.render();
+    },
+
+    markNeedsSave: function() {
+        quizDetailView.markNeedsSave();
     },
 
     close: function() {
@@ -457,6 +491,8 @@ var PhotoView = Backbone.View.extend({
                     this.render();
 
                     console.log('Photo created.');
+
+                    this.markNeedsSave();
                 }, this),
                 'error': function() {
                     console.log('Failed to create photo.');
@@ -476,7 +512,13 @@ var PhotoView = Backbone.View.extend({
 
         this.render();
 
+        this.markNeedsSave();
+
         e.preventDefault();
+    },
+
+    markNeedsSave: function() {
+        quizDetailView.markNeedsSave();
     },
 
     close: function() {
@@ -588,6 +630,8 @@ var AudioView = Backbone.View.extend({
                     this.render();
 
                     console.log('Audio created.');
+
+                    this.markNeedsSave();
                 }, this),
                 'error': function() {
                     console.log('Failed to create audio.');
@@ -603,7 +647,13 @@ var AudioView = Backbone.View.extend({
 
         this.render();
 
+        this.markNeedsSave();
+
         e.preventDefault();
+    },
+
+    markNeedsSave: function() {
+        quizDetailView.markNeedsSave();
     },
 
     close: function() {
