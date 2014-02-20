@@ -59,6 +59,8 @@ class Includer(object):
         return relative_path
 
     def _path_to_s3(self, path):
+        path = path.replace('.less', '.less.css')
+
         return '%s/%s' % (app_config.S3_BASE_URL, path)
 
     def render(self, path):
