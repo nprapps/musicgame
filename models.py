@@ -20,7 +20,7 @@ db = PostgresqlDatabase(
     user=secrets.get('MUSICGAME_POSTGRES_USER', app_config.PROJECT_SLUG),
     password=secrets.get('MUSICGAME_POSTGRES_PASSWORD', None),
     host=secrets.get('MUSICGAME_POSTGRES_HOST', 'localhost'),
-    port=int(secrets.get('MUSICGAME_POSTGRES_PORT', 5432))
+    port=secrets.get('MUSICGAME_POSTGRES_PORT', 5432)
 )
 
 class PSQLMODEL(Model):

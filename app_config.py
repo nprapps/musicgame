@@ -125,7 +125,9 @@ def get_secrets():
     """
     secrets = [
         'MUSICGAME_POSTGRES_PASSWORD',
-        'MUSICGAME_POSTGRES_USER'
+        'MUSICGAME_POSTGRES_USER',
+        'MUSICGAME_POSTGRES_HOST',
+        'MUSICGAME_POSTGRES_PORT'
     ]
 
     secrets_dict = {}
