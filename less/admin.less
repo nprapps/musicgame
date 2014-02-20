@@ -41,7 +41,7 @@
 @musicMedium: #e6ebf2;
 @musicLight: #dbe0e6;
 
-.container {padding-bottom: 40px;}
+.container {padding-bottom: 100px;}
 
 .vertical-align {
   position: relative;
@@ -89,13 +89,24 @@
 
 .question {
     margin-top: 50px;
-    margin-bottom: 50px;
+    margin-bottom: 30px;
     background-color: #eee;
     
     
     
     .question-settings {
 	    position: relative;
+	    
+	    h5 {
+			float: left;
+			padding: 8px 14px;
+			background-color: #333;
+			color: #fff;
+			margin: 0;
+			font-size: 14px;
+			text-transform: uppercase;
+			font-weight: bold;
+	    }
 	    
 	    .rm-question {
 		   float: right; 
@@ -126,7 +137,9 @@
 	background-color: #dfdfdf;
 	
 	h5 {
-		
+		font-size: 16px;
+		text-transform: uppercase;
+		font-weight: bold;
 	}
 	
 	
@@ -135,11 +148,17 @@
 	    border-bottom: 1px solid #bbb;
 	    
 	    .rm-choice {
-	    visibility: hidden;
+	    	opacity: 0;
 	    }
 	    
 	     &:hover {
-			.rm-choice {visibility: visible;}
+			.rm-choice {
+				opacity: 1;
+				-webkit-transition: opacity .3s linear;
+				-o-transition: opacity  .3s linear;
+				-moz-transition: opacity  .3s linear;
+				transition: opacity  .3s linear;
+				}
 		}
 	    
 	    
@@ -147,9 +166,7 @@
 	
 	.choice-text {
 	    margin-bottom: 20px;
-	    
-	    
-	    
+
 	    .input-group-addon {
 		    padding: 5px 12px 3px 12px;
 		    
@@ -204,30 +221,46 @@
 }
 
 /* audio and photo select */
-.audio {
-	.form-control {
-		display: none;
-	}
-}
+.attach {
 	
-.audio, .photo {
-	.btn-file {
+	.btn {
 		border: none;
 		background-color: transparent;
 		text-align: left;
+		font-size: 13px;
 	}
+	
+	.fileinput-new {
+		
+	}
+	
+	.photo-select {
+		display: block;
+	}
+	
 	.form-control {
 		display: none;
 	}
-}
 
-.photo {
-    .preview {
-        width: 64px;
-        height: auto;
-    }
+	.audio {
+		.form-control {
+			display: none;
+		}
+		.audio-file-name {
+			font-size: 13px;
+			padding-left: 5px;
+		}
+	}
+	
+	.photo {
+	    .preview {
+	        max-width: 100px;
+	        height: auto;
+	        float: left;
+	    }
+	}
+	
 }
-
 
 .toolbelt {
     bottom: 0;

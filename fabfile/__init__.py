@@ -683,7 +683,7 @@ def load_quizzes():
 
         for question_index, question_json in enumerate(quiz_json['questions']):
             question = {
-                'order': question_index + 1,
+                'order': question_index,
                 'quiz': qz,
                 'text': question_json['text'],
                 'photo': None,
@@ -706,7 +706,7 @@ def load_quizzes():
 
             for choice_index, choice_json in enumerate(question_json['choices']):
                 choice = {
-                    'order': choice_index + 1,
+                    'order': choice_index,
                     'question': qn,
                     'text': choice_json['text'],
                     'correct_answer': False,

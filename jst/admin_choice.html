@@ -1,37 +1,30 @@
 <div class="choice-text row">
     <div class="col-xs-9">
-        <div class="input-group">
+		
+		<div class="input-group">
             <span class="input-group-addon">
-                <input
-                    class="correct"
-                    type="radio"
-                    id="Q<%= choice.question.cid %>-C<%= choice.cid %>"
-                    name="Q<%= choice.question.cid %>"
-                    <% if (choice.get('correct_answer')) { %> checked="checked" <% } %>
-                ></input>
-                <label for="Q<%= choice.question.cid %>-C<%= choice.cid %>">
-                    <span></span>
-                </label>
+            
+                <input class="correct" type="radio" id="radio01" name="q<%=choice.question.id%>-answers" <% if (choice.get('correct_answer')) { %> checked="checked" <% } %></input>
+                <label for="radio01"><span></span></label>
+                
             </span>
-            <input
-                type="text"
-                class="form-control answer"
-                placeholder="Choice"
-                value="<%= choice.get('text') || '' %>"
-            ></input>
+            <input type="text" class="form-control answer" placeholder="Choice" value="<%= choice.get('text') || '' %>">
         </div>
+
     </div>
     <div class="col-xs-1">
-        <a class="btn btn-danger rm-choice"><i class="fa fa-minus"></i></a>
+    	<a class="btn btn-danger rm-choice"><i class="fa fa-minus"></i></a>
     </div>
 </div><!--/row-->
-<div class="choice-files row">
-    <div class="col-md-3">
-        <div class="audio">
+<div class="choice-files attach row">
+    <div class="col-md-6">
+        <div class="audio fileinput">
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="photo">
+    <div class="col-md-6">
+        <div class="photo fileinput">
         </div>
     </div>
 </div><!--/row -->
+
+
