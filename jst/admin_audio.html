@@ -2,9 +2,11 @@
 
 <div id="jp-player-<%= audio.id %>" class="jp-player"></div>
 <div class="jp-controls">
-    <a href="javascript:;" class="play nav-btn" tabindex="1" title="play"><i class="fa fa-play"></i></i></a>
-    <a href="javascript:;" class="stop nav-btn" tabindex="1" style="display: none;" title="stop"><i class="fa fa-stop"></i></a>
-    <span class="audio-file-name"><%= audio.get('file_name') %></span>
+	<span class="a-btn">
+    	<a href="javascript:;" class="play nav-btn" tabindex="1" title="play"><i class="fa fa-play"></i></i></a>
+		<a href="javascript:;" class="stop nav-btn" tabindex="1" style="display: none;" title="stop"><i class="fa fa-stop"></i></a>
+	</span>
+    <span class="audio-file-name"><b><%= audio.get('file_name') %></b></span>
 </div>
 
 
