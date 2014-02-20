@@ -107,6 +107,9 @@ var renderQuestion = function() {
                     mp3: question['audio']['rendered_mp3_path'],
                     oga: question['audio']['rendered_oga_path']
                 }).jPlayer('play');
+
+                $questionPauseButton.show();
+                $questionPlayButton.hide();
             },
             play: function() {
                 if (timer === 'true'){
@@ -114,15 +117,20 @@ var renderQuestion = function() {
                 }
             },
             ended: function() {
-                onQuestionPauseButtonClick();
+                // Reset media because of webkit audio bug
+                $(this).jPlayer('setMedia', {
+                    mp3: question['audio']['rendered_mp3_path'],
+                    oga: question['audio']['rendered_oga_path']
+                });
+
+                $questionPauseButton.hide();
+                $questionPlayButton.show();
             },
             swfPath: 'js/lib',
             supplied: 'mp3, oga',
             loop: false
         });
 
-        $content.find('.jp-play').hide();
-        $content.find('.jp-pause').show();
     } else { // Start the timer immediately if no audio.
         if (timer === 'true'){
             runTimer();
@@ -149,43 +157,42 @@ var renderGameOver = function() {
     $content.addClass('end');
     $responses = $content.find('.responses');
     var $players = $content.find('.jp-player')
-    var $playButtons = $content.find('.jp-play');
-    var $pauseButtons = $content.find('.jp-pause');
-
+    var $playButtons = $content.find('.play');
+    var $pauseButtons = $content.find('.pause');
     // Set up question audio players
     $players.jPlayer({
         ready: function () {
             $(this).jPlayer('setMedia', {
                 mp3: $(this).data('mp3'),
-                oga: $(this).data('ogg') 
+                oga: $(this).data('ogg')
             });
         },
-        ended: function() {
-            onQuestionPauseButtonClick();
+        ended: function(){
+            // Reset media because of webkit audio bug
+            $(this).jPlayer('setMedia', {
+                mp3: $(this).data('mp3'),
+                oga: $(this).data('ogg')
+            });
+
+            $pauseButtons.hide();
+            $playButtons.show();
         },
         swfPath: 'js/lib',
         supplied: 'mp3, oga',
         loop: false
     });
 
-    $playButtons.each(function(){
-        $(this).on('click', function(){
-            console.log($(this).closest('.jp-audio').prev());
-            $players.jPlayer('stop');
-            $pauseButtons.hide();
-            $playButtons.show();
-            $(this).closest('.jp-audio').prev().jPlayer('play');
-            $(this).hide().next().show();
-        });
-
+    $playButtons.on('click', function(){
+        $pauseButtons.hide();
+        $playButtons.show();
+        $players.jPlayer('pause');
+        $(this).parents('li').find('.jp-player').jPlayer('play');
+        $(this).hide().siblings('.pause').show();
     });
 
-    $pauseButtons.each(function(){
-        $(this).on('click', function(){
-            $(this).closest('.jp-audio').prev().jPlayer('pause');
-            $(this).hide().prev().show();
-        });
-
+    $pauseButtons.on('click', function(){
+        $(this).parents('li').find('.jp-player').jPlayer('pause');
+        $(this).hide().siblings('.play').show();
     });
 
     resizeWindow();
@@ -195,18 +202,18 @@ var renderGameOver = function() {
 * Click handler for the question player "play" button.
 */
 var onQuestionPlayButtonClick = function(e){
-    $questionPlayer.jPlayer('play');
-    $content.find('.jp-play').hide();
-    $content.find('.jp-pause').show();
+    // $questionPlayer.jPlayer('play');
+    $questionPlayButton.hide();
+    $questionPauseButton.show();
 };
 
 /*
 * Click handler for the question player "stop" button.
 */
 var onQuestionPauseButtonClick = function(e){
-    $questionPlayer.jPlayer('pause');
-    $content.find('.jp-pause').hide();
-    $content.find('.jp-play').show();
+    // $questionPlayer.jPlayer('pause');
+    $questionPauseButton.hide();
+    $questionPlayButton.show();
 };
 
 /*
