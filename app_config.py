@@ -125,7 +125,9 @@ def get_secrets():
     """
     secrets = [
         'MUSICGAME_POSTGRES_PASSWORD',
-        'MUSICGAME_POSTGRES_USER'
+        'MUSICGAME_POSTGRES_USER',
+        'MUSICGAME_POSTGRES_HOST',
+        'MUSICGAME_POSTGRES_PORT'
     ]
 
     secrets_dict = {}
@@ -147,7 +149,6 @@ def configure_targets(deployment_target):
     global DEBUG
     global DEPLOYMENT_TARGET
     global APP_LOG_PATH
-    global DB_USER
 
     if deployment_target == 'production':
         S3_BUCKETS = PRODUCTION_S3_BUCKETS
@@ -155,14 +156,14 @@ def configure_targets(deployment_target):
         SERVERS = PRODUCTION_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
         DEBUG = False
-        DB_USER = get_secrets().get('MUSICGAME_POSTGRES_USER', None)
+
     elif deployment_target == 'staging':
         S3_BUCKETS = STAGING_S3_BUCKETS
         S3_BASE_URL = 'http://%s/%s' % (S3_BUCKETS[0], PROJECT_SLUG)
         SERVERS = STAGING_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
         DEBUG = True
-        DB_USER = get_secrets().get('MUSICGAME_POSTGRES_USER', None)
+
     else:
         S3_BUCKETS = []
         S3_BASE_URL = 'http://127.0.0.1:8000'
@@ -170,7 +171,6 @@ def configure_targets(deployment_target):
         SERVER_BASE_URL = 'http://127.0.0.1:8000/%s' % PROJECT_SLUG
         DEBUG = True
         APP_LOG_PATH = '/tmp/%s.app.log' % PROJECT_SLUG
-        DB_USER = PROJECT_SLUG
 
     DEPLOYMENT_TARGET = deployment_target
 
