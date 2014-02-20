@@ -1,14 +1,26 @@
 <div class="choice-text row">
     <div class="col-xs-9">
-		
+
 		<div class="input-group">
             <span class="input-group-addon">
-            
-                <input class="correct" type="radio" id="radio01" name="q<%=choice.question.id%>-answers" <% if (choice.get('correct_answer')) { %> checked="checked" <% } %></input>
-                <label for="radio01"><span></span></label>
-                
+
+                <input
+                    class="correct"
+                    type="radio"
+                    id="Q<%= choice.question.cid %>-C<%= choice.cid %>"
+                    name="Q<%= choice.question.cid %>"
+                    <% if (choice.get('correct_answer')) { %> checked="checked" <% } %>
+                ></input>
+                <label for="Q<%= choice.question.cid %>-C<%= choice.cid %>">
+                    <span></span>
+                </label>
             </span>
-            <input type="text" class="form-control answer" placeholder="Choice" value="<%= choice.get('text') || '' %>">
+            <input
+                type="text"
+                class="form-control answer"
+                placeholder="Choice"
+                value="<%= choice.get('text') || '' %>"
+            ></input>
         </div>
 
     </div>
