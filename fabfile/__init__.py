@@ -29,7 +29,7 @@ env.forward_agent = True
 env.hosts = []
 env.settings = None
 
-model_names = ['Category', 'Photo', 'Audio', 'Quiz', 'Question', 'Choice']
+model_names = ['Photo', 'Audio', 'Quiz', 'Question', 'Choice']
 
 """
 Environments
@@ -660,15 +660,12 @@ def load_quizzes():
         'drum_fill_friday.json'
     ]
 
-    qc = models.Category(name="Drum Fill Friday")
-    qc.save()
-
     for quiz in quiz_list:
         with open('www/assets/data/%s' % quiz, 'rb') as readfile:
             quiz_json = dict(json.loads(readfile.read()))
 
         quiz = {
-            'category': qc,
+            'category': "Drum Fill Friday",
             'title': quiz_json['title'],
             'text': 'TKTK',
             'photo': None

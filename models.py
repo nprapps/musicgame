@@ -27,15 +27,6 @@ class PSQLMODEL(Model):
     class Meta:
         database = db
 
-class Category(PSQLMODEL):
-    """
-    A category of quizzes. An arcade cabinet within the arcade.
-    """
-    name = TextField()
-
-    def __unicode__(self):
-        return self.name
-
 class Photo(PSQLMODEL):
     """
     A photo referenced from a Quiz, Question or Choice.
@@ -184,7 +175,7 @@ class Quiz(PSQLMODEL):
 
     Quizzes have Questions.
     """
-    category = ForeignKeyField(Category, null=True, related_name='quizzes')
+    category = TextField()
     slug = TextField()
     title = TextField()
     text = TextField()
@@ -203,7 +194,7 @@ class Quiz(PSQLMODEL):
         """
         flat = self.to_dict()
         flat['questions'] = [q.to_dict() for q in self.questions]
-        flat['category'] = self.category.to_dict() if self.category else None
+        flat['category'] = self.category if self.category else None
         flat['photo'] = self.photo.to_dict() if self.photo else None
 
         flat['created'] = time.mktime(self.created.timetuple())
