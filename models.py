@@ -17,10 +17,10 @@ import app_config
 secrets = app_config.get_secrets()
 db = PostgresqlDatabase(
     app_config.PROJECT_SLUG,
-    user=app_config.DB_USER,
+    user=secrets.get('MUSICGAME_POSTGRES_USER', app_config.PROJECT_SLUG),
     password=secrets.get('MUSICGAME_POSTGRES_PASSWORD', None),
-    host=app_config.DB_HOST,
-    port=app_config.DB_PORT
+    host=secrets.get('MUSICGAME_POSTGRES_HOST', 'localhost'),
+    port=int(secrets.get('MUSICGAME_POSTGRES_PORT', 5432))
 )
 
 class PSQLMODEL(Model):
