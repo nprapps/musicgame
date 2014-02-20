@@ -203,7 +203,6 @@ var QuestionView = Backbone.View.extend({
     className: 'question',
     events: {
         'click .add-choice': 'addChoiceModel',
-        'click .rm-choice': 'rmChoiceView',
         'click .rm-question': 'close',
         'click #save-quiz': 'saveQuestion',
     },
@@ -229,7 +228,9 @@ var QuestionView = Backbone.View.extend({
         this.addAudioView();
 
         this.model.choices.on('add', this.addChoiceView);
+        this.model.choices.on('remove', this.rmChoiceView);
     },
+
     render: function() {
         this.$el.html(JST.admin_question({ 'question': this.model }));
 
@@ -269,6 +270,10 @@ var QuestionView = Backbone.View.extend({
         this.choiceViews[choice.cid] = choiceView;
     },
 
+    rmChoiceView: function(choice) {
+        delete this.choiceViews[choice.cid];
+    },
+
     addPhotoView: function(photo) {
         this.photoView = new PhotoView({
             'model': this.model.photo,
@@ -285,12 +290,6 @@ var QuestionView = Backbone.View.extend({
             'el': this.$audio
         });
         this.audioView.render();
-    },
-
-    rmChoiceView: function() {
-        var model = this.model.choices.last();
-        this.choiceViews[model.cid].close();
-        delete this.choiceViews[model.cid];
     },
 
     saveQuestion: function() {
@@ -337,8 +336,11 @@ var QuestionView = Backbone.View.extend({
  */
 var ChoiceView = Backbone.View.extend({
     tagName: 'div',
-
     className: 'choice',
+
+    events: {
+        'click .rm-choice': 'close',
+    },
 
     initialize: function() {
         this.$photo = null;
