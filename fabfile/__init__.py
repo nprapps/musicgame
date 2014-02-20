@@ -240,8 +240,9 @@ def _cleanup_minified_includes():
     """
     Delete minified versions of JS/CSS assets so they don't clutter www/.
     """
-    local('rm www/js/*.min.*.js')
-    local('rm www/css/*.min.*.css')
+    with settings(warn_only=True):
+        local('rm www/js/*.min.*.js')
+        local('rm www/css/*.min.*.css')
 
 @task
 def tests():
@@ -554,7 +555,7 @@ def bootstrap_data():
     Sets up the app from scratch.
     """
     fabcast('assets.sync')
-    init_db()
+    fabcast('init_db')
     fabcast('init_tables')
     fabcast('load_quizzes')
 
@@ -574,15 +575,24 @@ def init_db():
     """
     Prepares a user and db for the project.
     """
+    secrets = app_config.get_secrets()
     with settings(warn_only=True):
         service_name = _get_installed_service_name('uwsgi')
-        sudo('service %s stop' % service_name)
+        run('service %s stop' % service_name)
 
-        sudo('dropdb %s' % app_config.PROJECT_SLUG, user='postgres')
-        sudo('dropuser %s' % app_config.PROJECT_SLUG, user='postgres')
+        local('dropdb %s --u=%s --host=%s --port=%s' % (
+            app_config.PROJECT_SLUG,
+            secrets.get('MUSICGAME_POSTGRES_USER', app_config.PROJECT_SLUG),
+            secrets.get('MUSICGAME_POSTGRES_HOST', 'localhost'),
+            secrets.get('MUSICGAME_POSTGRES_PORT', 5432)
+        ))
 
-    sudo('echo "CREATE USER %s WITH PASSWORD \'$MUSICGAME_POSTGRES_PASSWORD\';" | psql' % (app_config.PROJECT_SLUG), user='postgres')
-    sudo('createdb %s' % app_config.PROJECT_SLUG, user='postgres')
+    local('createdb %s --u=%s --host=%s --port=%s' % (
+        app_config.PROJECT_SLUG,
+        secrets.get('MUSICGAME_POSTGRES_USER', app_config.PROJECT_SLUG),
+        secrets.get('MUSICGAME_POSTGRES_HOST', 'localhost'),
+        secrets.get('MUSICGAME_POSTGRES_PORT', 5432)
+    ))
 
     sudo('service %s start' % service_name)
 

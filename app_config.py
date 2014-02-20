@@ -124,7 +124,10 @@ def get_secrets():
     A method for accessing our secrets.
     """
     secrets = [
-        'MUSICGAME_POSTGRES_PASSWORD'
+        'MUSICGAME_POSTGRES_PASSWORD',
+        'MUSICGAME_POSTGRES_USER',
+        'MUSICGAME_POSTGRES_HOST',
+        'MUSICGAME_POSTGRES_PORT'
     ]
 
     secrets_dict = {}
@@ -153,12 +156,14 @@ def configure_targets(deployment_target):
         SERVERS = PRODUCTION_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
         DEBUG = False
+
     elif deployment_target == 'staging':
         S3_BUCKETS = STAGING_S3_BUCKETS
         S3_BASE_URL = 'http://%s/%s' % (S3_BUCKETS[0], PROJECT_SLUG)
         SERVERS = STAGING_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
         DEBUG = True
+
     else:
         S3_BUCKETS = []
         S3_BASE_URL = 'http://127.0.0.1:8000'

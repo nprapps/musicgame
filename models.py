@@ -15,7 +15,13 @@ from peewee import Model, PostgresqlDatabase, BooleanField, DateTimeField, Forei
 import app_config
 
 secrets = app_config.get_secrets()
-db = PostgresqlDatabase(app_config.PROJECT_SLUG, user=app_config.PROJECT_SLUG, password=secrets.get('MUSICGAME_POSTGRES_PASSWORD', None))
+db = PostgresqlDatabase(
+    app_config.PROJECT_SLUG,
+    user=secrets.get('MUSICGAME_POSTGRES_USER', app_config.PROJECT_SLUG),
+    password=secrets.get('MUSICGAME_POSTGRES_PASSWORD', None),
+    host=secrets.get('MUSICGAME_POSTGRES_HOST', 'localhost'),
+    port=secrets.get('MUSICGAME_POSTGRES_PORT', 5432)
+)
 
 class PSQLMODEL(Model):
     """

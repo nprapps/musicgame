@@ -2,18 +2,16 @@
 <div class="progress"><div class="bar" style="width: 0%;"></div></div>
 <% } %>
 <h3 class="progress-header">Question <%= questionNumber %>/<%= quizLength %></h3>
+<button class="next-question btn btn-large btn-primary">Next Question</button>
+<button class="show-score btn btn-large btn-primary">Show My Score</button>
 <div class="container">
 	<% if (audio){ %>
-	<div id="player" class="jp-player"></div>
+	<div id="player"></div>
 	<div id="jp_container_1" class="jp-audio">
-	    <div class="jp-type-single">
-	        <div class="jp-gui jp-interface">
-	            <div class="jp-controls">
-	                <a href="javascript:;" class="jp-play nav-btn" tabindex="1" title="play"><i class="fa fa-fw fa-play"></i></i></a>
-	                <a href="javascript:;" class="jp-pause nav-btn" tabindex="1" style="display: none;" title="pause"><i class="fa fa-fw fa-pause"></i></a>
-	            </div>
-	        </div>
-	    </div>
+        <div class="jp-controls">
+            <a href="javascript:;" class="jp-play nav-btn" tabindex="1" title="play"><i class="fa fa-fw fa-play"></i></i></a>
+            <a href="javascript:;" class="jp-pause nav-btn" tabindex="1" style="display: none;" title="pause"><i class="fa fa-fw fa-pause"></i></a>
+        </div>
 	</div> <!-- end .jp-audio -->
 	<% } %>
 	<h1 class="question-text"><%= text %></h1>
@@ -21,8 +19,6 @@
 	<div class="after-text">
 		<h3>Quizmaster says:</h3>
 		<p><%= after_text %></p>
-		<button class="next-question btn btn-large btn-primary">Next Question</button>
-		<button class="show-score btn btn-large btn-primary">Show My Score</button>
 	</div>
 	<% } %>
 	<ul class="answers">
@@ -43,9 +39,4 @@
 		<% } %>
 	<% }); %>
 	</ul>
-
-	<% if (!after_text){ %>
-		<button class="next-question btn btn-large btn-primary">Next Question</button>
-		<button class="show-score btn btn-large btn-primary">Show My Score</button>
-	<% } %>
 </div>
