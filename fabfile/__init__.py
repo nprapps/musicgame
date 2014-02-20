@@ -575,6 +575,7 @@ def init_db():
     """
     Prepares a user and db for the project.
     """
+    secrets = app_config.get_secrets()
     with settings(warn_only=True):
         service_name = _get_installed_service_name('uwsgi')
         run('service %s stop' % service_name)
