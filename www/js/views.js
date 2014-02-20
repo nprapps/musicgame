@@ -376,8 +376,9 @@ var ChoiceView = Backbone.View.extend({
         var properties = {
             'text': this.$('.answer').val(),
             'correct_answer': false,
-            'order': 0
+            'order': this.model.collection.indexOf(this.model),
         };
+
         if (this.$('.correct').is(':checked')) {
             properties['correct_answer'] = true;
         }
