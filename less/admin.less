@@ -135,11 +135,17 @@
 	    border-bottom: 1px solid #bbb;
 	    
 	    .rm-choice {
-	    visibility: hidden;
+	    	opacity: 0;
 	    }
 	    
 	     &:hover {
-			.rm-choice {visibility: visible;}
+			.rm-choice {
+				opacity: 1;
+				-webkit-transition: opacity .3s linear;
+				-o-transition: opacity  .3s linear;
+				-moz-transition: opacity  .3s linear;
+				transition: opacity  .3s linear;
+				}
 		}
 	    
 	    
@@ -209,13 +215,29 @@
 		display: none;
 	}
 }
+
+.audio-file-name {
+	font-size: 13px;
+	padding-left: 5px;
+}
 	
 .audio, .photo {
-	.btn-file {
+
+	.btn {
 		border: none;
 		background-color: transparent;
 		text-align: left;
+		font-size: 13px;
 	}
+	
+	.fileinput-new {
+		
+	}
+	
+	.photo-select {
+display: block;
+}
+	
 	.form-control {
 		display: none;
 	}
@@ -223,11 +245,11 @@
 
 .photo {
     .preview {
-        width: 64px;
+        max-width: 100px;
         height: auto;
+        float: left;
     }
 }
-
 
 .toolbelt {
     bottom: 0;
