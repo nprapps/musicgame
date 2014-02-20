@@ -464,8 +464,7 @@ var PhotoView = Backbone.View.extend({
     },
 
     removePhoto: function(e) {
-        // TODO: See issue #260
-        //this.model.destroy();
+        this.model.destroy();
         this.model = new Photo();
         this.options.parent.model.photo = this.model;
 
@@ -479,8 +478,7 @@ var PhotoView = Backbone.View.extend({
     },
 
     close: function() {
-        // TODO
-        //this.model.destroy();
+        this.model.destroy();
         this.remove();
         this.unbind();
     },
@@ -597,8 +595,7 @@ var AudioView = Backbone.View.extend({
     },
 
     removeAudio: function(e) {
-        // TODO: See issue #260
-        //this.model.destroy();
+        this.model.destroy();
         this.model = new Audio();
         this.options.parent.model.audio = this.model;
 
@@ -610,8 +607,7 @@ var AudioView = Backbone.View.extend({
     close: function() {
         this.$audioPlayer.jPlayer('destroy');
 
-        // TODO
-        //this.model.destroy();
+        this.model.destroy();
         this.remove();
         this.unbind();
     },

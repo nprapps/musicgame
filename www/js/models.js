@@ -59,8 +59,6 @@ var Quiz = Backbone.Model.extend({
     toJSON: function() {
         var data = _.clone(this.attributes);
 
-        console.log(this.photo);
-
         data['photo'] = (this.photo && this.photo.id) ? this.photo.id : null
 
         delete data['questions'];
@@ -164,9 +162,7 @@ var Choice = Backbone.Model.extend({
 
 var Audio = Backbone.Model.extend({
     url: function() {
-        // Rewrite urls to include a trailing slash so flask doesn't freak out
-        var origUrl = Backbone.Model.prototype.url.call(this);
-        return origUrl + (origUrl.charAt(origUrl.length - 1) == '/' ? '' : '/');
+        return '/' + APP_CONFIG['PROJECT_SLUG'] + '/api/audio/' + this.id + '/';
     },
     toJSON: function() {
         var data = _.clone(this.attributes);
@@ -177,9 +173,7 @@ var Audio = Backbone.Model.extend({
 
 var Photo = Backbone.Model.extend({
     url: function() {
-        // Rewrite urls to include a trailing slash so flask doesn't freak out
-        var origUrl = Backbone.Model.prototype.url.call(this);
-        return origUrl + (origUrl.charAt(origUrl.length - 1) == '/' ? '' : '/');
+        return '/' + APP_CONFIG['PROJECT_SLUG'] + '/api/photo/' + this.id + '/';
     },
     toJSON: function() {
         var data = _.clone(this.attributes);
