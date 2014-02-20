@@ -414,7 +414,8 @@ var ChoiceView = Backbone.View.extend({
  */
 var PhotoView = Backbone.View.extend({
     events: {
-        'change input[type="file"]': 'upload'
+        'change input[type="file"]': 'uploadPhoto',
+        'click .remove': 'removePhoto'
     },
 
     initialize: function() {
@@ -429,27 +430,10 @@ var PhotoView = Backbone.View.extend({
         this.$el.html(JST.admin_photo({ 'photo': this.model }));
 
         this.$photoFile = this.$('input[type="file"]');
-
-        if (this.model.id) {
-            this.$el.addClass('fileinput-exists');
-        } else {
-            this.$el.addClass('fileinput-new');
-        }
-        
-        this.$el.fileinput();
     },
 
-    upload: function() {
+    uploadPhoto: function(e) {
         var file = this.$photoFile[0].files[0];
-
-        if (_.isUndefined(file)) {
-            // TODO: See issue #260
-            //this.model.destroy();
-            this.model = new Photo();
-            this.options.parent.model.photo = this.model;
-
-            return;
-        }
 
         var reader = new FileReader();
         reader.readAsDataURL(file);
@@ -477,6 +461,17 @@ var PhotoView = Backbone.View.extend({
         }, this);
     },
 
+    removePhoto: function(e) {
+        // TODO: See issue #260
+        //this.model.destroy();
+        this.model = new Photo();
+        this.options.parent.model.photo = this.model;
+
+        this.render();
+
+        e.preventDefault();
+    },
+
     close: function() {
         // TODO
         //this.model.destroy();
@@ -501,6 +496,7 @@ var PhotoView = Backbone.View.extend({
 var AudioView = Backbone.View.extend({
     events: {
         'change input[type="file"]': 'uploadAudio',
+        'click .remove': 'removeAudio',
         'click .play': 'play',
         'click .stop': 'stop'
     },
@@ -527,14 +523,6 @@ var AudioView = Backbone.View.extend({
         this.$audioPlayer = this.$('#jp-player-' + this.model.id);
         this.$play = this.$('.play');
         this.$stop = this.$('.stop');
-
-        if (this.model.id) {
-            this.$el.addClass('fileinput-exists');
-        } else {
-            this.$el.addClass('fileinput-new');
-        }
-        
-        this.$el.fileinput();
 
         if (this.model.id){
             this.$audioPlayer.jPlayer({
@@ -574,17 +562,8 @@ var AudioView = Backbone.View.extend({
         this.$play.show();
     },
 
-    uploadAudio: function() {
+    uploadAudio: function(e) {
         var file = this.$audioFile[0].files[0];
-
-        if (_.isUndefined(file)) {
-            // TODO: See issue #260
-            //this.model.destroy();
-            this.model = new Audio();
-            this.options.parent.model.audio = this.model;
-
-            return;
-        }
 
         var reader = new FileReader();
         reader.readAsDataURL(file);
@@ -609,6 +588,17 @@ var AudioView = Backbone.View.extend({
                 }
             });
         }, this);
+    },
+
+    removeAudio: function(e) {
+        // TODO: See issue #260
+        //this.model.destroy();
+        this.model = new Audio();
+        this.options.parent.model.audio = this.model;
+
+        this.render();
+
+        e.preventDefault();
     },
 
     close: function() {
