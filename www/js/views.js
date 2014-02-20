@@ -309,7 +309,7 @@ var QuestionView = Backbone.View.extend({
     serialize: function() {
         var properties = {
             text: this.$('.interrogative').val(),
-            order: 0, // TODO
+            order: this.model.collection.indexOf(this.model),
             after_text: this.$('.after-text').val()
         };
 
