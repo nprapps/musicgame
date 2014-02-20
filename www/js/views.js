@@ -111,7 +111,7 @@ var QuizDetailView = Backbone.View.extend({
         _.bindAll(this);
 
         this.render();
-        
+
         this.$photo = this.$('.photo');
 
         this.model.questions.each(_.bind(function(question) {
@@ -420,7 +420,7 @@ var PhotoView = Backbone.View.extend({
 
     upload: function() {
         var file = this.$photoFile[0].files[0];
-        
+
         console.log(file);
 
         var reader = new FileReader();
@@ -502,7 +502,7 @@ var AudioView = Backbone.View.extend({
         this.$audioPlayer = this.$('#jp-player-' + this.model.id);
         this.$play = this.$('.play');
         this.$stop = this.$('.stop');
-        
+
         if (this.model.id) {
             this.$el.addClass('fileinput-exists');
         } else {
@@ -516,7 +516,7 @@ var AudioView = Backbone.View.extend({
                 ready: _.bind(function () {
                     this.$audioPlayer.jPlayer('setMedia', {
                         mp3: this.model.get('rendered_mp3_path'),
-                        oga: this.model.get('rendered_oga_path') 
+                        oga: this.model.get('rendered_oga_path')
                     });
                 }, this),
                 play: function() {
