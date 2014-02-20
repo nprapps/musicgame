@@ -421,6 +421,7 @@ var PhotoView = Backbone.View.extend({
     initialize: function() {
         _.bindAll(this);
 
+        this.$photoForm = null;
         this.$photoFile = null;
 
         this.render();
@@ -429,6 +430,7 @@ var PhotoView = Backbone.View.extend({
     render: function() {
         this.$el.html(JST.admin_photo({ 'photo': this.model }));
 
+        this.$photoForm = this.$('form');
         this.$photoFile = this.$('input[type="file"]');
     },
 
@@ -466,6 +468,10 @@ var PhotoView = Backbone.View.extend({
         //this.model.destroy();
         this.model = new Photo();
         this.options.parent.model.photo = this.model;
+
+        // Reset file input via: http://stackoverflow.com/a/13351234/24608
+        this.$photoFile.wrap('<form>').closest('form').get(0).reset();
+        this.$photoFile.unwrap();
 
         this.render();
 

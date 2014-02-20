@@ -59,7 +59,9 @@ var Quiz = Backbone.Model.extend({
     toJSON: function() {
         var data = _.clone(this.attributes);
 
-        data['photo'] = this.photo ? this.photo.id : null
+        console.log(this.photo);
+
+        data['photo'] = (this.photo && this.photo.id) ? this.photo.id : null
 
         delete data['questions'];
         delete data['created'];
@@ -115,8 +117,8 @@ var Question = Backbone.Model.extend({
         var data = _.clone(this.attributes);
 
         data['quiz'] = this.quiz.id;
-        data['photo'] = this.photo ? this.photo.id : null
-        data['audio'] = this.audio ? this.audio.id : null
+        data['photo'] = (this.photo && this.photo.id) ? this.photo.id : null
+        data['audio'] = (this.audio && this.audio.id) ? this.audio.id : null
 
         delete data['choices'];
 
@@ -153,8 +155,8 @@ var Choice = Backbone.Model.extend({
         var data = _.clone(this.attributes);
 
         data['question'] = this.question.id;
-        data['photo'] = this.photo ? this.photo.id : null
-        data['audio'] = this.audio ? this.audio.id : null
+        data['photo'] = (this.photo && this.photo.id) ? this.photo.id : null
+        data['audio'] = (this.audio && this.audio.id) ? this.audio.id : null
 
         return data;
     }
