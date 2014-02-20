@@ -555,7 +555,6 @@ def bootstrap_data():
     Sets up the app from scratch.
     """
     fabcast('assets.sync')
-    init_db()
     fabcast('init_tables')
     fabcast('load_quizzes')
 
