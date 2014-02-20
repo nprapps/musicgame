@@ -111,7 +111,7 @@ var QuizDetailView = Backbone.View.extend({
         _.bindAll(this);
 
         this.render();
-        
+
         this.$photo = this.$('.photo');
 
         this.model.questions.each(_.bind(function(question) {
@@ -225,7 +225,6 @@ var QuestionView = Backbone.View.extend({
         this.model.choices.on('add', this.addChoiceView);
     },
     render: function() {
-
         this.$el.html(JST.admin_question({ 'question': this.model }));
 
         this.$choices = this.$('.choices');
@@ -237,7 +236,7 @@ var QuestionView = Backbone.View.extend({
         });
 
         if (this.model.choices.length === 0) {
-            for (i = 0; i < 1; i++) {
+            for (i = 0; i < 4; i++) {
                 this.addChoiceModel();
             }
         }
@@ -246,6 +245,11 @@ var QuestionView = Backbone.View.extend({
     addChoiceModel: function() {
         var choice = new Choice();
         choice.question = this.model;
+
+        // First choice is always selected
+        if (this.model.choices.length === 0) {
+            choice.set('correct_answer', true);
+        }
 
         this.model.choices.add(choice);
     },
@@ -274,11 +278,9 @@ var QuestionView = Backbone.View.extend({
     },
 
     rmChoiceView: function() {
-        // if (this.model.choices.length > 1) {
-            var model = this.model.choices.last();
-            this.choiceViews[model.cid].close();
-            delete this.choiceViews[model.cid];
-        // }
+        var model = this.model.choices.last();
+        this.choiceViews[model.cid].close();
+        delete this.choiceViews[model.cid];
     },
 
     saveQuestion: function() {
@@ -309,7 +311,7 @@ var QuestionView = Backbone.View.extend({
     serialize: function() {
         var properties = {
             text: this.$('.interrogative').val(),
-            order: 0, // TODO
+            order: this.model.collection.indexOf(this.model),
             after_text: this.$('.after-text').val()
         };
 
@@ -376,8 +378,9 @@ var ChoiceView = Backbone.View.extend({
         var properties = {
             'text': this.$('.answer').val(),
             'correct_answer': false,
-            'order': 0
+            'order': this.model.collection.indexOf(this.model),
         };
+
         if (this.$('.correct').is(':checked')) {
             properties['correct_answer'] = true;
         }
@@ -420,7 +423,7 @@ var PhotoView = Backbone.View.extend({
 
     upload: function() {
         var file = this.$photoFile[0].files[0];
-        
+
         console.log(file);
 
         var reader = new FileReader();
@@ -502,7 +505,7 @@ var AudioView = Backbone.View.extend({
         this.$audioPlayer = this.$('#jp-player-' + this.model.id);
         this.$play = this.$('.play');
         this.$stop = this.$('.stop');
-        
+
         if (this.model.id) {
             this.$el.addClass('fileinput-exists');
         } else {
@@ -516,7 +519,7 @@ var AudioView = Backbone.View.extend({
                 ready: _.bind(function () {
                     this.$audioPlayer.jPlayer('setMedia', {
                         mp3: this.model.get('rendered_mp3_path'),
-                        oga: this.model.get('rendered_oga_path') 
+                        oga: this.model.get('rendered_oga_path')
                     });
                 }, this),
                 play: function() {

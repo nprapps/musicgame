@@ -307,6 +307,9 @@ class Question(PSQLMODEL):
     photo = ForeignKeyField(Photo, null=True)
     audio = ForeignKeyField(Audio, null=True)
 
+    class Meta:
+        order_by = ('order',)
+
     def __unicode__(self):
         return "%s.) %s" % (self.order, self.text)
 
@@ -320,6 +323,9 @@ class Choice(PSQLMODEL):
     correct_answer = BooleanField(default=False)
     photo = ForeignKeyField(Photo, null=True)
     audio = ForeignKeyField(Audio, null=True)
+
+    class Meta:
+        order_by = ('order',)
 
     def __unicode__(self):
         return self.text
