@@ -73,7 +73,7 @@ var renderQuestion = function() {
     stopTimer = false;
 
     $content.html(html);
-    $content.removeClass();
+    $content.removeClass().addClass('question');
     resizeWindow();
 
     if (question['audio']) {
@@ -112,6 +112,8 @@ var renderQuestion = function() {
                 $questionPlayButton.hide();
             },
             play: function() {
+                $content.find('.container').addClass('in');
+
                 if (timer === 'true'){
                     runTimer();
                 }
@@ -154,7 +156,7 @@ var renderGameOver = function() {
     var html = JST.gameover(context);
 
     $content.html(html);
-    $content.addClass('end');
+    $content.removeClass().addClass('end');
     $responses = $content.find('.responses');
     var $players = $content.find('.jp-player')
     var $playButtons = $content.find('.play');
@@ -196,6 +198,7 @@ var renderGameOver = function() {
     });
 
     resizeWindow();
+    $content.find('.container').addClass('in');
 };
 
 /*
@@ -354,7 +357,8 @@ var runTimer = function() {
 */
 var onNextQuestionClick = function() {
     currentQuestion++;
-    renderQuestion();
+    $content.find('.container').addClass('out');
+    _.delay(renderQuestion, 200);
     return false;
 }
 

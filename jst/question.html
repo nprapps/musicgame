@@ -2,6 +2,8 @@
 <div class="progress"><div class="bar" style="width: 0%;"></div></div>
 <% } %>
 <h3 class="progress-header">Question <%= questionNumber %>/<%= quizLength %></h3>
+<button class="next-question btn btn-large btn-primary">Next Question</button>
+<button class="show-score btn btn-large btn-primary">Show My Score</button>
 <div class="container">
 	<% if (audio){ %>
 	<div id="player"></div>
@@ -17,8 +19,6 @@
 	<div class="after-text">
 		<h3>Quizmaster says:</h3>
 		<p><%= after_text %></p>
-		<button class="next-question btn btn-large btn-primary">Next Question</button>
-		<button class="show-score btn btn-large btn-primary">Show My Score</button>
 	</div>
 	<% } %>
 	<ul class="answers">
@@ -39,9 +39,4 @@
 		<% } %>
 	<% }); %>
 	</ul>
-
-	<% if (!after_text){ %>
-		<button class="next-question btn btn-large btn-primary">Next Question</button>
-		<button class="show-score btn btn-large btn-primary">Show My Score</button>
-	<% } %>
 </div>
