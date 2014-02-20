@@ -203,7 +203,6 @@ var QuestionView = Backbone.View.extend({
     className: 'question',
     events: {
         'click .add-choice': 'addChoiceModel',
-        'click .rm-choice': 'rmChoiceView',
         'click .rm-question': 'close',
         'click #save-quiz': 'saveQuestion',
     },
@@ -229,7 +228,9 @@ var QuestionView = Backbone.View.extend({
         this.addAudioView();
 
         this.model.choices.on('add', this.addChoiceView);
+        this.model.choices.on('remove', this.rmChoiceView);
     },
+
     render: function() {
         this.$el.html(JST.admin_question({ 'question': this.model }));
 
@@ -269,6 +270,10 @@ var QuestionView = Backbone.View.extend({
         this.choiceViews[choice.cid] = choiceView;
     },
 
+    rmChoiceView: function(choice) {
+        delete this.choiceViews[choice.cid];
+    },
+
     addPhotoView: function(photo) {
         this.photoView = new PhotoView({
             'model': this.model.photo,
@@ -285,12 +290,6 @@ var QuestionView = Backbone.View.extend({
             'el': this.$audio
         });
         this.audioView.render();
-    },
-
-    rmChoiceView: function() {
-        var model = this.model.choices.last();
-        this.choiceViews[model.cid].close();
-        delete this.choiceViews[model.cid];
     },
 
     saveQuestion: function() {
@@ -337,8 +336,11 @@ var QuestionView = Backbone.View.extend({
  */
 var ChoiceView = Backbone.View.extend({
     tagName: 'div',
-
     className: 'choice',
+
+    events: {
+        'click .rm-choice': 'close',
+    },
 
     initialize: function() {
         this.$photo = null;
@@ -421,6 +423,7 @@ var PhotoView = Backbone.View.extend({
     initialize: function() {
         _.bindAll(this);
 
+        this.$photoForm = null;
         this.$photoFile = null;
 
         this.render();
@@ -429,6 +432,7 @@ var PhotoView = Backbone.View.extend({
     render: function() {
         this.$el.html(JST.admin_photo({ 'photo': this.model }));
 
+        this.$photoForm = this.$('form');
         this.$photoFile = this.$('input[type="file"]');
     },
 
@@ -462,10 +466,13 @@ var PhotoView = Backbone.View.extend({
     },
 
     removePhoto: function(e) {
-        // TODO: See issue #260
-        //this.model.destroy();
+        this.model.destroy();
         this.model = new Photo();
         this.options.parent.model.photo = this.model;
+
+        // Reset file input via: http://stackoverflow.com/a/13351234/24608
+        this.$photoFile.wrap('<form>').closest('form').get(0).reset();
+        this.$photoFile.unwrap();
 
         this.render();
 
@@ -473,8 +480,7 @@ var PhotoView = Backbone.View.extend({
     },
 
     close: function() {
-        // TODO
-        //this.model.destroy();
+        this.model.destroy();
         this.remove();
         this.unbind();
     },
@@ -591,8 +597,7 @@ var AudioView = Backbone.View.extend({
     },
 
     removeAudio: function(e) {
-        // TODO: See issue #260
-        //this.model.destroy();
+        this.model.destroy();
         this.model = new Audio();
         this.options.parent.model.audio = this.model;
 
@@ -604,8 +609,7 @@ var AudioView = Backbone.View.extend({
     close: function() {
         this.$audioPlayer.jPlayer('destroy');
 
-        // TODO
-        //this.model.destroy();
+        this.model.destroy();
         this.remove();
         this.unbind();
     },
