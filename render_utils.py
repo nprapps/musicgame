@@ -58,19 +58,13 @@ class Includer(object):
 
         return relative_path
 
+    def _path_to_s3(self, path):
+        return '%s/%s' % (app_config.S3_BASE_URL, path)
+
     def render(self, path):
         if getattr(g, 'compile_includes', False):
             # Add a timestamp to the rendered filename to prevent caching
-            timestamp = int(time.time())
-            front, back = path.rsplit('.', 1)
-            path = '%s.%i.%s' % (front, timestamp, back)
             out_path = 'www/%s' % path
-
-            # Delete old rendered versions, just to be tidy
-            old_versions = glob.glob('%s.*.%s' % (front, back))
-            
-            for f in old_versions:
-                os.remove(f)
 
             if out_path not in g.compiled_includes:
                 print 'Rendering %s' % out_path
@@ -78,15 +72,18 @@ class Includer(object):
                 with open(out_path, 'w') as f:
                     f.write(self._compress().encode('utf-8'))
 
-            # See "fab render"
-            g.compiled_includes.append(out_path)
+                # See "fab render"
+                g.compiled_includes.append(out_path)
 
             markup = Markup(self.tag_string % self._relativize_path(path))
         else:
-            response = ','.join(self.includes)
+            if app_config.DEPLOYMENT_TARGET:
+                path_func = self._path_to_s3
+            else:
+                path_func = self._relativize_path
 
             response = '\n'.join([
-                self.tag_string % self._relativize_path(src) for src in self.includes
+                self.tag_string % path_func(src) for src in self.includes
             ])
 
             markup = Markup(response)
