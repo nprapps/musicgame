@@ -1,5 +1,4 @@
 <% if (audio.id) { %>
-
 <div id="jp-player-<%= audio.id %>" class="jp-player"></div>
 <div class="jp-controls">
 	<span class="a-btn">
@@ -7,15 +6,17 @@
 		<a href="javascript:;" class="stop nav-btn" tabindex="1" style="display: none;" title="stop"><i class="fa fa-stop"></i></a>
 	</span>
     <span class="audio-file-name"><b><%= audio.get('file_name') %></b></span>
+    <p class="audio-remove">
+		<a href="#" class="remove"><i class="fa fa-times"></i></a>
+	</p>
 </div>
-<a href="#" class="remove"><i class="fa fa-times"></i> Remove</a>
+
 
 <% } else { %>
-	<div class="input-group">
-	    <span class="input-group-addon btn btn-default btn-file">
-	        <span><i class="fa fa-plus-square"></i> Audio</span>
-	        <input type="file" name="...">
-	    </span>
-	    
-	</div>
+<div class="input-group">
+    <span class="input-group-addon btn btn-default btn-file">
+        <span><i class="fa fa-plus-square"></i> Audio</span>
+        <input type="file" name="...">
+    </span>
+</div>
 <% } %>
