@@ -1,5 +1,10 @@
 /*
- * ChangeTrackingMixin
+ * Base model class that tracks when a model has changed
+ * and avoids syncing if it hasn't.
+ *
+ * When calling save on a subclass of this Model you should
+ * pass a "skipped" callback in addition to "success" and
+ * "error".
  */
 var ChangeTrackingModel = Backbone.Model.extend({
     initialize: function(attributes) {
@@ -15,7 +20,9 @@ var ChangeTrackingModel = Backbone.Model.extend({
     sync: function(method, model, options) {
         if (method === 'create' || method === 'update') {
             if (!this.needsSave) {
-                options.skipped();
+                if (options.skipped) {
+                    options.skipped();
+                }
 
                 return;
             }
