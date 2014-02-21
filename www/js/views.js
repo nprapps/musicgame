@@ -16,10 +16,12 @@ var QuizListView = Backbone.View.extend({
 
         this.quizzes.fetch({
             success: _.bind(function() {
+                console.log('Fetched quizzes');
+
                 this.render();
             }, this),
             error: function() {
-                console.log('error');
+                console.log('Error fetching quizzes.');
             }
         });
     },
@@ -45,7 +47,12 @@ var QuizListView = Backbone.View.extend({
 
         var quiz = this.quizzes.create(properties, {
             success: function() {
+                console.log('Quiz created.');
+
                 window.location.replace('/' + APP_CONFIG['PROJECT_SLUG'] + '/admin/quiz/' + quiz.get('id'));
+            },
+            error: function() {
+                console.log('Failed to create quiz.');
             }
         });
     },
@@ -162,6 +169,7 @@ var QuizDetailView = Backbone.View.extend({
         this.model.save(properties, {
             success: _.bind(function() {
                 console.log('Quiz saved.');
+                
                 _.each(this.questionViews, function(question) {
                     question.saveQuestion();
                 });
@@ -322,12 +330,14 @@ var QuestionView = Backbone.View.extend({
 
         this.model.save(properties, {
             success: _.bind(function() {
+                console.log('Saved question.');
+
                 _.each(this.choiceViews, function(choiceView) {
                     choiceView.saveChoice();
                 });
             }, this),
             error: _.bind(function() {
-                console.log('error');
+                console.log('Error saving question.');
             }, this)
         });
     },
@@ -396,7 +406,14 @@ var ChoiceView = Backbone.View.extend({
     saveChoice: function() {
         var properties = this.serialize();
 
-        this.model.save(properties);
+        this.model.save(properties, {
+            success: function() {
+                console.log('Saved choice.');
+            },
+            error: function() {
+                console.log('Failed to save choice.');
+            }
+        });
     },
 
     addPhotoView: function(photo) {
@@ -486,11 +503,11 @@ var PhotoView = Backbone.View.extend({
                 'type': 'POST',
                 'data': properties,
                 'success': _.bind(function(data) {
+                    console.log('Photo created.');
+
                     this.options.parent.model.photo = new Photo(data);
                     this.model = this.options.parent.model.photo;
                     this.render();
-
-                    console.log('Photo created.');
 
                     this.markNeedsSave();
                 }, this),
@@ -625,11 +642,11 @@ var AudioView = Backbone.View.extend({
                 'type': 'POST',
                 'data': properties,
                 'success': _.bind(function(data) {
+                    console.log('Audio created.');
+
                     this.options.parent.model.audio = new Audio(data);
                     this.model = this.options.parent.model.audio;
                     this.render();
-
-                    console.log('Audio created.');
 
                     this.markNeedsSave();
                 }, this),
