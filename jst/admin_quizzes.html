@@ -1,4 +1,5 @@
 <td><a href="quiz/<%= quiz.get('id') %>/"><%= quiz.get('title') %></a></td>
+<td><a href="quiz/<%= quiz.get('id') %>/"><%= quiz.get('category') %></a></td>
 <td><a href="quiz/<%= quiz.get('id') %>"><%= quiz.get('created') %></a></td>
 <td>
     <a class="btn btn-xs btn-primary embed-quiz" href="<%= quiz.getPreviewUrl() %>"><i class="fa fa-play"></i> Preview & embed quiz</a>
