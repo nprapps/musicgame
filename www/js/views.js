@@ -566,6 +566,8 @@ var PhotoView = BaseView.extend({
     },
 
     removePhoto: function(e) {
+        e.preventDefault();
+
         this.model.destroy({
             success: function() {
                 console.log('Photo destroyed.');
@@ -578,15 +580,9 @@ var PhotoView = BaseView.extend({
         this.model = new Photo();
         this.options.parent.model.setPhoto(this.model);
 
-        // Reset file input via: http://stackoverflow.com/a/13351234/24608
-        this.$photoFile.wrap('<form>').closest('form').get(0).reset();
-        this.$photoFile.unwrap();
-
         this.render();
 
         this.markNeedsSave();
-
-        e.preventDefault();
     },
 
     markNeedsSave: function() {
@@ -709,6 +705,8 @@ var AudioView = BaseView.extend({
     },
 
     removeAudio: function(e) {
+        e.preventDefault();
+
         this.model.destroy({
             success: function() {
                 console.log('Audio destroyed.');
@@ -724,8 +722,6 @@ var AudioView = BaseView.extend({
         this.render();
 
         this.markNeedsSave();
-
-        e.preventDefault();
     },
 
     markNeedsSave: function() {
