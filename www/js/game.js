@@ -112,18 +112,18 @@ var renderQuestion = function() {
                 $questionPlayButton.hide();
             },
             play: function() {
-                $content.find('.container').addClass('in');
-
                 if (timer === 'true'){
                     runTimer();
                 }
+
+                $content.find('.container').addClass('in');
             },
             ended: function() {
                 // Reset media because of webkit audio bug
-                $(this).jPlayer('setMedia', {
-                    mp3: question['audio']['rendered_mp3_path'],
-                    oga: question['audio']['rendered_oga_path']
-                });
+                // $(this).jPlayer('setMedia', {
+                //     mp3: question['audio']['rendered_mp3_path'],
+                //     oga: question['audio']['rendered_oga_path']
+                // });
 
                 $questionPauseButton.hide();
                 $questionPlayButton.show();
@@ -137,6 +137,8 @@ var renderQuestion = function() {
         if (timer === 'true'){
             runTimer();
         }
+
+        $content.find('.container').addClass('in');
     }
 };
 
