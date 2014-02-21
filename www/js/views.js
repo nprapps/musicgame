@@ -1,7 +1,33 @@
 /*
+ * Base class for Backbone views.
+ */
+var BaseView = Backbone.View.extend({ 
+    close: function() {
+        this.remove();
+        this.unbind();
+    }
+});
+
+/*
+ * Mixin for Backbone views that have a 1:1 relationship with models.
+ */
+var ModelViewMixin = {
+    close: function() {
+        this.model.destroy({
+            success: _.bind(function() {
+                console.log(this.model.name + ' destroyed.');
+            }, this),
+            error: _.bind(function() {
+                console.log('Failed to destroy ' + this.model.name + '.');
+            }, this)
+        });
+    }
+};
+
+/*
  * QuizListView
  */
-var QuizListView = Backbone.View.extend({
+var QuizListView = BaseView.extend({
     el: '#admin',
     events: {
         'click .add-quiz': 'addQuizModel'
@@ -71,13 +97,13 @@ var QuizListView = Backbone.View.extend({
 /*
  * QuizView
  */
-var QuizView = Backbone.View.extend({
+var QuizView = BaseView.extend({
+    tagName: 'tr',
     className: 'quiz',
+
     events: {
         'click .delete-quiz': 'close'
     },
-
-    tagName: 'tr',
 
     initialize: function() {
         _.bindAll(this);
@@ -86,32 +112,19 @@ var QuizView = Backbone.View.extend({
     },
 
     render: function() {
-        this.$el.empty();
-
-        this.$el.append(JST.admin_quizzes({'quiz': this.model}));
-    },
-    close: function() {
-        this.model.destroy({
-            success: function() {
-                console.log('Quiz destroyed.');
-            },
-            error: function() {
-                console.log('Failed to destroy Quiz.');
-            }
-        });
-
-        this.remove();
-        this.unbind();
+        this.$el.html(JST.admin_quizzes({'quiz': this.model}));
     }
 });
 
+Cocktail.mixin(QuizView, ModelViewMixin);
 
 /*
  * QuizDetailView
  */
 
-var QuizDetailView = Backbone.View.extend({
+var QuizDetailView = BaseView.extend({
     el: '#admin',
+
     events: {
         'click #save-quiz': 'saveQuiz',
         'click #add-question': 'addQuestionModel',
@@ -231,7 +244,7 @@ var QuizDetailView = Backbone.View.extend({
 /*
  * QuestionView
  */
-var QuestionView = Backbone.View.extend({
+var QuestionView = BaseView.extend({
     tagName: 'div',
     className: 'question',
     events: {
@@ -361,18 +374,6 @@ var QuestionView = Backbone.View.extend({
         _.each(this.choiceViews, function(choiceView) {
             choiceView.close();
         });
-
-        this.model.destroy({
-            success: function() {
-                console.log('Question destroyed.');
-            },
-            error: function() {
-                console.log('Failed to destroy Question.');
-            }
-        });
-
-        this.remove();
-        this.unbind();
     },
 
     serialize: function() {
@@ -386,10 +387,12 @@ var QuestionView = Backbone.View.extend({
     }
 });
 
+Cocktail.mixin(QuestionView, ModelViewMixin);
+
 /*
  * ChoiceView
  */
-var ChoiceView = Backbone.View.extend({
+var ChoiceView = BaseView.extend({
     tagName: 'div',
     className: 'choice',
 
@@ -457,18 +460,6 @@ var ChoiceView = Backbone.View.extend({
     close: function() {
         this.audioView.close();
         this.photoView.close();
-
-        this.model.destroy({
-            success: function() {
-                console.log('Choice destroyed.');
-            },
-            error: function() {
-                console.log('Failed to destroy Choice.');
-            }
-        });
-
-        this.remove();
-        this.unbind();
     },
 
     serialize: function() {
@@ -486,10 +477,12 @@ var ChoiceView = Backbone.View.extend({
     }
 });
 
+Cocktail.mixin(ChoiceView, ModelViewMixin);
+
 /*
  * PhotoView
  */
-var PhotoView = Backbone.View.extend({
+var PhotoView = BaseView.extend({
     events: {
         'change input[type="file"]': 'uploadPhoto',
         'click .remove': 'removePhoto'
@@ -570,20 +563,6 @@ var PhotoView = Backbone.View.extend({
         quizDetailView.markNeedsSave();
     },
 
-    close: function() {
-        this.model.destroy({
-            success: function() {
-                console.log('Photo destroyed.');
-            },
-            error: function() {
-                console.log('Failed to destroy Photo.');
-            }
-        });
-
-        this.remove();
-        this.unbind();
-    },
-
     serialize: function() {
         var properties = {
             credit: 'TKTK',
@@ -595,10 +574,12 @@ var PhotoView = Backbone.View.extend({
     }
 });
 
+Cocktail.mixin(PhotoView, ModelViewMixin);
+
 /*
  * AudioView
  */
-var AudioView = Backbone.View.extend({
+var AudioView = BaseView.extend({
     events: {
         'change input[type="file"]': 'uploadAudio',
         'click .remove': 'removeAudio',
@@ -723,18 +704,6 @@ var AudioView = Backbone.View.extend({
 
     close: function() {
         this.$audioPlayer.jPlayer('destroy');
-
-        this.model.destroy({
-            success: function() {
-                console.log('Audio destroyed.');
-            },
-            error: function() {
-                console.log('Failed to destroy Audio.');
-            }
-        });
-
-        this.remove();
-        this.unbind();
     },
 
     serialize: function() {
@@ -747,3 +716,5 @@ var AudioView = Backbone.View.extend({
         return properties;
     }
 });
+
+Cocktail.mixin(AudioView, ModelViewMixin);

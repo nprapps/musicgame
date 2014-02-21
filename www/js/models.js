@@ -58,6 +58,8 @@ var RelatedAudioMixin = {
  * Quiz
  */
 var Quiz = Backbone.Model.extend({
+    name: 'Quiz',
+
     initialize: function(attributes) {
         this.questions = new Questions();
 
@@ -97,6 +99,8 @@ Cocktail.mixin(Quiz, RelatedPhotoMixin);
  * Question
  */
 var Question = Backbone.Model.extend({
+    name: 'Question',
+
     initialize: function(attributes) {
         this.choices = new Choices();
 
@@ -128,6 +132,8 @@ var Question = Backbone.Model.extend({
 Cocktail.mixin(Question, RelatedPhotoMixin, RelatedAudioMixin);
 
 var Choice = Backbone.Model.extend({
+    name: 'Choice',
+
     url: function() {
         // Rewrite urls to include a trailing slash so flask doesn't freak out
         var origUrl = Backbone.Model.prototype.url.call(this);
@@ -147,6 +153,8 @@ var Choice = Backbone.Model.extend({
 Cocktail.mixin(Choice, RelatedPhotoMixin, RelatedAudioMixin);
 
 var Audio = Backbone.Model.extend({
+    name: 'Audio',
+
     url: function() {
         return '/' + APP_CONFIG['PROJECT_SLUG'] + '/api/audio/' + this.id + '/';
     },
@@ -158,6 +166,8 @@ var Audio = Backbone.Model.extend({
 });
 
 var Photo = Backbone.Model.extend({
+    name: 'Photo',
+
     url: function() {
         return '/' + APP_CONFIG['PROJECT_SLUG'] + '/api/photo/' + this.id + '/';
     },
