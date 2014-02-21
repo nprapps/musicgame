@@ -90,6 +90,7 @@ var QuizListView = BaseView.extend({
         var properties = {
             title: 'Put Title Here',
             text: 'Put description here.',
+            category: 'Other',
             created: moment().format(),
             updated: moment().format(),
         };

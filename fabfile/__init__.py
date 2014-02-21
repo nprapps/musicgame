@@ -555,7 +555,7 @@ def bootstrap_data():
     Sets up the app from scratch.
     """
     fabcast('assets.sync')
-    fabcast('init_db')
+    init_db()
     fabcast('init_tables')
     fabcast('load_quizzes')
 
@@ -575,23 +575,16 @@ def init_db():
     """
     Prepares a user and db for the project.
     """
-    secrets = app_config.get_secrets()
     with settings(warn_only=True):
         service_name = _get_installed_service_name('uwsgi')
-        run('service %s stop' % service_name)
+        sudo('service %s stop' % service_name)
 
-        local('dropdb %s --u=%s --host=%s --port=%s' % (
-            app_config.PROJECT_SLUG,
-            secrets.get('MUSICGAME_POSTGRES_USER', app_config.PROJECT_SLUG),
-            secrets.get('MUSICGAME_POSTGRES_HOST', 'localhost'),
-            secrets.get('MUSICGAME_POSTGRES_PORT', 5432)
+        run('dropdb %s --u=$MUSICGAME_POSTGRES_USER --host=$MUSICGAME_POSTGRES_HOST --port=$MUSICGAME_POSTGRES_PORT' % (
+            app_config.PROJECT_SLUG
         ))
 
-    local('createdb %s --u=%s --host=%s --port=%s' % (
-        app_config.PROJECT_SLUG,
-        secrets.get('MUSICGAME_POSTGRES_USER', app_config.PROJECT_SLUG),
-        secrets.get('MUSICGAME_POSTGRES_HOST', 'localhost'),
-        secrets.get('MUSICGAME_POSTGRES_PORT', 5432)
+    run('createdb %s --u=$MUSICGAME_POSTGRES_USER --host=$MUSICGAME_POSTGRES_HOST --port=$MUSICGAME_POSTGRES_PORT' % (
+        app_config.PROJECT_SLUG
     ))
 
     sudo('service %s start' % service_name)
