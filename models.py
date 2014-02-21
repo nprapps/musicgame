@@ -297,7 +297,7 @@ class Quiz(PSQLMODEL):
 
     def slugify(self):
         """
-        Generate a slug for this playground.
+        Generate a slug.
         """
         bits = []
 
