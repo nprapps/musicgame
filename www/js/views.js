@@ -1,7 +1,7 @@
 /*
  * Base class for Backbone views.
  */
-var BaseView = Backbone.View.extend({ 
+var BaseView = Backbone.View.extend({
     close: function() {
         this.remove();
         this.unbind();
@@ -133,7 +133,8 @@ var QuizDetailView = BaseView.extend({
         'click #save-quiz': 'saveQuiz',
         'click #add-question': 'addQuestionModel',
         'input .title': 'markNeedsSave',
-        'input .description': 'markNeedsSave'
+        'input .description': 'markNeedsSave',
+        'change .category': 'markNeedsSave'
     },
 
     initialize: function() {
@@ -203,7 +204,7 @@ var QuizDetailView = BaseView.extend({
             }, this),
             success: _.bind(function() {
                 console.log('Quiz saved.');
-                
+
                 _.each(this.questionViews, function(question) {
                     question.saveQuestion();
                 });
@@ -248,6 +249,7 @@ var QuizDetailView = BaseView.extend({
         var properties = {
             title: this.$('.title').val(),
             text: this.$('.description').val(),
+            category: this.$('.category option:selected').val()
         };
 
         return properties;

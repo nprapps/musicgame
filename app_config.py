@@ -117,6 +117,15 @@ GOOGLE_ANALYTICS = {
 }
 
 """
+App-specific
+"""
+QUIZ_CATEGORIES = [
+    'Drum Fill Friday',
+    'Puzzler',
+    'Sole of a Band'
+]
+
+"""
 Utilities
 """
 def get_secrets():
