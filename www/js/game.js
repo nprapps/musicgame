@@ -43,8 +43,8 @@ var renderStart = function() {
 
     $startQuizButton = $content.find('#start-quiz');
     $startQuizButton.on('click', function(e){
+        $content.empty().removeClass('start');
         renderQuestion();
-        $content.removeClass('start');
         return false;
     });
 
@@ -72,7 +72,7 @@ var renderQuestion = function() {
     timeLeft = TIMERLENGTH * 1000;
     stopTimer = false;
 
-    $content.html(html);
+    $content.append(html);
     $content.removeClass().addClass('question');
     resizeWindow();
 
@@ -80,17 +80,20 @@ var renderQuestion = function() {
         $content.addClass('audio');
     }
 
-    $answers = $content.find('.answers li');
-    $answersContainer = $content.find('.answers');
-    $progressBar = $content.find('.progress .bar');
-    $questionPlayer = $content.find('#player');
-    $questionPlayButton = $content.find('.jp-play');
-    $questionPauseButton = $content.find('.jp-pause');
-    $timerContainer = $content.find('.timer-container');
-    $timerBg = $content.find('#timer-bg');
-    $timer = $content.find('#timer');
-    $nextQuestionButton = $content.find('.next-question');
-    $showScoreButton = $content.find('.show-score');
+    $currentQuestion = $content.find('.question-' + (currentQuestion + 1));
+    $previousQuestion = $content.find('.question-' + currentQuestion);
+
+    $answers = $currentQuestion.find('.answers li');
+    $answersContainer = $currentQuestion.find('.answers');
+    $progressBar = $currentQuestion.find('.progress .bar');
+    $questionPlayer = $currentQuestion.find('.player');
+    $questionPlayButton = $currentQuestion.find('.jp-play');
+    $questionPauseButton = $currentQuestion.find('.jp-pause');
+    $timerContainer = $currentQuestion.find('.timer-container');
+    $timerBg = $currentQuestion.find('#timer-bg');
+    $timer = $currentQuestion.find('#timer');
+    $nextQuestionButton = $currentQuestion.find('.next-question');
+    $showScoreButton = $currentQuestion.find('.show-score');
 
     $questionPlayButton.on('click', onQuestionPlayButtonClick);
     $questionPauseButton.on('click', onQuestionPauseButtonClick);
@@ -101,6 +104,8 @@ var renderQuestion = function() {
     $nextQuestionButton.removeClass('show');
 
     if (question['audio']){
+
+        $previousQuestion.find('.player').jPlayer('destroy');
         $questionPlayer.jPlayer({
             ready: function () {
                 $(this).jPlayer('setMedia', {
@@ -115,16 +120,8 @@ var renderQuestion = function() {
                 if (timer === 'true'){
                     runTimer();
                 }
-
-                $content.find('.container').addClass('in');
             },
             ended: function() {
-                // Reset media because of webkit audio bug
-                // $(this).jPlayer('setMedia', {
-                //     mp3: question['audio']['rendered_mp3_path'],
-                //     oga: question['audio']['rendered_oga_path']
-                // });
-
                 $questionPauseButton.hide();
                 $questionPlayButton.show();
             },
@@ -137,9 +134,16 @@ var renderQuestion = function() {
         if (timer === 'true'){
             runTimer();
         }
-
-        $content.find('.container').addClass('in');
     }
+
+    $currentQuestion.addClass('in');
+    $previousQuestion.addClass('out');
+
+    _.delay(function(){
+        $previousQuestion.remove();
+    }, 500);
+
+
 };
 
 /*
@@ -254,11 +258,11 @@ var onQuestionComplete = function(points, selectedAnswer, element){
                 $content.find('.after-text').slideDown({
                     duration: 'fast',
                     progress: function(){
-                        $content.attr('style','').css('height', $content.height());
+                        $content.attr('style','').css('height', $content.children().last().height());
                         sendHeightToParent();
                     },
                     done: function(){
-                        $content.attr('style','').css('height', $content.height());
+                        $content.attr('style','').css('height', $content.children().last().height());
                         sendHeightToParent();
                     }
                 });
@@ -359,8 +363,7 @@ var runTimer = function() {
 */
 var onNextQuestionClick = function() {
     currentQuestion++;
-    $content.find('.container').addClass('out');
-    _.delay(renderQuestion, 200);
+    renderQuestion();
     return false;
 }
 
@@ -382,11 +385,11 @@ var resizeWindow = function(){
 
     if(images.length > 0){
         $(images).load(function(){
-            $content.attr('style','').css('height', $content.height());
+            $content.attr('style','').css('height', $content.children().last().height());
             sendHeightToParent();
         });
     } else {
-        $content.attr('style','').css('height', $content.height());
+        $content.attr('style','').css('height', $content.children().last().height());
         sendHeightToParent();
     }
 };
