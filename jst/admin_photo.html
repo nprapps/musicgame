@@ -1,10 +1,14 @@
 <% if (photo.get('rendered_file_path')) { %>
-<img class="preview" title="<%= photo.get('file_name') || '' %>" src="<%= photo.get('rendered_file_path') %>"></img>
+<div class="remove-image">
+	<a href="#" class="remove">
+	<img class="preview" title="<%= photo.get('file_name') || '' %>" src="<%= photo.get('rendered_file_path') %>"></img>
+	<span class="remove-icon"><i class="fa fa-times"></i></span></a>
+</div>
 <% } %>
 <div class="input-group">
     <span class="input-group-addon btn btn-default btn-file">
-        <span><i class="fa fa-camera"></i> Upload photo</span>
+        <span><i class="fa fa-plus-square"></i> Image</span>
         <input type="file" name="..." value="<%= photo.get('file_name') || '' %>">
     </span>
-    <a href="#" class="input-group-addon btn btn-default remove">Remove photo</a>
 </div>
+

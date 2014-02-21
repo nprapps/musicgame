@@ -78,17 +78,10 @@ def upload_audio():
         'caption': data.get('caption', ''),
         'file_name': data.get('file_name', ''),
     }
-        
-    # Write file to disk
-    file_type, data = data['file_string'].split(';')
-    prefix, data = data.split(',')
-
-    with open('%s' % audio['file_name'], 'wb') as writefile:
-        writefile.write(base64.b64decode(data))
 
     # Create the model
     audio = models.Audio(**audio)
-    audio.process_audio()
+    audio.process_audio(data['file_string'])
 
     audio.save()
 

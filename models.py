@@ -107,7 +107,7 @@ class Audio(PSQLMODEL):
     def __unicode__(self):
         return self.file_name
 
-    def process_audio(self):
+    def process_audio(self, file_string):
         """
         Processes an uploaded file with `self.file_name`, which
         should exist in the temp directory.
@@ -121,22 +121,40 @@ class Audio(PSQLMODEL):
         # Append the timestamp so we don't clobber similarly named files from the past.
         file_name = '%s-%s' % (timestamp, file_name)
 
+        file_type, data = file_string.split(';')
+        prefix, data = data.split(',')
+
+        decoded_file = base64.b64decode(data)
+
+        if not os.path.exists('/tmp/%s' % app_config.PROJECT_SLUG):
+            os.makedirs('/tmp/%s' % app_config.PROJECT_SLUG)
+
+        with open('/tmp/%s/%s' % (app_config.PROJECT_SLUG, self.file_name), 'wb') as writefile:
+            writefile.write(decoded_file)
+
         # If mp3, convert to wav for processing in ogg.
         if file_extension == ".mp3":
-            os.system('mpg123 -w "%s-temp.wav" "%s"' % (file_name, self.file_name))
-            wav_location = "%s-temp.wav" % file_name
+            os.system('mpg123 -w "/tmp/%s/%s-temp.wav" "/tmp/%s/%s"' % (
+                app_config.PROJECT_SLUG, file_name, app_config.PROJECT_SLUG, self.file_name))
+            wav_location = "/tmp/%s/%s-temp.wav" % (app_config.PROJECT_SLUG, file_name)
 
         # If wav, go directly to processing in ogg.
         if file_extension == ".wav":
-            wav_location = self.file_name
+            wav_location = '/tmp/%s/%s' % (app_config.PROJECT_SLUG, self.file_name)
 
         # Encode an OGA.
-        os.system('oggenc -m 96 -M 96 -o "%s.oga" --downmix "%s"' % (
-            file_name, wav_location))
+        os.system('oggenc -m 96 -M 96 -o "/tmp/%s/%s.oga" --downmix "%s"' % (
+            app_config.PROJECT_SLUG, file_name, wav_location))
 
         # No matter what, process to 96kb mp3.
-        os.system('lame -m m -b 96 "%s" "%s.mp3"' % (
-            wav_location, file_name))
+        os.system('lame -m m -b 96 "%s" "/tmp/%s/%s.mp3"' % (
+            wav_location, app_config.PROJECT_SLUG, file_name))
+
+        # Remove the WAV file now that we've processed it.
+        os.system('rm -f %s' % wav_location)
+
+        # Remove the original file.
+        os.system('rm -f /tmp/%s/%s' % (app_config.PROJECT_SLUG, self.file_name))
 
         # If on production/staging, write the file to S3.
         if app_config.DEPLOYMENT_TARGET in ['staging', 'production']:
@@ -151,7 +169,9 @@ class Audio(PSQLMODEL):
                     bucket = s3.get_bucket(bucket_name)
 
                     k = Key(bucket, s3_path)
-                    k.set_contents_from_filename('%s.%s' % (file_name, extension), headers={
+                    k.set_contents_from_filename('/tmp/%s/%s.%s' % (
+                        app_config.PROJECT_SLUG, file_name, extension),
+                    headers={
                         'Content-Type': content_type,
                         'Cache-Control': 'max-age=5'
                     })
@@ -161,19 +181,30 @@ class Audio(PSQLMODEL):
                     app_config.S3_BUCKETS[0],
                     s3_path))
 
+                # Remove the temp files.
+                os.system('rm -f /tmp/%s/%s.%s' % (
+                    app_config.PROJECT_SLUG, file_name, extension))
+                os.system('rm -f /tmp/%s/%s.%s' % (
+                    app_config.PROJECT_SLUG, file_name, extension))
+
         # If local, write the file to www/live-data/audio.
         else:
             if not os.path.exists('www/live-data/audio'):
                 os.makedirs('www/live-data/audio')
 
-            envoy.run('mv %s.oga www/live-data/audio/' % file_name)
-            envoy.run('mv %s.mp3 www/live-data/audio/' % file_name)
+            envoy.run('mv /tmp/%s/%s.oga www/live-data/audio/' % (
+                app_config.PROJECT_SLUG, file_name))
+            envoy.run('mv /tmp/%s/%s.mp3 www/live-data/audio/' % (
+                app_config.PROJECT_SLUG, file_name))
 
             self.rendered_mp3_path = '/%s/live-data/audio/%s.mp3' % (app_config.PROJECT_SLUG, file_name)
             self.rendered_oga_path = '/%s/live-data/audio/%s.oga' % (app_config.PROJECT_SLUG, file_name)
 
-        # Clean up the nasty bits.
-        os.system('rm -f *.wav *.mp3 *.oga')
+            # Remove the temp files.
+            os.system('rm -f /tmp/%s/%s.oga' % (
+                app_config.PROJECT_SLUG, file_name))
+            os.system('rm -f /tmp/%s/%s.mp3' % (
+                app_config.PROJECT_SLUG, file_name))
 
 class Quiz(PSQLMODEL):
     """
