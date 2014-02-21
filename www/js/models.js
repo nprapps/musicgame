@@ -28,13 +28,12 @@ var QuizCategory = Backbone.Model.extend({
  * Quiz
  */
 var Quiz = Backbone.Model.extend({
-
     questions: null,
     photo: null,
 
     initialize: function(attributes) {
         this.questions = new Questions();
-        this.photo = new Photo();
+        this.setPhoto(new Photo());
 
         if (attributes) {
             if ("questions" in attributes) {
@@ -47,7 +46,7 @@ var Quiz = Backbone.Model.extend({
             }
             
             if ("photo" in attributes) {
-                this.photo = new Photo(attributes.photo);
+                this.setPhoto(new Photo(attributes.photo));
             }
         }
     },
@@ -59,13 +58,24 @@ var Quiz = Backbone.Model.extend({
     toJSON: function() {
         var data = _.clone(this.attributes);
 
-        data['photo'] = (this.photo && this.photo.id) ? this.photo.id : null
-
         delete data['questions'];
         delete data['created'];
         delete data['updated'];
 
         return data;
+    },
+    onPhotoChange: function(photo) {
+        this.set('photo', this.photo.id ? this.photo.id : null);
+    },
+    setPhoto: function(photo) {
+        if (this.photo) {
+            this.photo.off('change', this.onPhotoChange);
+        }
+
+        this.photo = photo;
+        this.onPhotoChange(this.photo);
+
+        this.photo.on('change', this.onPhotoChange);
     },
     getPreviewUrl: function() {
         return '/' + APP_CONFIG['PROJECT_SLUG'] + '/admin/preview.html?quiz=' + this.get('slug');
@@ -76,7 +86,6 @@ var Quiz = Backbone.Model.extend({
  * Question
  */
 var Question = Backbone.Model.extend({
-
     quiz: null,
     choices: null,
     audio: null,
@@ -84,8 +93,8 @@ var Question = Backbone.Model.extend({
 
     initialize: function(attributes) {
         this.choices = new Choices();
-        this.audio = new Audio();
-        this.photo = new Photo();
+        this.setAudio(new Audio());
+        this.setPhoto(new Photo());
 
         if (attributes) {
             if ("choices" in attributes) {
@@ -98,11 +107,11 @@ var Question = Backbone.Model.extend({
             }
 
             if ("audio" in attributes) {
-                this.audio = new Audio(attributes.audio);
+                this.setAudio(new Audio(attributes.audio));
             }
             
             if ("photo" in attributes) {
-                this.photo = new Photo(attributes.photo);
+                this.setPhoto(new Photo(attributes.photo));
             }
         }
     },
@@ -112,35 +121,59 @@ var Question = Backbone.Model.extend({
         return origUrl + (origUrl.charAt(origUrl.length - 1) == '/' ? '' : '/');
     },
     toJSON: function() {
-        var data = _.clone(this.attributes);
+        // TODO: not necessary since these can't be reparented?
+        this.set('quiz', this.quiz.id);
 
-        data['quiz'] = this.quiz.id;
-        data['photo'] = (this.photo && this.photo.id) ? this.photo.id : null
-        data['audio'] = (this.audio && this.audio.id) ? this.audio.id : null
+        var data = _.clone(this.attributes);
 
         delete data['choices'];
 
         return data;
+    },
+    onPhotoChange: function(photo) {
+        this.set('photo', this.photo.id ? this.photo.id : null);
+    },
+    onAudioChange: function(audio) {
+        this.set('audio', this.audio.id ? this.audio.id : null);
+    },
+    setPhoto: function(photo) {
+        if (this.photo) {
+            this.photo.off('change', this.onPhotoChange);
+        }
+
+        this.photo = photo;
+        this.onPhotoChange(this.photo);
+
+        this.photo.on('change', this.onPhotoChange);
+    },
+    setAudio: function(audio) {
+        if (this.audio) {
+            this.audio.off('change', this.onAudioChange);
+        }
+
+        this.audio = audio;
+        this.onAudioChange(this.audio);
+
+        this.audio.on('change', this.onAudioChange);
     }
 });
 
 var Choice = Backbone.Model.extend({
-
     question: null,
     audio: null,
     photo: null,
 
     initialize: function(attributes) {
-        this.audio = new Audio();
-        this.photo = new Photo();
+        this.setAudio(new Audio());
+        this.setPhoto(new Photo());
 
         if (attributes) {
             if ("audio" in attributes) {
-                this.audio = new Audio(attributes.audio);
+                this.setAudio(new Audio(attributes.audio));
             }
-
+            
             if ("photo" in attributes) {
-                this.photo = new Photo(attributes.photo);
+                this.setPhoto(new Photo(attributes.photo));
             }
         }
     },
@@ -157,6 +190,32 @@ var Choice = Backbone.Model.extend({
         data['audio'] = (this.audio && this.audio.id) ? this.audio.id : null
 
         return data;
+    },
+    onPhotoChange: function(photo) {
+        this.set('photo', this.photo.id ? this.photo.id : null);
+    },
+    onAudioChange: function(audio) {
+        this.set('audio', this.audio.id ? this.audio.id : null);
+    },
+    setPhoto: function(photo) {
+        if (this.photo) {
+            this.photo.off('change', this.onPhotoChange);
+        }
+
+        this.photo = photo;
+        this.onPhotoChange(this.photo);
+
+        this.photo.on('change', this.onPhotoChange);
+    },
+    setAudio: function(audio) {
+        if (this.audio) {
+            this.audio.off('change', this.onAudioChange);
+        }
+
+        this.audio = audio;
+        this.onAudioChange(this.audio);
+
+        this.audio.on('change', this.onAudioChange);
     }
 });
 

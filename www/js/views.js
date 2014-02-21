@@ -505,7 +505,7 @@ var PhotoView = Backbone.View.extend({
                 'success': _.bind(function(data) {
                     console.log('Photo created.');
 
-                    this.options.parent.model.photo = new Photo(data);
+                    this.options.parent.model.setPhoto(new Photo(data));
                     this.model = this.options.parent.model.photo;
                     this.render();
 
@@ -521,7 +521,7 @@ var PhotoView = Backbone.View.extend({
     removePhoto: function(e) {
         this.model.destroy();
         this.model = new Photo();
-        this.options.parent.model.photo = this.model;
+        this.options.parent.model.setPhoto(this.model);
 
         // Reset file input via: http://stackoverflow.com/a/13351234/24608
         this.$photoFile.wrap('<form>').closest('form').get(0).reset();
@@ -644,7 +644,7 @@ var AudioView = Backbone.View.extend({
                 'success': _.bind(function(data) {
                     console.log('Audio created.');
 
-                    this.options.parent.model.audio = new Audio(data);
+                    this.options.parent.model.setAudio(new Audio(data));
                     this.model = this.options.parent.model.audio;
                     this.render();
 
@@ -660,7 +660,7 @@ var AudioView = Backbone.View.extend({
     removeAudio: function(e) {
         this.model.destroy();
         this.model = new Audio();
-        this.options.parent.model.audio = this.model;
+        this.options.parent.model.setAudio(this.model);
 
         this.render();
 
