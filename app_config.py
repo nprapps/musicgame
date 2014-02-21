@@ -38,7 +38,7 @@ PRODUCTION_S3_BUCKETS = ['apps.npr.org', 'apps2.npr.org']
 STAGING_S3_BUCKETS = ['stage-apps.npr.org']
 ASSETS_S3_BUCKET = 'assets.apps.npr.org'
 
-PRODUCTION_SERVERS = ['public.nprapps.org']
+PRODUCTION_SERVERS = ['cron.nprapps.org']
 STAGING_SERVERS = ['public-staging.nprapps.org']
 
 # Should code be deployed to the web/cron servers?
@@ -115,6 +115,16 @@ GOOGLE_ANALYTICS = {
     'ACCOUNT_ID': 'UA-5828686-4',
     'DOMAIN': PRODUCTION_S3_BUCKETS[0]
 }
+
+"""
+App-specific
+"""
+QUIZ_CATEGORIES = [
+    'Drum Fill Friday',
+    'Puzzler',
+    'Sole of a Band',
+    'Other'
+]
 
 """
 Utilities

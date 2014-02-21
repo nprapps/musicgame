@@ -212,7 +212,7 @@ class Quiz(PSQLMODEL):
 
     Quizzes have Questions.
     """
-    category = TextField()
+    category = TextField(default='Other')
     slug = TextField()
     title = TextField()
     text = TextField()
@@ -297,7 +297,7 @@ class Quiz(PSQLMODEL):
 
     def slugify(self):
         """
-        Generate a slug for this playground.
+        Generate a slug.
         """
         bits = []
 

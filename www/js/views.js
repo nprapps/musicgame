@@ -1,7 +1,7 @@
 /*
  * Base class for Backbone views.
  */
-var BaseView = Backbone.View.extend({ 
+var BaseView = Backbone.View.extend({
     close: function() {
         this.remove();
         this.unbind();
@@ -90,8 +90,7 @@ var QuizListView = BaseView.extend({
         var properties = {
             title: 'Put Title Here',
             text: 'Put description here.',
-            created: moment().format(),
-            updated: moment().format(),
+            category: 'Other'
         };
 
         return properties;
@@ -133,7 +132,8 @@ var QuizDetailView = BaseView.extend({
         'click #save-quiz': 'saveQuiz',
         'click #add-question': 'addQuestionModel',
         'input .title': 'markNeedsSave',
-        'input .description': 'markNeedsSave'
+        'input .description': 'markNeedsSave',
+        'change .category': 'markNeedsSave'
     },
 
     initialize: function() {
@@ -192,9 +192,18 @@ var QuizDetailView = BaseView.extend({
         var properties = this.serialize();
 
         this.model.save(properties, {
+            skipped: _.bind(function() {
+                console.log('Skipped saving Quiz.');
+                
+                _.each(this.questionViews, function(question) {
+                    question.saveQuestion();
+                });
+
+                this.markSaved();
+            }, this),
             success: _.bind(function() {
                 console.log('Quiz saved.');
-                
+
                 _.each(this.questionViews, function(question) {
                     question.saveQuestion();
                 });
@@ -239,6 +248,7 @@ var QuizDetailView = BaseView.extend({
         var properties = {
             title: this.$('.title').val(),
             text: this.$('.description').val(),
+            category: this.$('.category option:selected').val()
         };
 
         return properties;
@@ -355,15 +365,22 @@ var QuestionView = BaseView.extend({
         var properties = this.serialize();
 
         this.model.save(properties, {
+            skipped: _.bind(function() {
+                console.log('Skipped saving Question.');
+                
+                _.each(this.choiceViews, function(choiceView) {
+                    choiceView.saveChoice();
+                });
+            }, this),
             success: _.bind(function() {
-                console.log('Saved question.');
+                console.log('Saved Question.');
 
                 _.each(this.choiceViews, function(choiceView) {
                     choiceView.saveChoice();
                 });
             }, this),
             error: _.bind(function() {
-                console.log('Error saving question.');
+                console.log('Error saving Question.');
             }, this)
         });
     },
@@ -373,6 +390,8 @@ var QuestionView = BaseView.extend({
     },
 
     close: function() {
+        BaseView.prototype.close.apply(this);
+
         this.audioView.close();
         this.photoView.close();
 
@@ -431,11 +450,14 @@ var ChoiceView = BaseView.extend({
         var properties = this.serialize();
 
         this.model.save(properties, {
+            skipped: _.bind(function() {
+                console.log('Skipped saving Choice.');
+            }, this),
             success: function() {
-                console.log('Saved choice.');
+                console.log('Saved Choice.');
             },
             error: function() {
-                console.log('Failed to save choice.');
+                console.log('Failed to save Choice.');
             }
         });
     },
@@ -463,6 +485,8 @@ var ChoiceView = BaseView.extend({
     },
 
     close: function() {
+        BaseView.prototype.close.apply(this);
+
         this.audioView.close();
         this.photoView.close();
     },
@@ -541,6 +565,8 @@ var PhotoView = BaseView.extend({
     },
 
     removePhoto: function(e) {
+        e.preventDefault();
+
         this.model.destroy({
             success: function() {
                 console.log('Photo destroyed.');
@@ -553,15 +579,9 @@ var PhotoView = BaseView.extend({
         this.model = new Photo();
         this.options.parent.model.setPhoto(this.model);
 
-        // Reset file input via: http://stackoverflow.com/a/13351234/24608
-        this.$photoFile.wrap('<form>').closest('form').get(0).reset();
-        this.$photoFile.unwrap();
-
         this.render();
 
         this.markNeedsSave();
-
-        e.preventDefault();
     },
 
     markNeedsSave: function() {
@@ -684,6 +704,8 @@ var AudioView = BaseView.extend({
     },
 
     removeAudio: function(e) {
+        e.preventDefault();
+
         this.model.destroy({
             success: function() {
                 console.log('Audio destroyed.');
@@ -699,8 +721,6 @@ var AudioView = BaseView.extend({
         this.render();
 
         this.markNeedsSave();
-
-        e.preventDefault();
     },
 
     markNeedsSave: function() {
@@ -708,6 +728,8 @@ var AudioView = BaseView.extend({
     },
 
     close: function() {
+        BaseView.prototype.close.apply(this);
+
         this.$audioPlayer.jPlayer('destroy');
     },
 

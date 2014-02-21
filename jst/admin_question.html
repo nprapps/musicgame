@@ -1,6 +1,6 @@
 <div class="row question-settings">
 	<div class="col-md-12">
-		<h5>1</h5>
+        <h5>Question #<%= question.collection.indexOf(question) + 1 %></h5>
 	     <a class="btn btn-info rm-question"><i class="fa fa-times"></i></a>
 	</div>
 </div><!--/row -->
@@ -12,14 +12,26 @@
 	</div> <!--/row -->
 	
 	<div class="question-files attach row">
-		<div class="col-md-3">
-	        <div class="audio">
+		<div class="col-md-12">
+    	<div class="attach-table">
+    		<div class="attach-table-row">
+    			<div class="attach-table-column">
+			    	<h6>Attach media:
+				    	<em>(optional)</em>
+			    	</h6>
+    			</div>
+    			<div class="attach-table-column">
+			        <div class="audio">
+			        </div>
+    			</div>
+		        
+		        <div class="attach-table-column">
+			        <div class="photo">
+			        </div>
+		        </div>
 	        </div>
-	    </div>
-	    <div class="col-md-7">
-	        <div class="photo">
-	        </div>
-	    </div>
+    	</div>
+    </div>
 	</div><!--/row -->
 
 	<div class="question-info row">

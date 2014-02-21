@@ -1,4 +1,47 @@
 /*
+ * Base model class that tracks when a model has changed
+ * and avoids syncing if it hasn't.
+ *
+ * When calling save on a subclass of this Model you should
+ * pass a "skipped" callback in addition to "success" and
+ * "error".
+ */
+var ChangeTrackingModel = Backbone.Model.extend({
+    initialize: function(attributes) {
+        this.needsSave = this.isNew();
+        
+        this.on('change', this.onChange);
+    },
+  
+    onChange: function() {
+        this.needsSave = true;
+    },
+
+    sync: function(method, model, options) {
+        if (method === 'create' || method === 'update') {
+            if (!this.needsSave) {
+                if (options.skipped) {
+                    options.skipped();
+                }
+
+                return;
+            }
+        }
+
+        options = options || {};
+        
+        var success = options.success;
+        
+        options.success = function(resp) {
+            success && success(resp);
+            model.needsSave = false;
+        };
+        
+        return Backbone.sync(method, model, options);
+    } 
+});
+
+/*
  * RelatedPhotoMixin
  */
 var RelatedPhotoMixin = {
@@ -11,9 +54,11 @@ var RelatedPhotoMixin = {
             }
         }
     },
+
     onPhotoChange: function(photo) {
         this.set('photo', this.photo.id ? this.photo.id : null);
     },
+
     setPhoto: function(photo) {
         if (this.photo) {
             this.photo.off('change', this.onPhotoChange);
@@ -39,9 +84,11 @@ var RelatedAudioMixin = {
             }
         }
     },
+
     onAudioChange: function(audio) {
         this.set('audio', this.audio.id ? this.audio.id : null);
     },
+
     setAudio: function(audio) {
         if (this.audio) {
             this.audio.off('change', this.onAudioChange);
@@ -57,10 +104,12 @@ var RelatedAudioMixin = {
 /*
  * Quiz
  */
-var Quiz = Backbone.Model.extend({
+var Quiz = ChangeTrackingModel.extend({
     name: 'Quiz',
 
     initialize: function(attributes) {
+        ChangeTrackingModel.prototype.initialize.apply(this);  
+
         this.questions = new Questions();
 
         if (attributes) {
@@ -74,11 +123,13 @@ var Quiz = Backbone.Model.extend({
             }
         }
     },
+
     url: function() {
         // Rewrite urls to include a trailing slash so flask doesn't freak out
         var origUrl = Backbone.Model.prototype.url.call(this);
         return origUrl + (origUrl.charAt(origUrl.length - 1) == '/' ? '' : '/');
     },
+
     toJSON: function() {
         var data = _.clone(this.attributes);
 
@@ -88,6 +139,7 @@ var Quiz = Backbone.Model.extend({
 
         return data;
     },
+
     getPreviewUrl: function() {
         return '/' + APP_CONFIG['PROJECT_SLUG'] + '/admin/preview.html?quiz=' + this.get('slug');
     }
@@ -98,10 +150,12 @@ Cocktail.mixin(Quiz, RelatedPhotoMixin);
 /*
  * Question
  */
-var Question = Backbone.Model.extend({
+var Question = ChangeTrackingModel.extend({
     name: 'Question',
 
     initialize: function(attributes) {
+        ChangeTrackingModel.prototype.initialize.apply(this);  
+
         this.choices = new Choices();
 
         if (attributes) {
@@ -115,11 +169,13 @@ var Question = Backbone.Model.extend({
             }
         }
     },
+
     url: function() {
         // Rewrite urls to include a trailing slash so flask doesn't freak out
         var origUrl = Backbone.Model.prototype.url.call(this);
         return origUrl + (origUrl.charAt(origUrl.length - 1) == '/' ? '' : '/');
-    },
+    }, 
+
     toJSON: function() {
         var data = _.clone(this.attributes);
 
@@ -131,14 +187,19 @@ var Question = Backbone.Model.extend({
 
 Cocktail.mixin(Question, RelatedPhotoMixin, RelatedAudioMixin);
 
-var Choice = Backbone.Model.extend({
+var Choice = ChangeTrackingModel.extend({
     name: 'Choice',
+
+    initialize: function() {
+        ChangeTrackingModel.prototype.initialize.apply(this);  
+    },
 
     url: function() {
         // Rewrite urls to include a trailing slash so flask doesn't freak out
         var origUrl = Backbone.Model.prototype.url.call(this);
         return origUrl + (origUrl.charAt(origUrl.length - 1) == '/' ? '' : '/');
     },
+
     toJSON: function() {
         var data = _.clone(this.attributes);
 
@@ -152,12 +213,17 @@ var Choice = Backbone.Model.extend({
 
 Cocktail.mixin(Choice, RelatedPhotoMixin, RelatedAudioMixin);
 
-var Audio = Backbone.Model.extend({
+var Audio = ChangeTrackingModel.extend({
     name: 'Audio',
+
+    initialize: function() {
+        ChangeTrackingModel.prototype.initialize.apply(this);  
+    },
 
     url: function() {
         return '/' + APP_CONFIG['PROJECT_SLUG'] + '/api/audio/' + this.id + '/';
     },
+
     toJSON: function() {
         var data = _.clone(this.attributes);
 
@@ -165,12 +231,17 @@ var Audio = Backbone.Model.extend({
     }
 });
 
-var Photo = Backbone.Model.extend({
+var Photo = ChangeTrackingModel.extend({
     name: 'Photo',
+
+    initialize: function() {
+        ChangeTrackingModel.prototype.initialize.apply(this);  
+    },
 
     url: function() {
         return '/' + APP_CONFIG['PROJECT_SLUG'] + '/api/photo/' + this.id + '/';
     },
+
     toJSON: function() {
         var data = _.clone(this.attributes);
 

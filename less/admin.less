@@ -133,6 +133,7 @@
 	margin: 0 20px;
 	padding: 10px;
 	background-color: #dfdfdf;
+	border-top: 2px solid #ccc;
 	
 	h5 {
 		font-size: 16px;
@@ -223,20 +224,37 @@
 /* audio and photo select */
 .attach {
 	padding-bottom: 20px;
-
 	
+	.attach-table {display: table; margin-left: 50px;}
+	.attach-table-row {display: table-row;}
+	.attach-table-column {
+		display: table-cell;
+		vertical-align: top;
+		padding-right: 20px;
+		}
 	
-	.btn {
-		border: none;
-		background-color: transparent;
-		text-align: left;
+	h6 {
+		font-weight: bold;
 		font-size: 13px;
+		margin: 0;
+		em {
+			display: block; 
+			font-size: 12px; 
+			font-weight: normal;
+			padding-top: 5px;
+		}
+		margin-bottom: 10px;
+	}
+
+	.input-group {
+		max-width: 100px;
+		cursor: pointer;
 	}
 	
-	
-	
-	.fileinput-new {
-		
+	.btn {
+		border: 1px solid #ccc;
+		font-size: 13px;
+		background-color: #d5d5d5;
 	}
 	
 	.photo-select {
@@ -248,19 +266,19 @@
 	}
 
 	.audio {
+		
 		.jp-controls {
 			position: relative;
 		}
 		
 		.audio-file-name {
-			position: absolute;
-			top: 0; 
-			left:29px;
+			margin: 0 29px;
 			height: 30px;
 			background-color: #f6f6f6;
 			display: inline-block;
 			padding: 5px 8px;
 			border: 1px solid #ddd;
+			font-size: 13px;
 			
 			b {
 				font-weight: normal;
@@ -269,8 +287,10 @@
 			}
 		}
 		.a-btn {
+			position: absolute;
+			top: 0; 
+			left:0;
 			background-color: #fff;
-			position: relative;
 			width: 30px;
 			height: 30px;
 			display: inline-block;
@@ -289,8 +309,6 @@
 			left: 6px;
 		}
 	
-	
-	
 		.btn-file > input {
 			    height: 20px;
 			    right: auto;
@@ -304,17 +322,53 @@
 		.form-control {
 			display: none;
 		}
-		.audio-file-name {
-			font-size: 13px;
-			padding-left: 5px;
+		.audio-remove {
+			position: absolute;
+			top: 0;
+			right: 0;
+			font-size: 15px;
+			a {
+				display: inline-block;
+				padding-top: 5px;
+				padding-left: 8px;
+				width: 30px;
+				height: 30px;
+				color: #fff;
+				background-color: #bbb;
+				&:hover {
+					background-color: #d2322d;
+				}
+			}
+			
 		}
+		
 	}
 	
 	.photo {
+		
+		.remove-image {
+			position: relative;
+			
+		}
+	
+		.remove-icon {
+			position: absolute;
+			top: 0;
+			right: 0;
+			color: #fff;
+			background-color: #d2322d;
+			font-size: 12px;
+			padding: 0 5px;
+		}
+		
+		.btn-file > input {
+			left: 0;
+		}
+		
 	    .preview {
-	        max-width: 100px;
+	        max-width: 70px;
 	        height: auto;
-	        float: left;
+	        
 	    }
 	}
 	
