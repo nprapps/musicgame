@@ -1,39 +1,67 @@
-var QuizCategory = Backbone.Model.extend({
-
-    quizzes: null,
-
+/*
+ * RelatedPhotoMixin
+ */
+var RelatedPhotoMixin = {
     initialize: function(attributes) {
-        this.quizzes = new Quiz();
+        this.setPhoto(new Photo());
 
-        if (attributes) {
-            if ("quizzes" in attributes) {
-                this.quizzes.add(attributes.quizzes);
+       if (attributes) {
+            if ("photo" in attributes) {
+                this.setPhoto(new Photo(attributes.photo));
             }
         }
     },
-    url: function() {
-        // Rewrite urls to include a trailing slash so flask doesn't freak out
-        var origUrl = Backbone.Model.prototype.url.call(this);
-        return origUrl + (origUrl.charAt(origUrl.length - 1) == '/' ? '' : '/');
+    onPhotoChange: function(photo) {
+        this.set('photo', this.photo.id ? this.photo.id : null);
     },
-    toJSON: function() {
-        var data = _.clone(this.attributes);
+    setPhoto: function(photo) {
+        if (this.photo) {
+            this.photo.off('change', this.onPhotoChange);
+        }
 
-        return data;
+        this.photo = photo;
+        this.onPhotoChange(this.photo);
+
+        this.photo.on('change', this.onPhotoChange);
     }
-});
+}
 
+/*
+ * RelatedAudioMixin
+ */
+var RelatedAudioMixin = {
+    initialize: function(attributes) {
+        this.setAudio(new Audio());
+
+        if (attributes) {
+            if ("audio" in attributes) {
+                this.setAudio(new Audio(attributes.audio));
+            }
+        }
+    },
+    onAudioChange: function(audio) {
+        this.set('audio', this.audio.id ? this.audio.id : null);
+    },
+    setAudio: function(audio) {
+        if (this.audio) {
+            this.audio.off('change', this.onAudioChange);
+        }
+
+        this.audio = audio;
+        this.onAudioChange(this.audio);
+
+        this.audio.on('change', this.onAudioChange);
+    }
+}
 
 /*
  * Quiz
  */
 var Quiz = Backbone.Model.extend({
-    questions: null,
-    photo: null,
+    name: 'Quiz',
 
     initialize: function(attributes) {
         this.questions = new Questions();
-        this.setPhoto(new Photo());
 
         if (attributes) {
             if ("questions" in attributes) {
@@ -43,10 +71,6 @@ var Quiz = Backbone.Model.extend({
 
                     this.questions.add(question);
                 }, this));
-            }
-            
-            if ("photo" in attributes) {
-                this.setPhoto(new Photo(attributes.photo));
             }
         }
     },
@@ -64,37 +88,21 @@ var Quiz = Backbone.Model.extend({
 
         return data;
     },
-    onPhotoChange: function(photo) {
-        this.set('photo', this.photo.id ? this.photo.id : null);
-    },
-    setPhoto: function(photo) {
-        if (this.photo) {
-            this.photo.off('change', this.onPhotoChange);
-        }
-
-        this.photo = photo;
-        this.onPhotoChange(this.photo);
-
-        this.photo.on('change', this.onPhotoChange);
-    },
     getPreviewUrl: function() {
         return '/' + APP_CONFIG['PROJECT_SLUG'] + '/admin/preview.html?quiz=' + this.get('slug');
     }
 });
 
+Cocktail.mixin(Quiz, RelatedPhotoMixin);
+
 /*
  * Question
  */
 var Question = Backbone.Model.extend({
-    quiz: null,
-    choices: null,
-    audio: null,
-    photo: null,
+    name: 'Question',
 
     initialize: function(attributes) {
         this.choices = new Choices();
-        this.setAudio(new Audio());
-        this.setPhoto(new Photo());
 
         if (attributes) {
             if ("choices" in attributes) {
@@ -105,14 +113,6 @@ var Question = Backbone.Model.extend({
                     this.choices.add(choice);
                 }, this));
             }
-
-            if ("audio" in attributes) {
-                this.setAudio(new Audio(attributes.audio));
-            }
-            
-            if ("photo" in attributes) {
-                this.setPhoto(new Photo(attributes.photo));
-            }
         }
     },
     url: function() {
@@ -121,62 +121,19 @@ var Question = Backbone.Model.extend({
         return origUrl + (origUrl.charAt(origUrl.length - 1) == '/' ? '' : '/');
     },
     toJSON: function() {
-        // TODO: not necessary since these can't be reparented?
-        this.set('quiz', this.quiz.id);
-
         var data = _.clone(this.attributes);
 
         delete data['choices'];
 
         return data;
-    },
-    onPhotoChange: function(photo) {
-        this.set('photo', this.photo.id ? this.photo.id : null);
-    },
-    onAudioChange: function(audio) {
-        this.set('audio', this.audio.id ? this.audio.id : null);
-    },
-    setPhoto: function(photo) {
-        if (this.photo) {
-            this.photo.off('change', this.onPhotoChange);
-        }
-
-        this.photo = photo;
-        this.onPhotoChange(this.photo);
-
-        this.photo.on('change', this.onPhotoChange);
-    },
-    setAudio: function(audio) {
-        if (this.audio) {
-            this.audio.off('change', this.onAudioChange);
-        }
-
-        this.audio = audio;
-        this.onAudioChange(this.audio);
-
-        this.audio.on('change', this.onAudioChange);
     }
 });
 
+Cocktail.mixin(Question, RelatedPhotoMixin, RelatedAudioMixin);
+
 var Choice = Backbone.Model.extend({
-    question: null,
-    audio: null,
-    photo: null,
+    name: 'Choice',
 
-    initialize: function(attributes) {
-        this.setAudio(new Audio());
-        this.setPhoto(new Photo());
-
-        if (attributes) {
-            if ("audio" in attributes) {
-                this.setAudio(new Audio(attributes.audio));
-            }
-            
-            if ("photo" in attributes) {
-                this.setPhoto(new Photo(attributes.photo));
-            }
-        }
-    },
     url: function() {
         // Rewrite urls to include a trailing slash so flask doesn't freak out
         var origUrl = Backbone.Model.prototype.url.call(this);
@@ -190,36 +147,14 @@ var Choice = Backbone.Model.extend({
         data['audio'] = (this.audio && this.audio.id) ? this.audio.id : null
 
         return data;
-    },
-    onPhotoChange: function(photo) {
-        this.set('photo', this.photo.id ? this.photo.id : null);
-    },
-    onAudioChange: function(audio) {
-        this.set('audio', this.audio.id ? this.audio.id : null);
-    },
-    setPhoto: function(photo) {
-        if (this.photo) {
-            this.photo.off('change', this.onPhotoChange);
-        }
-
-        this.photo = photo;
-        this.onPhotoChange(this.photo);
-
-        this.photo.on('change', this.onPhotoChange);
-    },
-    setAudio: function(audio) {
-        if (this.audio) {
-            this.audio.off('change', this.onAudioChange);
-        }
-
-        this.audio = audio;
-        this.onAudioChange(this.audio);
-
-        this.audio.on('change', this.onAudioChange);
     }
 });
 
+Cocktail.mixin(Choice, RelatedPhotoMixin, RelatedAudioMixin);
+
 var Audio = Backbone.Model.extend({
+    name: 'Audio',
+
     url: function() {
         return '/' + APP_CONFIG['PROJECT_SLUG'] + '/api/audio/' + this.id + '/';
     },
@@ -231,6 +166,8 @@ var Audio = Backbone.Model.extend({
 });
 
 var Photo = Backbone.Model.extend({
+    name: 'Photo',
+
     url: function() {
         return '/' + APP_CONFIG['PROJECT_SLUG'] + '/api/photo/' + this.id + '/';
     },
