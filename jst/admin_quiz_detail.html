@@ -5,7 +5,7 @@
     		<h2>Quiz</h2>
 
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-md-12">
                     <div class="form-group">
                         <label for="title" class="col-sm-2 control-label">Title</label>
                         <div class="col-sm-10">
@@ -15,7 +15,7 @@
                 </div>
             </div><!--/row-->
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-md-12">
                     <div class="form-group">
                         <label for="category" class="col-sm-2 control-label">Category</label>
                         <div class="col-sm-10">
@@ -33,7 +33,7 @@
                 </div>
             </div><!--/row-->
 	        <div class="row">
-	            <div class="col-lg-12">
+	            <div class="col-md-12">
 	                <div class="form-group">
 	                    <label for="description" class="col-sm-2 control-label">Description</label>
 	                    <div class="col-sm-10">
@@ -43,17 +43,26 @@
 	            </div>
 	        </div><!--/row-->
             <div class="row">
-	            <div class="col-lg-12">
+	            <div class="col-md-12">
 	                <div class="form-group attach">
 	                    <label for="photo" class="col-sm-2 control-label">Cover photo</label>
 	                    <div class="col-sm-10">
-                            <div class="photo">
-                            </div>
-	                    </div>
-	                </div>
-	            </div>
+                            <div class="attach-table">
+					    		<div class="attach-table-row">
+							        <div class="attach-table-column">
+								        <div class="photo">
+								        </div>
+							        </div><!--/col-->
+						        </div><!--/tr-->
+					    	</div><!--/t-->
+	                    </div><!--/col10-->
+	                </div><!--/fg-->
+	            </div><!--/12-->
             </div><!--/row -->
 		</div><!--/game-attributes-->
+		
+		
+		
 
 
         <div class="questions">
@@ -62,13 +71,13 @@
     </form>
 
     <div class="row question-add">
-	    <div class="col-lg-12 btns">
+	    <div class="col-md-12 btns">
 	        <a class="btn btn-success" id="add-question"><i class="fa fa-plus"></i> Add Question</a>
 	    </div>
 	</div><!--/row -->
 </div><!--/container -->
 <div class="toolbelt row">
-    <div class="col-lg-12 btns">
+    <div class="col-md-12 btns">
         <button class="btn btn-primary" id="save-quiz" disabled="disabled"><i class="fa fa-save"></i> Saved</button>
         <a class="btn btn-info" href="/musicgame/admin/"><i class="fa fa-list"></i> Back to quiz list</a>
     </div>

@@ -135,6 +135,8 @@
 	background-color: #dfdfdf;
 	border-top: 2px solid #ccc;
 	
+	.attach-table { margin-left: 45px; }
+	
 	h5 {
 		font-size: 16px;
 		text-transform: uppercase;
@@ -225,12 +227,12 @@
 .attach {
 	padding-bottom: 20px;
 	
-	.attach-table {display: table; margin-left: 50px;}
+	.attach-table {display: table;}
 	.attach-table-row {display: table-row;}
 	.attach-table-column {
 		display: table-cell;
 		vertical-align: top;
-		padding-right: 20px;
+		padding-right: 30px;
 		}
 	
 	h6 {
@@ -255,6 +257,12 @@
 		border: 1px solid #ccc;
 		font-size: 13px;
 		background-color: #d5d5d5;
+		
+		&:hover {
+			color: #eee;
+			background-color: #5cb85c;
+
+		}
 	}
 	
 	.photo-select {
@@ -266,6 +274,7 @@
 	}
 
 	.audio {
+		position: relative;
 		
 		.jp-controls {
 			position: relative;
@@ -345,6 +354,7 @@
 	}
 	
 	.photo {
+		position: relative;
 		
 		.remove-image {
 			position: relative;
@@ -366,10 +376,100 @@
 		}
 		
 	    .preview {
-	        max-width: 70px;
+	        max-width: 90px;
 	        height: auto;
 	        
 	    }
+	}
+	
+	/*loading animation*/
+	
+	@-webkit-keyframes expand {
+	  0% {
+	    -webkit-transform: scale(0);
+	  }
+	
+	  50% {
+	    -webkit-transform: scale(1);
+	  }
+	
+	  100% {
+	    z-index: 1;
+	  }
+	}
+	@-moz-keyframes expand {
+	  0% {
+	    -moz-transform: scale(0);
+	  }
+	
+	  50% {
+	    -moz-transform: scale(1);
+	  }
+	
+	  100% {
+	    z-index: 1;
+	  }
+	}
+	@-o-keyframes expand {
+	  0% {
+	    -o-transform: scale(0);
+	  }
+	
+	  50% {
+	    -o-transform: scale(1);
+	  }
+	
+	  100% {
+	    z-index: 1;
+	  }
+	}
+	@keyframes expand {
+	  0% {
+	    transform: scale(0);
+	  }
+	
+	  50% {
+	    transform: scale(1);
+	  }
+	
+	  100% {
+	    z-index: 1;
+	  }
+	}
+	.loader {
+	  position: absolute;
+	  left: 10px;
+	  top: 10px;
+	  margin: -10px 0 0 -10px;
+	  background-color: white;
+	  border-radius: 50%;
+	  box-shadow: 0 0 0 3.33333px #141414;
+	  width: 20px;
+	  height: 20px;
+	}
+	.loader:before, .loader:after {
+	  content: "";
+	  position: absolute;
+	  left: 50%;
+	  top: 50%;
+	  display: block;
+	  margin: -11px 0 0 -11px;
+	  border-radius: 50%;
+	  z-index: 2;
+	  width: 22px;
+	  height: 22px;
+	}
+	.loader:before {
+	  background-color: #141414;
+	  -webkit-animation: expand 1.6s linear infinite both;
+	  -moz-animation: expand 1.6s linear infinite both;
+	  animation: expand 1.6s linear infinite both;
+	}
+	.loader:after {
+	  background-color: white;
+	  -webkit-animation: expand 1.6s linear 0.8s infinite both;
+	  -moz-animation: expand 1.6s linear 0.8s infinite both;
+	  animation: expand 1.6s linear 0.8s infinite both;
 	}
 	
 }
