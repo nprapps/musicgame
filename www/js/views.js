@@ -51,6 +51,7 @@ var QuizListView = BaseView.extend({
             }
         });
     },
+
     render: function() {
         this.$el.empty();
 
@@ -62,12 +63,14 @@ var QuizListView = BaseView.extend({
             this.addQuizView(quiz);
         }, this));
     },
+
     addQuizView: function(quiz) {
         var quizView = new QuizView({model: quiz});
         quizView.render();
 
         this.$quizzes.append(quizView.el);
     },
+
     addQuizModel: function() {
         var properties = this.serialize();
 
@@ -82,6 +85,7 @@ var QuizListView = BaseView.extend({
             }
         });
     },
+
     serialize: function() {
         var properties = {
             title: 'Put Title Here',
@@ -247,6 +251,7 @@ var QuizDetailView = BaseView.extend({
 var QuestionView = BaseView.extend({
     tagName: 'div',
     className: 'question',
+
     events: {
         'click .add-choice': 'addChoiceModel',
         'click .rm-question': 'close',
