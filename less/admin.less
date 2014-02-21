@@ -223,20 +223,36 @@
 /* audio and photo select */
 .attach {
 	padding-bottom: 20px;
-
 	
+	.attach-table {display: table;}
+	.attach-table-row {display: table-row;}
+	.attach-table-column {
+		display: table-cell;
+		vertical-align: top;
+		padding-right: 20px;
+		}
 	
-	.btn {
-		border: none;
-		background-color: transparent;
-		text-align: left;
+	h6 {
+		font-weight: bold;
 		font-size: 13px;
+		margin: 0;
+		em {
+			display: block; 
+			font-size: 12px; 
+			font-weight: normal;
+			padding-top: 5px;
+		}
+		margin-bottom: 10px;
+	}
+
+	.input-group {
+		max-width: 100px;
+		cursor: pointer;
 	}
 	
-	
-	
-	.fileinput-new {
-		
+	.btn {
+		border-right: 1px solid #ccc;
+		font-size: 13px;
 	}
 	
 	.photo-select {
@@ -248,6 +264,8 @@
 	}
 
 	.audio {
+		.remove {display: none;}
+		
 		.jp-controls {
 			position: relative;
 		}
@@ -289,8 +307,6 @@
 			left: 6px;
 		}
 	
-	
-	
 		.btn-file > input {
 			    height: 20px;
 			    right: auto;
@@ -311,10 +327,30 @@
 	}
 	
 	.photo {
+		
+		.remove-image {
+			position: relative;
+			
+		}
+	
+		.remove-icon {
+			position: absolute;
+			top: 0;
+			right: 0;
+			color: #fff;
+			background-color: #d2322d;
+			font-size: 12px;
+			padding: 0 5px;
+		}
+		
+		.btn-file > input {
+			left: 0;
+		}
+		
 	    .preview {
-	        max-width: 100px;
+	        max-width: 70px;
 	        height: auto;
-	        float: left;
+	        
 	    }
 	}
 	

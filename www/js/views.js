@@ -193,6 +193,15 @@ var QuizDetailView = BaseView.extend({
         var properties = this.serialize();
 
         this.model.save(properties, {
+            skipped: _.bind(function() {
+                console.log('Skipped saving Quiz.');
+                
+                _.each(this.questionViews, function(question) {
+                    question.saveQuestion();
+                });
+
+                this.markSaved();
+            }, this),
             success: _.bind(function() {
                 console.log('Quiz saved.');
 
@@ -357,15 +366,22 @@ var QuestionView = BaseView.extend({
         var properties = this.serialize();
 
         this.model.save(properties, {
+            skipped: _.bind(function() {
+                console.log('Skipped saving Question.');
+                
+                _.each(this.choiceViews, function(choiceView) {
+                    choiceView.saveChoice();
+                });
+            }, this),
             success: _.bind(function() {
-                console.log('Saved question.');
+                console.log('Saved Question.');
 
                 _.each(this.choiceViews, function(choiceView) {
                     choiceView.saveChoice();
                 });
             }, this),
             error: _.bind(function() {
-                console.log('Error saving question.');
+                console.log('Error saving Question.');
             }, this)
         });
     },
@@ -375,6 +391,8 @@ var QuestionView = BaseView.extend({
     },
 
     close: function() {
+        BaseView.prototype.close.apply(this);
+
         this.audioView.close();
         this.photoView.close();
 
@@ -433,11 +451,14 @@ var ChoiceView = BaseView.extend({
         var properties = this.serialize();
 
         this.model.save(properties, {
+            skipped: _.bind(function() {
+                console.log('Skipped saving Choice.');
+            }, this),
             success: function() {
-                console.log('Saved choice.');
+                console.log('Saved Choice.');
             },
             error: function() {
-                console.log('Failed to save choice.');
+                console.log('Failed to save Choice.');
             }
         });
     },
@@ -465,6 +486,8 @@ var ChoiceView = BaseView.extend({
     },
 
     close: function() {
+        BaseView.prototype.close.apply(this);
+
         this.audioView.close();
         this.photoView.close();
     },
@@ -710,6 +733,8 @@ var AudioView = BaseView.extend({
     },
 
     close: function() {
+        BaseView.prototype.close.apply(this);
+
         this.$audioPlayer.jPlayer('destroy');
     },
 
