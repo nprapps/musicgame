@@ -183,7 +183,7 @@ var QuizDetailView = Backbone.View.extend({
     },
 
     addQuestionModel: function() {
-        var question = new Question();
+        var question = new Question({ quiz: this.model.id });
 
         this.model.questions.add(question);
     },

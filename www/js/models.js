@@ -117,9 +117,6 @@ var Question = Backbone.Model.extend({
         return origUrl + (origUrl.charAt(origUrl.length - 1) == '/' ? '' : '/');
     },
     toJSON: function() {
-        // TODO: not necessary since these can't be reparented?
-        this.set('quiz', this.quiz.id);
-
         var data = _.clone(this.attributes);
 
         delete data['choices'];
