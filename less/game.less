@@ -68,9 +68,24 @@ h1,h2,h3,h4,h5,h6 {
 
 #content {
 	padding-top: @grid-gutter-width / 2;
+
 	.container {
-		// padding: 0;
-		
+		.end& {
+			.transition(all 0.4s ease);
+			.translate(0,-100%);
+
+			&.in {
+				.translate(0,0);
+			}
+		}
+	}
+
+	.question-wrapper {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+
 		.question& {
 			.transition(all 0.2s ease);
 			.translate(100%,0);
@@ -81,15 +96,6 @@ h1,h2,h3,h4,h5,h6 {
 
 			&.out {
 				.translate(-100%,0);
-			}
-		}
-
-		.end& {
-			.transition(all 0.4s ease);
-			.translate(0,-100%);
-
-			&.in {
-				.translate(0,0);
 			}
 		}
 	}
@@ -165,7 +171,7 @@ h1,h2,h3,h4,h5,h6 {
 		height: 44px;
 		line-height: 44px;
 		padding: 0 @grid-gutter-width / 2;
-		margin-top: -@grid-gutter-width / 2;
+		// margin-top: -@grid-gutter-width / 2;
 		margin-bottom: @line-height-computed;
 	}
 

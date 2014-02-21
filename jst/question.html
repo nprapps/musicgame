@@ -1,42 +1,44 @@
-<% if (timer === 'true'){ %>
-<div class="progress"><div class="bar" style="width: 0%;"></div></div>
-<% } %>
-<h3 class="progress-header">Question <%= questionNumber %>/<%= quizLength %></h3>
-<button class="next-question btn btn-large btn-primary">Next Question</button>
-<button class="show-score btn btn-large btn-primary">Show My Score</button>
-<div class="container">
-	<% if (audio){ %>
-	<div id="player"></div>
-	<div id="jp_container_1" class="jp-audio">
-        <div class="jp-controls">
-            <a href="javascript:;" class="jp-play nav-btn" tabindex="1" title="play"><i class="fa fa-fw fa-play"></i></i></a>
-            <a href="javascript:;" class="jp-pause nav-btn" tabindex="1" style="display: none;" title="pause"><i class="fa fa-fw fa-pause"></i></a>
-        </div>
-	</div> <!-- end .jp-audio -->
+<div class="question-wrapper question-<%= questionNumber %>">
+	<% if (timer === 'true'){ %>
+	<div class="progress"><div class="bar" style="width: 0%;"></div></div>
 	<% } %>
-	<h1 class="question-text"><%= text %></h1>
-	<% if (after_text){ %>
-	<div class="after-text">
-		<h3>Quizmaster says:</h3>
-		<p><%= after_text %></p>
-	</div>
-	<% } %>
-	<ul class="answers">
-	<% _.each(_.shuffle(choices), function(choice){ %>
-		<% if (choice.text) { %>
-			<li<% if (choice.photo) { %> class="has-cover"<% } %>>
-				<a href="#">
-				<% if (choice.photo) { %>
-					<div class="cover">
-						<img class="img-responsive" src="<%= choice['photo']['rendered_file_path'] %>">
-					</div>
-				<% } %>
-					<div class="answer"><%= choice.text %></div>
-				</a>
-			</li>
-		<% } else { %>
-			<li><a href="#"><div class="answer"><%= choice %></div></a></li>
+	<h3 class="progress-header">Question <%= questionNumber %>/<%= quizLength %></h3>
+	<button class="next-question btn btn-large btn-primary">Next Question</button>
+	<button class="show-score btn btn-large btn-primary">Show My Score</button>
+	<div class="container">
+		<% if (audio){ %>
+		<div class="player"></div>
+		<div id="jp_container_1" class="jp-audio">
+	        <div class="jp-controls">
+	            <a href="javascript:;" class="jp-play nav-btn" tabindex="1" title="play"><i class="fa fa-fw fa-play"></i></i></a>
+	            <a href="javascript:;" class="jp-pause nav-btn" tabindex="1" style="display: none;" title="pause"><i class="fa fa-fw fa-pause"></i></a>
+	        </div>
+		</div> <!-- end .jp-audio -->
 		<% } %>
-	<% }); %>
-	</ul>
+		<h1 class="question-text"><%= text %></h1>
+		<% if (after_text){ %>
+		<div class="after-text">
+			<h3>Quizmaster says:</h3>
+			<p><%= after_text %></p>
+		</div>
+		<% } %>
+		<ul class="answers">
+		<% _.each(_.shuffle(choices), function(choice){ %>
+			<% if (choice.text) { %>
+				<li<% if (choice.photo) { %> class="has-cover"<% } %>>
+					<a href="#">
+					<% if (choice.photo) { %>
+						<div class="cover">
+							<img class="img-responsive" src="<%= choice['photo']['rendered_file_path'] %>">
+						</div>
+					<% } %>
+						<div class="answer"><%= choice.text %></div>
+					</a>
+				</li>
+			<% } else { %>
+				<li><a href="#"><div class="answer"><%= choice %></div></a></li>
+			<% } %>
+		<% }); %>
+		</ul>
+	</div>
 </div>
