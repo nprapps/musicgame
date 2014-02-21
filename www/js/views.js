@@ -91,7 +91,15 @@ var QuizView = Backbone.View.extend({
         this.$el.append(JST.admin_quizzes({'quiz': this.model}));
     },
     close: function() {
-        this.model.destroy();
+        this.model.destroy({
+            success: function() {
+                console.log('Quiz destroyed.');
+            },
+            error: function() {
+                console.log('Failed to destroy Quiz.');
+            }
+        });
+
         this.remove();
         this.unbind();
     }
@@ -354,7 +362,15 @@ var QuestionView = Backbone.View.extend({
             choiceView.close();
         });
 
-        this.model.destroy();
+        this.model.destroy({
+            success: function() {
+                console.log('Question destroyed.');
+            },
+            error: function() {
+                console.log('Failed to destroy Question.');
+            }
+        });
+
         this.remove();
         this.unbind();
     },
@@ -442,7 +458,15 @@ var ChoiceView = Backbone.View.extend({
         this.audioView.close();
         this.photoView.close();
 
-        this.model.destroy();
+        this.model.destroy({
+            success: function() {
+                console.log('Choice destroyed.');
+            },
+            error: function() {
+                console.log('Failed to destroy Choice.');
+            }
+        });
+
         this.remove();
         this.unbind();
     },
@@ -519,7 +543,15 @@ var PhotoView = Backbone.View.extend({
     },
 
     removePhoto: function(e) {
-        this.model.destroy();
+        this.model.destroy({
+            success: function() {
+                console.log('Photo destroyed.');
+            },
+            error: function() {
+                console.log('Failed to destroy Photo.');
+            }
+        });
+
         this.model = new Photo();
         this.options.parent.model.setPhoto(this.model);
 
@@ -539,7 +571,15 @@ var PhotoView = Backbone.View.extend({
     },
 
     close: function() {
-        this.model.destroy();
+        this.model.destroy({
+            success: function() {
+                console.log('Photo destroyed.');
+            },
+            error: function() {
+                console.log('Failed to destroy Photo.');
+            }
+        });
+
         this.remove();
         this.unbind();
     },
@@ -658,7 +698,15 @@ var AudioView = Backbone.View.extend({
     },
 
     removeAudio: function(e) {
-        this.model.destroy();
+        this.model.destroy({
+            success: function() {
+                console.log('Audio destroyed.');
+            },
+            error: function() {
+                console.log('Failed to destroy Audio.');
+            }
+        });
+
         this.model = new Audio();
         this.options.parent.model.setAudio(this.model);
 
@@ -676,7 +724,15 @@ var AudioView = Backbone.View.extend({
     close: function() {
         this.$audioPlayer.jPlayer('destroy');
 
-        this.model.destroy();
+        this.model.destroy({
+            success: function() {
+                console.log('Audio destroyed.');
+            },
+            error: function() {
+                console.log('Failed to destroy Audio.');
+            }
+        });
+
         this.remove();
         this.unbind();
     },
