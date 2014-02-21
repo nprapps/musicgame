@@ -122,7 +122,8 @@ App-specific
 QUIZ_CATEGORIES = [
     'Drum Fill Friday',
     'Puzzler',
-    'Sole of a Band'
+    'Sole of a Band',
+    'Other'
 ]
 
 """

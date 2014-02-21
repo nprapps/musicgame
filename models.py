@@ -212,7 +212,7 @@ class Quiz(PSQLMODEL):
 
     Quizzes have Questions.
     """
-    category = TextField()
+    category = TextField(default='Other')
     slug = TextField()
     title = TextField()
     text = TextField()
