@@ -192,28 +192,51 @@ var QuizDetailView = BaseView.extend({
         var properties = this.serialize();
 
         this.model.save(properties, {
-            skipped: _.bind(function() {
+            skipped: function() {
                 console.log('Skipped saving Quiz.');
-                
-                _.each(this.questionViews, function(question) {
-                    question.saveQuestion();
-                });
-
-                this.markSaved();
-            }, this),
-            success: _.bind(function() {
+            },
+            success: function() {
                 console.log('Quiz saved.');
-
-                _.each(this.questionViews, function(question) {
-                    question.saveQuestion();
-                });
-
-                this.markSaved();
-            }, this),
-            error: _.bind(function() {
+            },
+            error: function() {
                 console.log('Error saving quiz.');
-            }, this)
+            }
+        }).then(_.bind(function() {
+            // Save All Questions
+            this.saveQuestions().then(_.bind(function() {
+                this.saveChoices().then(_.bind(function() {
+                    this.deployQuiz();
+                }, this));
+            }, this));
+        }, this));
+    },
+
+    saveQuestions: function() {
+        var saves = []; 
+
+        _.each(this.questionViews, function(questionView) {
+            saves.push.apply(saves, questionView.saveQuestion());
         });
+
+        return $.when(saves);
+    },
+
+    saveChoices: function() {
+        var saves = [];
+
+        _.each(this.questionViews, function(questionView) {
+            _.each(questionView.choiceViews, function(choiceView) {
+                saves.push.apply(saves, choiceView.saveChoice());
+            });
+        });
+
+        return $.when(saves);
+    },
+
+    deployQuiz: function() {
+        this.model.deploy();
+        
+        this.markSaved();
     },
 
     addQuestionModel: function() {
@@ -364,24 +387,16 @@ var QuestionView = BaseView.extend({
     saveQuestion: function() {
         var properties = this.serialize();
 
-        this.model.save(properties, {
-            skipped: _.bind(function() {
+        return this.model.save(properties, {
+            skipped: function() {
                 console.log('Skipped saving Question.');
-                
-                _.each(this.choiceViews, function(choiceView) {
-                    choiceView.saveChoice();
-                });
-            }, this),
-            success: _.bind(function() {
+            },
+            success: function() {
                 console.log('Saved Question.');
-
-                _.each(this.choiceViews, function(choiceView) {
-                    choiceView.saveChoice();
-                });
-            }, this),
-            error: _.bind(function() {
+            },
+            error: function() {
                 console.log('Error saving Question.');
-            }, this)
+            }
         });
     },
 
@@ -449,7 +464,7 @@ var ChoiceView = BaseView.extend({
     saveChoice: function() {
         var properties = this.serialize();
 
-        this.model.save(properties, {
+        return this.model.save(properties, {
             skipped: _.bind(function() {
                 console.log('Skipped saving Choice.');
             }, this),

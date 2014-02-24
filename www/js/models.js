@@ -24,7 +24,10 @@ var ChangeTrackingModel = Backbone.Model.extend({
                     options.skipped();
                 }
 
-                return;
+                var deferred = $.Deferred();
+                deferred.resolve();
+
+                return deferred.promise();
             }
         }
 
@@ -142,6 +145,19 @@ var Quiz = ChangeTrackingModel.extend({
 
     getPreviewUrl: function() {
         return '/' + APP_CONFIG['PROJECT_SLUG'] + '/admin/preview.html?quiz=' + this.get('slug');
+    },
+
+    deploy: function() {
+        return $.ajax({
+            'url': '/' + APP_CONFIG['PROJECT_SLUG'] + '/deploy/' + this.get('slug'),
+            'type': 'GET',
+            'success': function() {
+                console.log('Quiz deployed.');
+            },
+            'error': function() {
+                console.log('Failed to deploy quiz.');
+            }
+        });
     }
 });
 
