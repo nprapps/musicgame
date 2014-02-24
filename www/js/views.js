@@ -45,6 +45,9 @@ var QuizListView = BaseView.extend({
                 console.log('Fetched quizzes');
 
                 this.render();
+
+                $(".quiz-list").tablesorter();
+
             }, this),
             error: function() {
                 console.log('Error fetching quizzes.');
@@ -90,7 +93,8 @@ var QuizListView = BaseView.extend({
         var properties = {
             title: 'Put Title Here',
             text: 'Put description here.',
-            category: 'Other'
+            category: 'Drum Fill Friday',
+            author: 'Put author name here.'
         };
 
         return properties;
