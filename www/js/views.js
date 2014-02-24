@@ -45,6 +45,9 @@ var QuizListView = BaseView.extend({
                 console.log('Fetched quizzes');
 
                 this.render();
+
+                $(".quiz-list").tablesorter();
+
             }, this),
             error: function() {
                 console.log('Error fetching quizzes.');
@@ -90,7 +93,8 @@ var QuizListView = BaseView.extend({
         var properties = {
             title: 'Put Title Here',
             text: 'Put description here.',
-            category: 'Other'
+            category: 'Drum Fill Friday',
+            author: 'Put author name here.'
         };
 
         return properties;
@@ -135,7 +139,7 @@ var QuizDetailView = BaseView.extend({
         'input .title': 'markNeedsSave',
         'input .description': 'markNeedsSave',
         'change .category': 'markNeedsSave',
-        'change .author': 'markNeedsSave'
+        'input .author': 'markNeedsSave'
     },
 
     initialize: function() {
@@ -460,7 +464,8 @@ var ChoiceView = BaseView.extend({
 
     events: {
         'click .rm-choice': 'close',
-        'input .answer': 'markNeedsSave'
+        'input .answer': 'markNeedsSave',
+        'change input[type="radio"]': 'markNeedsSave'
     },
 
     initialize: function() {
