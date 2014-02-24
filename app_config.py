@@ -123,7 +123,6 @@ QUIZ_CATEGORIES = [
     'Drum Fill Friday',
     'Puzzler',
     'Sole of a Band',
-    'Other'
 ]
 
 """
