@@ -172,9 +172,7 @@ var QuizDetailView = BaseView.extend({
         });
 
         if (this.model.questions.length === 0) {
-            for (i = 0; i < 4; i++) {
-                this.addQuestionModel();
-            }
+            this.addQuestionModel();
         }
     },
 
