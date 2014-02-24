@@ -126,6 +126,8 @@
 
 .question-files {
 	margin-top: 20px;
+	
+	p {font-size: 13px; font-weight: bold; color: #666;}
 }
 
 .question-info {
@@ -357,6 +359,7 @@
 		
 		.remove-image {
 			position: relative;
+			width: 90px;
 			
 		}
 	
@@ -375,7 +378,7 @@
 		}
 		
 	    .preview {
-	        max-width: 90px;
+	        max-width: 100%;
 	        height: auto;
 	        
 	    }
@@ -461,15 +464,11 @@
 	}
 	.loader:before {
 	  background-color: #141414;
-	  -webkit-animation: expand 1.6s linear infinite both;
-	  -moz-animation: expand 1.6s linear infinite both;
-	  animation: expand 1.6s linear infinite both;
+	  .animation(expand 1.6s linear infinite both);
 	}
 	.loader:after {
-	  background-color: white;
-	  -webkit-animation: expand 1.6s linear 0.8s infinite both;
-	  -moz-animation: expand 1.6s linear 0.8s infinite both;
-	  animation: expand 1.6s linear 0.8s infinite both;
+	  background-color: #fff;
+	  .animation(expand 1.6s linear 0.8s infinite both);
 	}
 	
 }
