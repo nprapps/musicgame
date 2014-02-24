@@ -5,7 +5,7 @@
     <div class="row">
         <div class="header">
             <h1>"{{ quiz.title }}"</h1>
-            <a href="./">&laquo; Back to quiz list</a>
+            <a href="{{ quiz.url() }}">&laquo; Back to the quiz</a>
         </div>
     </div>
 
@@ -24,16 +24,16 @@
         <div class="embed-code">
             <h3>2. Embed your quiz in Seamus</h3>
             <p><a class="clipper" href="#">Click here</a> to copy this code to your clipboard. Then paste it into a Seamus HTML asset.</p>
-            <textarea id="embed" readonly="readonly" rows="10" cols="100"></textarea>
+            <textarea id="embed" readonly="readonly" rows="11"></textarea>
         </div>
     </div>
 
     <div class="row">
         <div class="save-seamus-url">
             <h3>3. Save your Seamus URL.</h3>
-            <p>TKTK</p>
+            <p>Paste the URL of your saved Seamus page here.</p>
             <input type="text" id="seamus-url" value="{{ quiz.seamus_url }}" />
-            <button id="publish-now" class="btn btn-default">Publish now</button>
+            <button id="publish-now" class="btn btn-primary">Publish now</button>
         </div>
     </div>
 </div>

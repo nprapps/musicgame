@@ -226,6 +226,9 @@ class Quiz(PSQLMODEL):
     def __unicode__(self):
         return self.title
 
+    def url(self):
+        return '/%s/admin/quiz/%i' % (app_config.PROJECT_SLUG, self.id)
+
     def flatten(self):
         """
         Flattens a quiz and all it's related parts for serialization.
