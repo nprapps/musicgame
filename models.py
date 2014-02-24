@@ -212,16 +212,16 @@ class Quiz(PSQLMODEL):
 
     Quizzes have Questions.
     """
-    category = TextField(default='Other')
+    category = TextField(null=True)
     slug = TextField()
     title = TextField()
     text = TextField()
     tags = TextField(null=True)
     created = DateTimeField()
     updated = DateTimeField()
-    byline = TextField(null=True)
+    author = TextField(null=True)
     photo = ForeignKeyField(Photo, null=True)
-    seamus_url = TextField()
+    seamus_url = TextField(null=True)
 
     def __unicode__(self):
         return self.title
