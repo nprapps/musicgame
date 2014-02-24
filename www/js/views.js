@@ -143,6 +143,7 @@ var QuizDetailView = BaseView.extend({
         this.$questions = null;
         this.$photo = null;
         this.$saveButton = null;
+        this.$previewButton = null;
 
         _.bindAll(this);
 
@@ -166,6 +167,7 @@ var QuizDetailView = BaseView.extend({
         this.$questions = this.$('.questions');
         this.$photo = this.$('.photo');
         this.$saveButton = this.$('#save-quiz');
+        this.$previewButton = this.$('#embed-quiz');
 
         _.each(this.questionViews, function(view) {
             view.render();
@@ -178,11 +180,13 @@ var QuizDetailView = BaseView.extend({
 
     markNeedsSave: function() {
         this.$saveButton.removeAttr('disabled');
+        this.$previewButton.attr('disabled', 'disabled');
         this.$saveButton.text('Save now');
     },
 
     markSaved: function() {
         this.$saveButton.attr('disabled', 'disabled');
+        this.$previewButton.removeAttr('disabled');
         this.$saveButton.text('Saved');
     },
 
@@ -210,7 +214,7 @@ var QuizDetailView = BaseView.extend({
     },
 
     saveQuestions: function() {
-        var saves = []; 
+        var saves = [];
 
         _.each(this.questionViews, function(questionView) {
             saves.push.apply(saves, questionView.saveQuestion());
@@ -233,7 +237,7 @@ var QuizDetailView = BaseView.extend({
 
     deployQuiz: function() {
         this.model.deploy();
-        
+
         this.markSaved();
     },
 

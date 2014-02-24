@@ -48,13 +48,13 @@
 	                    <label for="photo" class="col-sm-2 control-label">Cover photo</label>
 	                    <div class="col-sm-10">
 					        <div class="photo">
-					        </div>      
+					        </div>
 	                    </div><!--/col10-->
 	                </div><!--/fg-->
 	            </div><!--/12-->
             </div><!--/row -->
 		</div><!--/game-attributes-->
-		
+
 
         <div class="questions">
         	<h2>Questions</h2>
@@ -70,6 +70,7 @@
 <div class="toolbelt row">
     <div class="col-md-12 btns">
         <button class="btn btn-primary" id="save-quiz" disabled="disabled"><i class="fa fa-save"></i> Saved</button>
+        <a class="btn btn-primary embed-quiz" id="embed-quiz" target="_blank" href="<%= quiz.getPreviewUrl() %>"><i class="fa fa-play"></i> Preview & embed quiz</a>
         <a class="btn btn-info" href="/musicgame/admin/"><i class="fa fa-list"></i> Back to quiz list</a>
     </div>
 </div>
