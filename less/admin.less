@@ -516,14 +516,7 @@
 
 	.embed-wrapper {
 		.make-xs-column(12);
-		display: table;
-
-		.preview-wrapper,
-		.embed-code {
-			display: table-cell;
-			border-collapse: collapse;
-			vertical-align: top;
-		}
+        min-height: 700px;
 
 		.preview-wrapper {
 			width: 300px + @grid-gutter-width;
@@ -567,14 +560,18 @@
 			}
 		}
 
-		.embed-code {
-			#embed {
-				width: 100%;
-			}
-
-			h3 {
-				margin-top: 0;
-			}
-		}
 	}
+
+    .embed-code {
+        .make-xs-column(12);
+
+        #embed {
+            width: 100%;
+            font-size: 14px;
+        }
+
+        h3 {
+            margin-top: 0;
+        }
+    }
 }
