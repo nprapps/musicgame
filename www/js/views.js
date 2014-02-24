@@ -350,23 +350,45 @@ var EmbedModalView = BaseView.extend({
     },
 
     initialize: function() {
+        this.$seamusUrl = null;
+
         this.urlRoot = '/' + APP_CONFIG['PROJECT_SLUG'];
 
         if (APP_CONFIG['DEPLOYMENT_TARGET']) {
             this.urlRoot = APP_CONFIG['S3_BASE_URL']
         }
 
+        this.embedCode = null;
+
         this.render();
     },
 
     render: function() {
+        this.embedCode = JST.embed({
+            'urlRoot': this.urlRoot,
+            'slug': this.model.get('slug')
+        });
+
         this.$el.html(JST.admin_embed({
             'quiz': this.model,
-            'embed': JST.embed({
-                'urlRoot': this.urlRoot,
-                'slug': this.model.get('slug')
-            })
+            'embed': this.embedCode
         }));
+
+        this.$seamusUrl = this.$('.seamus-url');
+
+        ZeroClipboard.setDefaults({
+            moviePath: this.urlRoot + '/js/lib/ZeroClipboard.swf'
+        });
+
+        var clipper = new ZeroClipboard($('.clipper'));
+
+        clipper.on('complete', function() {
+            alert('Embed code copied to your clipboard!');
+        });
+
+        clipper.on('dataRequested', _.bind(function(client, args) {
+            client.setText(this.embedCode);
+        }, this));
     },
 
     show: function() {
@@ -375,6 +397,18 @@ var EmbedModalView = BaseView.extend({
 
     onClickSave: function(e) {
         e.preventDefault();
+
+        $.ajax({
+            'url': '/' + APP_CONFIG['PROJECT_SLUG'] + '/admin/update-seamus-url/' + this.model.get('slug') + '/',
+            'method': 'POST',
+            'data': { 'seamus_url': this.$seamusUrl.val() },
+            'success': function() {
+                console.log('Seamus URL updated.');
+            },
+            'error': function() {
+                console.log('Failed to update Seamus URL.');
+            }
+        });
     }
 });
 

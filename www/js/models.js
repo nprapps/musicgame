@@ -143,10 +143,6 @@ var Quiz = ChangeTrackingModel.extend({
         return data;
     },
 
-    getPreviewUrl: function() {
-        return '/' + APP_CONFIG['PROJECT_SLUG'] + '/admin/preview.html?quiz=' + this.get('slug');
-    },
-
     deploy: function() {
         return $.ajax({
             'url': '/' + APP_CONFIG['PROJECT_SLUG'] + '/admin/deploy/' + this.get('slug'),

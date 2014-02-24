@@ -36,21 +36,6 @@ def admin_quiz_detail(quiz_id):
 
     return render_template('admin/detail.html', **context)
 
-@admin.route('/preview.html')
-def preview():
-    """
-    Render a game preview page.
-    """
-    context = make_context()
-
-    slug = request.args.get('quiz')
-
-    quiz = models.Quiz.get(slug=slug)
-
-    context['quiz'] = quiz
-
-    return render_template('admin/preview.html', **context)
-
 @admin.route('/upload-photo/', methods=['POST'])
 def upload_photo():
     """
