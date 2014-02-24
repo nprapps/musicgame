@@ -332,13 +332,13 @@ var PreviewModalView = BaseView.extend({
         this.$el.html(JST.admin_preview());
 
         $preview = this.$('.preview');
-
-        $preview.responsiveIframe({
-            src: this.urlRoot + '/game.html?quiz=' + this.model.get('slug')
-        });
     },
 
     show: function() {
+        $preview.responsiveIframe({
+            src: this.urlRoot + '/game.html?quiz=' + this.model.get('slug')
+        });
+
         this.$('.modal').modal();
     }
 });
