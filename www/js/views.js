@@ -130,6 +130,7 @@ var QuizDetailView = BaseView.extend({
 
     events: {
         'click #save-quiz': 'saveQuiz',
+        'click #preview-publish': 'previewQuiz',
         'click #add-question': 'addQuestionModel',
         'input .title': 'markNeedsSave',
         'input .description': 'markNeedsSave',
@@ -184,6 +185,10 @@ var QuizDetailView = BaseView.extend({
     markSaved: function() {
         this.$saveButton.attr('disabled', 'disabled');
         this.$saveButton.text('Saved');
+    },
+
+    previewQuiz: function() {
+        window.location.href = '/' + APP_CONFIG['PROJECT_SLUG'] + '/admin/preview.html?quiz=' + this.model.get('slug');
     },
 
     saveQuiz: function() {
