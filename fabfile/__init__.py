@@ -671,7 +671,9 @@ def load_quizzes():
             'category': "Drum Fill Friday",
             'title': quiz_json['title'],
             'text': 'TKTK',
-            'photo': None
+            'photo': None,
+            'seamus_url': '',
+            'author': 'Bob Boilen'
         }
 
         # Create photo

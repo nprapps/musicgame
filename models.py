@@ -219,11 +219,15 @@ class Quiz(PSQLMODEL):
     tags = TextField(null=True)
     created = DateTimeField()
     updated = DateTimeField()
-    byline = TextField(null=True)
+    author = TextField(null=True)
     photo = ForeignKeyField(Photo, null=True)
+    seamus_url = TextField()
 
     def __unicode__(self):
         return self.title
+
+    def url(self):
+        return '/%s/admin/quiz/%i' % (app_config.PROJECT_SLUG, self.id)
 
     def flatten(self):
         """
@@ -259,13 +263,10 @@ class Quiz(PSQLMODEL):
         else:
             self.updated = now
 
-        if not self.slug:
+        if (not self.slug) or (self.slug == "put-title-here"):
             self.slugify()
 
         super(Quiz, self).save(*args, **kwargs)
-
-        if app_config.DEPLOYMENT_TARGET in ['production', 'staging']:
-            self.deploy()
 
     def deploy(self):
         """

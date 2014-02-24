@@ -75,16 +75,6 @@ def _test_quiz(quiz_slug):
 
     return jsonify(quiz.flatten())
 
-@app.route('/%s/deploy/<quiz_slug>/' % app_config.PROJECT_SLUG)
-def _publish_quiz(quiz_slug):
-    """
-    Publish a quiz.
-    """
-    quiz = models.Quiz.get(slug=quiz_slug)
-    quiz.deploy()
-
-    return ('', 200) 
-
 # Scout uptime test route
 @app.route('/%s/test/' % app_config.PROJECT_SLUG, methods=['GET'])
 def _test_app():
