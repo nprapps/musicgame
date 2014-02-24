@@ -145,6 +145,7 @@ var QuizDetailView = BaseView.extend({
 
     initialize: function() {
         this.previewModalView = null;
+        this.embedModalView = null;
         this.photoView = null;
         this.questionViews = {};
 
@@ -157,7 +158,13 @@ var QuizDetailView = BaseView.extend({
 
         this.render();
 
-        this.previewModalView = new PreviewModalView({ 'el': this.$('#preview-modal') });
+        this.previewModalView = new PreviewModalView({
+            'model': this.model
+        });
+
+        this.embedModalView = new EmbedModalView({
+            'model': this.model
+        });
 
         this.model.questions.each(_.bind(function(question) {
             this.addQuestionView(question);
@@ -201,11 +208,11 @@ var QuizDetailView = BaseView.extend({
     },
 
     previewQuiz: function() {
-        alert('preview');
+        this.previewModalView.show();
     },
 
     publishQuiz: function() {
-        alert('publish');
+        this.embedModalView.show();
     },
 
     saveQuiz: function() {
@@ -303,8 +310,16 @@ var QuizDetailView = BaseView.extend({
  * PreviewModalView
  */
 var PreviewModalView = BaseView.extend({
+    el: '#preview-modal',
+
     initialize: function() {
         this.$preview = null;
+
+        this.urlRoot = '/' + APP_CONFIG['PROJECT_SLUG'];
+
+        if (APP_CONFIG['DEPLOYMENT_TARGET']) {
+            this.urlRoot = APP_CONFIG['S3_BASE_URL']
+        }
 
         this.render();
     },
@@ -312,11 +327,54 @@ var PreviewModalView = BaseView.extend({
     render: function() {
         this.$el.html(JST.admin_preview());
 
-        $preview = this.$('#preview');
+        $preview = this.$('.preview');
 
         $preview.responsiveIframe({
-            src: urlRoot + '/game.html?quiz=' + slug
+            src: this.urlRoot + '/game.html?quiz=' + this.model.get('slug')
         });
+    },
+
+    show: function() {
+        this.$('.modal').modal();
+    }
+});
+
+/*
+ * EmbedModalView
+ */
+var EmbedModalView = BaseView.extend({
+    el: '#embed-modal',
+
+    events: {
+        'click .save': 'onClickSave'
+    },
+
+    initialize: function() {
+        this.urlRoot = '/' + APP_CONFIG['PROJECT_SLUG'];
+
+        if (APP_CONFIG['DEPLOYMENT_TARGET']) {
+            this.urlRoot = APP_CONFIG['S3_BASE_URL']
+        }
+
+        this.render();
+    },
+
+    render: function() {
+        this.$el.html(JST.admin_embed({
+            'quiz': this.model,
+            'embed': JST.embed({
+                'urlRoot': this.urlRoot,
+                'slug': this.model.get('slug')
+            })
+        }));
+    },
+
+    show: function() {
+        this.$('.modal').modal();
+    },
+
+    onClickSave: function(e) {
+        e.preventDefault();
     }
 });
 
