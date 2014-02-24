@@ -140,7 +140,7 @@ var QuizDetailView = BaseView.extend({
         'input .title': 'markNeedsSave',
         'input .description': 'markNeedsSave',
         'change .category': 'markNeedsSave',
-        'change .author': 'markNeedsSave'
+        'input .author': 'markNeedsSave'
     },
 
     initialize: function() {
@@ -585,7 +585,8 @@ var ChoiceView = BaseView.extend({
 
     events: {
         'click .rm-choice': 'close',
-        'input .answer': 'markNeedsSave'
+        'input .answer': 'markNeedsSave',
+        'change input[type="radio"]': 'markNeedsSave'
     },
 
     initialize: function() {

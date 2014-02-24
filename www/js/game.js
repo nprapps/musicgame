@@ -56,7 +56,7 @@ var renderStart = function() {
  */
 var renderQuestion = function() {
     var question = quizData['questions'][currentQuestion];
-    currentAnswer = _.where(question['choices'], {correct_answer: true})[0]['text'];
+    currentAnswer = _.where(question['choices'], {correct_answer: true})[0]['id'];
 
 
     var context = question;
@@ -65,9 +65,12 @@ var renderQuestion = function() {
 
     var html = JST.question(context);
 
-    incorrectAnswers = _.filter(question['choices'], function(choice){
-        return !choice['correct_answer'];
-    });
+    incorrectAnswers = _.chain(question['choices'])
+        .filter(function(choice){
+            return !choice['correct_answer'];
+        })
+        .pluck('id')
+        .value();
 
     timeLeft = TIMERLENGTH * 1000;
     stopTimer = false;
@@ -230,7 +233,7 @@ var onQuestionPauseButtonClick = function(e){
 */
 var onQuestionComplete = function(points, selectedAnswer, element){
     var $correctAnswer = $answers.filter(function(){
-        return $(this).find('a .answer').text() === currentAnswer;
+        return $(this).data('choice-id') === currentAnswer;
     });
     var element = element||$correctAnswer;
     var scoreOffsetY = $(element).offset().top + $(element).outerHeight() / 2;
@@ -279,18 +282,18 @@ var onQuestionComplete = function(points, selectedAnswer, element){
 };
 
 /*
-* You ran out of time
+* Check if clicked answer is correct
 */
 var onAnswerClick = function(){
     var points = 0;
-    $this = $(this).find('a .answer');
+    $this = $(this);
 
     // Stop the timer
     stopTimer = true;
     $timerContainer.attr('class', 'timer-container fade');
 
-    if ($this.text() === currentAnswer){
-        $this.parent().parent().addClass('correct');
+    if ($this.data('choice-id') == currentAnswer){
+        $this.addClass('correct');
         if(timer === 'true'){
             points = 100 / quizData['questions'].length * (timeLeft / (TIMERLENGTH * 1000));
         } else {
@@ -301,25 +304,24 @@ var onAnswerClick = function(){
 
         totalScore += points;
     } else {
-        $this.parent().parent().addClass('incorrect');
+        $this.addClass('incorrect');
     }
 
     $answers.off("click");
 
-    onQuestionComplete(points, $this.text(), this);
+    onQuestionComplete(points, $this.data('choice-id'), this);
     return false;
 };
 
 var trimAnswers = function(){
     incorrectAnswers = _.shuffle(incorrectAnswers);
     var wrongAnswer = incorrectAnswers.pop();
-    wrongAnswer = wrongAnswer.text||wrongAnswer;
 
     $answers.each(function(){
-        var $this = $(this).find('a .answer');
+        var $this = $(this);
 
-        if ($this.text() === wrongAnswer && !$this.parent().parent().hasClass('fade')){
-            $this.parent().parent().addClass('fade').off("click");
+        if ($this.data('choice-id') == wrongAnswer && !$this.hasClass('fade')){
+            $this.addClass('fade').off("click");
         }
     });
 }

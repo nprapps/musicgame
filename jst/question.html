@@ -1,11 +1,13 @@
 <div class="question-wrapper question-<%= questionNumber %>">
-	<% if (timer === 'true'){ %>
-	<div class="progress"><div class="bar" style="width: 0%;"></div></div>
-	<% } %>
+	<div class="question-header">
+		<% if (timer === 'true'){ %>
+		<div class="progress"><div class="bar" style="width: 0%;"></div></div>
+		<% } %>
 
-	<h3 class="progress-header">Question <%= questionNumber %>/<%= quizLength %></h3>
-	<button class="next-question btn btn-large btn-primary">Next Question</button>
-	<button class="show-score btn btn-large btn-primary">Show My Score</button>
+		<h3 class="progress-header">Question <%= questionNumber %>/<%= quizLength %></h3>
+		<button class="next-question btn btn-large btn-primary">Next Question</button>
+		<button class="show-score btn btn-large btn-primary">Show My Score</button>
+	</div>
 	<div class="container">
 		<% if (audio){ %>
 			<div class="player"></div>
@@ -26,7 +28,7 @@
 		<ul class="answers">
 			<% _.each(_.shuffle(choices), function(choice){ %>
 				<% if (choice.text) { %>
-					<li<% if (choice.photo) { %> class="has-cover"<% } %>>
+					<li<% if (choice.photo) { %> class="has-cover"<% } %> data-choice-id="<%= choice.id %>">
 						<a href="#">
 						<% if (choice.photo) { %>
 							<div class="cover">
