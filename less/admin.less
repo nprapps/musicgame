@@ -492,3 +492,73 @@
         .pull-right();
     }
 }
+
+.preview {
+	.header {
+		.make-xs-column(12);
+	}
+
+	.embed-wrapper {
+		.make-xs-column(12);
+		display: table;
+
+		.preview-wrapper,
+		.embed-code {
+			display: table-cell;
+			border-collapse: collapse;
+			vertical-align: top;
+		}
+
+		.preview-wrapper {
+			width: 300px + @grid-gutter-width;
+			padding-right: @grid-gutter-width;
+
+			small {
+				color: @gray-light;
+			}
+		}
+
+		.quiz-preview {
+			position: relative;
+			width: 300px;
+
+			iframe{
+				width: 300px !important;
+				overflow: hidden;
+				position: relative;
+				z-index: 1;
+			}
+
+			&:before {
+				display: block;
+				content: ' ';
+				height: 3px;
+				background: rgba(255,0,0,0.5);
+				position: absolute;
+				top: 420px;
+				width: 300px;
+				z-index: 100;
+			}
+
+			&:after {
+				display: block;
+				content: ' ';
+				height: 420px;
+				width: 300px;
+				background: rgba(0,0,150,0.1);
+				position: absolute;
+				top: 72px;
+			}
+		}
+
+		.embed-code {
+			#embed {
+				width: 100%;
+			}
+
+			h3 {
+				margin-top: 0;
+			}
+		}
+	}
+}

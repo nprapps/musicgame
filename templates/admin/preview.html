@@ -1,19 +1,25 @@
 {% extends 'admin/_base.html' %}
 
 {% block content %}
-<div class="container">
+<div class="container preview">
     <div class="row">
-        <a href="./">&laquo; Back to quiz list</a>
-        <h3>Quiz preview</h3>
-
-        <div id="preview">
+        <div class="header">
+            <a href="./">&laquo; Back to quiz list</a>
+            <h3>Quiz preview</h3>
         </div>
-    </div>
-    <div class="row">
-        <h3>Seamus embed code (<a class="clipper" href="#">click to copy</a>)</h3>
 
-        <textarea id="embed" readonly="readonly" rows="10" cols="100">
-        </textarea>
+        <div class="embed-wrapper">
+            <div class="preview-wrapper">
+                <p><small>Typical mobile screen boundary shown in red. Make sure your question and all answers fit in this space.</small></p>
+                <div id="preview" class="quiz-preview">
+                </div>
+            </div>
+
+            <div class="embed-code">
+                <h3>Seamus embed code (<a class="clipper" href="#">click to copy</a>)</h3>
+                <textarea id="embed" readonly="readonly" rows="10" cols="100"></textarea>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
