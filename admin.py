@@ -41,7 +41,15 @@ def preview():
     """
     Render a game preview page.
     """
-    return render_template('admin/preview.html', **make_context())
+    context = make_context()
+
+    slug = request.args.get('quiz')
+
+    quiz = models.Quiz.get(slug=slug)
+
+    context['quiz'] = quiz
+
+    return render_template('admin/preview.html', **context)
 
 @admin.route('/upload-photo/', methods=['POST'])
 def upload_photo():
@@ -89,3 +97,24 @@ def upload_audio():
     data = serializer.serialize_object(audio)
 
     return jsonify(data)
+
+@admin.route('/update-seamus-url/<quiz_slug>/', methods=['POST'])
+def _update_seamus_url(quiz_slug):
+    """
+    Shortcut route to save only the Seamus URL for a quiz.
+    """
+    quiz = models.Quiz.get(slug=quiz_slug)
+    quiz.seamus_url = request.form.get('seamus_url')
+    quiz.save()
+
+    return ('', 200)
+
+@admin.route('/deploy/<quiz_slug>/')
+def _publish_quiz(quiz_slug):
+    """
+    Publish a quiz.
+    """
+    quiz = models.Quiz.get(slug=quiz_slug)
+    quiz.deploy()
+
+    return ('', 200) 

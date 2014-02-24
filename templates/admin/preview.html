@@ -4,6 +4,7 @@
 <div class="container preview">
     <div class="row">
         <div class="header">
+            <h1>"{{ quiz.title }}"</h1>
             <a href="./">&laquo; Back to quiz list</a>
         </div>
     </div>
@@ -31,6 +32,8 @@
         <div class="save-seamus-url">
             <h3>3. Save your Seamus URL.</h3>
             <p>TKTK</p>
+            <input type="text" id="seamus-url" value="{{ quiz.seamus_url }}" />
+            <button id="publish-now" class="btn btn-default">Publish now</button>
         </div>
     </div>
 </div>

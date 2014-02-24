@@ -221,6 +221,7 @@ class Quiz(PSQLMODEL):
     updated = DateTimeField()
     byline = TextField(null=True)
     photo = ForeignKeyField(Photo, null=True)
+    seamus_url = TextField()
 
     def __unicode__(self):
         return self.title
@@ -263,9 +264,6 @@ class Quiz(PSQLMODEL):
             self.slugify()
 
         super(Quiz, self).save(*args, **kwargs)
-
-        if app_config.DEPLOYMENT_TARGET in ['production', 'staging']:
-            self.deploy()
 
     def deploy(self):
         """
