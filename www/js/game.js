@@ -112,14 +112,14 @@ var renderQuestion = function() {
                     mp3: question['audio']['rendered_mp3_path'],
                     oga: question['audio']['rendered_oga_path']
                 }).jPlayer('play');
-
-                $questionPauseButton.show();
-                $questionPlayButton.hide();
             },
             play: function() {
                 if (timer === 'true'){
                     runTimer();
                 }
+
+                $questionPauseButton.show();
+                $questionPlayButton.hide();
             },
             ended: function() {
                 $questionPauseButton.hide();
@@ -258,11 +258,11 @@ var onQuestionComplete = function(points, selectedAnswer, element){
                 $content.find('.after-text').slideDown({
                     duration: 'fast',
                     progress: function(){
-                        $content.attr('style','').css('height', $content.children().last().height());
+                        $content.attr('style','').css('height', $currentQuestion.height());
                         sendHeightToParent();
                     },
                     done: function(){
-                        $content.attr('style','').css('height', $content.children().last().height());
+                        $content.attr('style','').css('height', $currentQuestion.height());
                         sendHeightToParent();
                     }
                 });
@@ -291,7 +291,7 @@ var onAnswerClick = function(){
 
     if ($this.text() === currentAnswer){
         $this.parent().parent().addClass('correct');
-        if(timer !== 'false'){
+        if(timer === 'true'){
             points = 100 / quizData['questions'].length * (timeLeft / (TIMERLENGTH * 1000));
         } else {
             points = 1;
