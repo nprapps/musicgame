@@ -1,6 +1,7 @@
 <td><a href="quiz/<%= quiz.get('id') %>/"><%= quiz.get('title') %></a></td>
 <td><a href="quiz/<%= quiz.get('id') %>/"><%= quiz.get('category') %></a></td>
 <td><a href="quiz/<%= quiz.get('id') %>"><%= quiz.get('created') %></a></td>
+<td><% if (quiz.get('seamus_url')) { %><a class="btn btn-xs btn-info" href="<%= quiz.get('seamus_url') %>"><i class="fa fa-play"></i> View</a><% } else { %><strong>Not published!</strong><% } %></td>
 <td>
     <a class="btn btn-xs btn-danger delete-quiz"><i class="fa fa-times"></i> Delete quiz</a>
 </td>
