@@ -134,7 +134,8 @@ var QuizDetailView = BaseView.extend({
 
     events: {
         'click #save-quiz': 'saveQuiz',
-        'click #preview-publish': 'previewQuiz',
+        'click #preview': 'previewQuiz',
+        'click #publish': 'publishQuiz',
         'click #add-question': 'addQuestionModel',
         'input .title': 'markNeedsSave',
         'input .description': 'markNeedsSave',
@@ -143,6 +144,7 @@ var QuizDetailView = BaseView.extend({
     },
 
     initialize: function() {
+        this.previewModalView = null;
         this.photoView = null;
         this.questionViews = {};
 
@@ -154,6 +156,8 @@ var QuizDetailView = BaseView.extend({
         _.bindAll(this);
 
         this.render();
+
+        this.previewModalView = new PreviewModalView({ 'el': this.$('#preview-modal') });
 
         this.model.questions.each(_.bind(function(question) {
             this.addQuestionView(question);
@@ -197,7 +201,11 @@ var QuizDetailView = BaseView.extend({
     },
 
     previewQuiz: function() {
-        window.location.href = '/' + APP_CONFIG['PROJECT_SLUG'] + '/admin/preview.html?quiz=' + this.model.get('slug');
+        alert('preview');
+    },
+
+    publishQuiz: function() {
+        alert('publish');
     },
 
     saveQuiz: function() {
@@ -288,6 +296,27 @@ var QuizDetailView = BaseView.extend({
         };
 
         return properties;
+    }
+});
+
+/*
+ * PreviewModalView
+ */
+var PreviewModalView = BaseView.extend({
+    initialize: function() {
+        this.$preview = null;
+
+        this.render();
+    },
+
+    render: function() {
+        this.$el.html(JST.admin_preview());
+
+        $preview = this.$('#preview');
+
+        $preview.responsiveIframe({
+            src: urlRoot + '/game.html?quiz=' + slug
+        });
     }
 });
 
