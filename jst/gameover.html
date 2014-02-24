@@ -31,10 +31,10 @@
 					<img src="<%= _.where(question['choices'], {correct_answer: true})[0]['photo']['rendered_file_path'] %>">
 				<% } %>
 				<% if (answers[index] !== correctAnswers[index]){ %>
-					<p class="answer correct-answer"><i class="fa fa-check"></i> <%= correctAnswers[index] %></p>
+					<p class="answer correct-answer"><i class="fa fa-check"></i> <%= _.where(question['choices'], { correct_answer: true })[0]['text'] %></p>
 				<% }%>
-				<% if (answers[index].length > 0){ %>
-				<p class="answer your-answer<% if (answers[index] === correctAnswers[index]){ %> correct<% } else { %> incorrect<% }%>"><% if (answers[index] !== correctAnswers[index]){ %>You answered: <% } %><%= answers[index] %> </p>
+				<% if (answers[index] !== ''){ %>
+				<p class="answer your-answer<% if (answers[index] === correctAnswers[index]){ %> correct<% } else { %> incorrect<% }%>"><% if (answers[index] !== correctAnswers[index]){ %>You answered: <% } %><%= _.where(question['choices'], { id: answers[index] })[0]['text'] %> </p>
 				<% } %>
 			</li>
 		<% }); %>
