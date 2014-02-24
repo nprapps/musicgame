@@ -672,7 +672,8 @@ def load_quizzes():
             'title': quiz_json['title'],
             'text': 'TKTK',
             'photo': None,
-            'seamus_url': ''
+            'seamus_url': '',
+            'author': 'Bob Boilen'
         }
 
         # Create photo

@@ -219,7 +219,7 @@ class Quiz(PSQLMODEL):
     tags = TextField(null=True)
     created = DateTimeField()
     updated = DateTimeField()
-    byline = TextField(null=True)
+    author = TextField(null=True)
     photo = ForeignKeyField(Photo, null=True)
     seamus_url = TextField()
 
