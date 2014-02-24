@@ -130,6 +130,7 @@ var QuizDetailView = BaseView.extend({
 
     events: {
         'click #save-quiz': 'saveQuiz',
+        'click #preview-publish': 'previewQuiz',
         'click #add-question': 'addQuestionModel',
         'input .title': 'markNeedsSave',
         'input .description': 'markNeedsSave',
@@ -167,7 +168,7 @@ var QuizDetailView = BaseView.extend({
         this.$questions = this.$('.questions');
         this.$photo = this.$('.photo');
         this.$saveButton = this.$('#save-quiz');
-        this.$previewButton = this.$('#embed-quiz');
+        this.$previewButton = this.$('#preview-publish');
 
         _.each(this.questionViews, function(view) {
             view.render();
@@ -188,6 +189,10 @@ var QuizDetailView = BaseView.extend({
         this.$saveButton.attr('disabled', 'disabled');
         this.$previewButton.removeAttr('disabled');
         this.$saveButton.text('Saved');
+    },
+
+    previewQuiz: function() {
+        window.location.href = '/' + APP_CONFIG['PROJECT_SLUG'] + '/admin/preview.html?quiz=' + this.model.get('slug');
     },
 
     saveQuiz: function() {
@@ -288,7 +293,7 @@ var QuestionView = BaseView.extend({
     className: 'question',
 
     events: {
-        'click .add-choice': 'addChoiceModel',
+        'click .add-choice': 'onAddChoice',
         'click .rm-question': 'close',
         'click #save-quiz': 'saveQuestion',
         'input .interrogative': 'markNeedsSave',
@@ -300,6 +305,7 @@ var QuestionView = BaseView.extend({
         this.photoView = null;
         this.choiceViews = {};
 
+        this.$addChoice = null;
         this.$choices = null;
         this.$photo = null;
         this.$audio = null;
@@ -324,6 +330,7 @@ var QuestionView = BaseView.extend({
     render: function() {
         this.$el.html(JST.admin_question({ 'question': this.model }));
 
+        this.$addChoice = this.$('.add-choice');
         this.$choices = this.$('.choices');
         this.$photo = this.$('.photo');
         this.$audio = this.$('.audio');
@@ -339,6 +346,12 @@ var QuestionView = BaseView.extend({
                 this.addChoiceModel();
             }
         }
+    },
+
+    onAddChoice: function(e) {
+        e.preventDefault();
+
+        this.addChoiceModel();
     },
 
     addChoiceModel: function() {
@@ -360,10 +373,16 @@ var QuestionView = BaseView.extend({
         this.$choices.append(choiceView.el);
 
         this.choiceViews[choice.cid] = choiceView;
+
+        if (this.model.choices.length == 4) {
+            this.$addChoice.hide();
+        }
     },
 
     rmChoiceView: function(choice) {
         delete this.choiceViews[choice.cid];
+
+        this.$addChoice.show();
 
         this.markNeedsSave();
     },
