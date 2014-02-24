@@ -481,6 +481,22 @@
     padding: 10px 0;
     border-top: 2px solid @heavyGray;
     text-align: center;
+    
+    #save-quiz {
+	    background-color: #d9534f;
+	    border: 1px solid #d43f3a;
+	    opacity: .8;
+	    &:hover {
+			opacity: 1;
+
+		}
+		&:disabled {
+			background-color: #5cb85c;
+			border-color: #4cae4c;
+			opacity: .6;
+		}
+	    
+    }
 }
 
 .fileinput-filename {
