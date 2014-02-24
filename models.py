@@ -259,7 +259,7 @@ class Quiz(PSQLMODEL):
         else:
             self.updated = now
 
-        if not self.slug:
+        if (not self.slug) or (self.slug == "put-title-here"):
             self.slugify()
 
         super(Quiz, self).save(*args, **kwargs)
