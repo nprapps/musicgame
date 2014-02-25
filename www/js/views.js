@@ -462,7 +462,8 @@ var QuestionView = BaseView.extend({
         this.model.choices.each(_.bind(function(choice) {
             this.addChoiceView(choice);
         }, this));
-
+        
+        this.toggleViews();
         this.addPhotoView();
         this.addAudioView();
 
@@ -546,6 +547,19 @@ var QuestionView = BaseView.extend({
             'el': this.$audio
         });
         this.audioView.render();
+    },
+
+    toggleViews: function() {
+        if (this.model.photo.id) {
+            this.$audio.hide();
+            this.$photo.show();
+        } else if (this.model.audio.id) {
+            this.$audio.show();
+            this.$photo.hide();
+        } else {
+            this.$audio.show();
+            this.$photo.show();
+        }
     },
 
     saveQuestion: function() {
@@ -735,6 +749,8 @@ var PhotoView = BaseView.extend({
                     this.model = this.options.parent.model.photo;
                     this.render();
 
+                    this.options.parent.toggleViews();
+
                     this.markNeedsSave();
                 }, this),
                 'error': function() {
@@ -760,6 +776,8 @@ var PhotoView = BaseView.extend({
         this.options.parent.model.setPhoto(this.model);
 
         this.render();
+                    
+        this.options.parent.toggleViews();
 
         this.markNeedsSave();
     },
@@ -873,6 +891,8 @@ var AudioView = BaseView.extend({
                     this.options.parent.model.setAudio(new Audio(data));
                     this.model = this.options.parent.model.audio;
                     this.render();
+                    
+                    this.options.parent.toggleViews();
 
                     this.markNeedsSave();
                 }, this),
@@ -899,6 +919,8 @@ var AudioView = BaseView.extend({
         this.options.parent.model.setAudio(this.model);
 
         this.render();
+        
+        this.options.parent.toggleViews();
 
         this.markNeedsSave();
     },
