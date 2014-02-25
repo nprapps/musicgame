@@ -204,6 +204,13 @@ var QuizDetailView = BaseView.extend({
         this.$saveButton.text('Save now');
     },
 
+    markSaving: function() {
+        this.$saveButton.attr('disabled', 'disabled');
+        this.$previewButton.attr('disabled', 'disabled');
+        this.$publishButton.attr('disabled', 'disabled');
+        this.$saveButton.text('Saving...');
+    },
+
     markSaved: function() {
         this.$saveButton.attr('disabled', 'disabled');
         this.$previewButton.removeAttr('disabled');
