@@ -222,6 +222,7 @@ var QuizDetailView = BaseView.extend({
     saveQuiz: function() {
         var properties = this.serialize();
 
+        // Save the quiz
         this.model.save(properties, {
             skipped: function() {
                 console.log('Skipped saving Quiz.');
@@ -235,8 +236,14 @@ var QuizDetailView = BaseView.extend({
         }).then(_.bind(function() {
             // Save All Questions
             this.saveQuestions().then(_.bind(function() {
+                // Save all choices
                 this.saveChoices().then(_.bind(function() {
-                    this.deployQuiz();
+                    // Deploy
+                    this.deployQuiz().then(_.bind(function() {
+                        // Mark as saved
+                        console.log('Save complete.');
+                        this.markSaved();
+                    }, this));;
                 }, this));
             }, this));
         }, this));
@@ -265,9 +272,7 @@ var QuizDetailView = BaseView.extend({
     },
 
     deployQuiz: function() {
-        this.model.deploy();
-
-        this.markSaved();
+        return this.model.deploy();
     },
 
     addQuestionModel: function() {
