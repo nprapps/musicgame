@@ -343,13 +343,15 @@ var PreviewModalView = BaseView.extend({
     render: function() {
         this.$el.html(JST.admin_preview());
 
-        $preview = this.$('.preview');
+        $previewMobile = this.$('.preview-mobile');
+        $previewLarge = this.$('.preview-large');
     },
 
     show: function() {
-        $preview.responsiveIframe({
-            src: this.urlRoot + '/game.html?quiz=' + this.model.get('slug')
-        });
+        var url = this.urlRoot + '/game.html?quiz=' + this.model.get('slug');
+
+        $previewMobile.responsiveIframe({ src: url });
+        $previewLarge.responsiveIframe({ src: url });
 
         this.$('.modal').modal();
     }
