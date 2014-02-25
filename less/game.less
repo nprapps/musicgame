@@ -360,6 +360,50 @@ h1,h2,h3,h4,h5,h6 {
 				}
 			}
 		}
+
+		&.photo-answers {
+			li {
+				position: relative;
+
+				@media screen and (max-width: 480px){
+					width: 50%;
+					margin-bottom: @grid-gutter-width / 2;
+				}
+
+				.cover {
+					&:after {
+						font-family: FontAwesome;
+						font-size: 100%;
+						position: absolute;
+						bottom: 0;
+						right: 0;
+						-webkit-font-smoothing: antialiased;
+						color: #fff;
+						.square(35px);
+						line-height: 35px;
+						text-align: center;
+					}
+				}
+
+				&.correct {
+					.cover {
+						&:after {
+							content: "\f00c";
+							background: @correct;
+						}
+					}
+				}
+
+				&.incorrect {
+					.cover {
+						&:after {
+							content: "\f00d";
+							background: @incorrect;
+						}
+					}
+				}
+			}
+		}
 	}
 
 	.next-question,

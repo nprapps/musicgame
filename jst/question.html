@@ -25,9 +25,8 @@
 				<p><%= after_text %></p>
 			</div>
 		<% } %>
-		<ul class="answers">
+		<ul class="answers<% if (_.where(choices, { text: "" }).length === choices.length) { %> photo-answers <% } %>">
 			<% _.each(_.shuffle(choices), function(choice){ %>
-				<% if (choice.text) { %>
 					<li<% if (choice.photo) { %> class="has-cover"<% } %> data-choice-id="<%= choice.id %>">
 						<a href="#">
 						<% if (choice.photo) { %>
@@ -35,10 +34,11 @@
 								<img class="img-responsive" src="<%= choice['photo']['rendered_file_path'] %>">
 							</div>
 						<% } %>
+						<% if (choice.text) { %>
 							<div class="answer"><%= choice.text %></div>
+						<% } %>
 						</a>
 					</li>
-				<% } %>
 			<% }); %>
 		</ul>
 	</div>
