@@ -15,6 +15,7 @@
 @import "less/lib/bootstrap/tables.less";
 @import "less/lib/bootstrap/forms.less";
 @import "less/lib/bootstrap/buttons.less";
+@import "less/lib/bootstrap/close.less";
 @import "less/lib/bootstrap/button-groups.less";
 @import "less/lib/bootstrap/input-groups.less";
 @import "less/lib/bootstrap/modals.less";
@@ -534,52 +535,69 @@
 
 #preview-modal {
 
+	h5 {
+		text-transform: uppercase;
+		font-size: @font-size-base * 0.8;
+		font-weight: bold;
+	}
+
+	p {
+		color: @gray-light;
+		font-size: @font-size-small;
+		line-height: 1.1;
+	}
+
 	.modal-dialog {
 		width: 90%;
 	}
 
 	.modal-body {
 		min-height: 480px;
+		overflow: hidden;
 	}
 
-    .preview-mobile {
+    .mobile {
     	float: left;
-        position: relative;
         width: 300px;
+        overflow: hidden;
 
-        iframe{
-            width: 300px !important;
-            overflow: hidden;
-            position: relative;
-            z-index: 1;
-        }
+        .preview-mobile {
+	        position: relative;
+	        min-height: 430px;
 
+	        &:before {
+	            display: block;
+	            content: ' ';
+	            height: 3px;
+	            background: fade(@brand-danger, 70%);
+	            position: absolute;
+	            top: 420px;
+	            width: 300px;
+	            z-index: 100;
+	        }
 
+	        &:after {
+	            display: block;
+	            content: ' ';
+	            height: 420px;
+	            width: 300px;
+	            background: fade(@brand-danger, 30%);
+	            position: absolute;
+	            top: 0;
+	        }
 
-        &:before {
-            display: block;
-            content: ' ';
-            height: 3px;
-            background: rgba(255,0,0,0.5);
-            position: absolute;
-            top: 420px;
-            width: 300px;
-            z-index: 100;
-        }
-
-        &:after {
-            display: block;
-            content: ' ';
-            height: 420px;
-            width: 300px;
-            background: rgba(0,0,150,0.1);
-            position: absolute;
-            top: 0;
+	        iframe{
+	            width: 300px !important;
+	            overflow: hidden;
+	            position: relative;
+	            z-index: 1;
+	        }
         }
     }
 
-    .preview-large {
+    .large {
     	margin-left: 300px + @grid-gutter-width;
+    	overflow: hidden;
     }
 }
 
