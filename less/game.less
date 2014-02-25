@@ -519,16 +519,14 @@ h1,h2,h3,h4,h5,h6 {
 				.cover {
 					.make-xs-column(3);
 					.make-sm-column(3);
-					.make-sm-column-offset(1);
 					.make-md-column(2);
-					.make-md-column-offset(2);
 
 					margin-bottom: @line-height-computed;
 				}
 				.quiz-title {
 					.make-xs-column(9);
-					.make-sm-column(7);
-					.make-md-column(6);
+					.make-sm-column(9);
+					.make-md-column(10);
 				}
 			}
 
@@ -548,41 +546,33 @@ h1,h2,h3,h4,h5,h6 {
 
 		
 		.responses {
-			.make-sm-column(10);
-			.make-sm-column-offset(1);
-			.make-md-column(8);
-			.make-md-column-offset(2);
+			.make-xs-column(12);
 		}
 		
 		.next-up {
-			.make-sm-column(10);
-			.make-sm-column-offset(1);
-			.make-md-column(8);
-			.make-md-column-offset(2);
-			
+			.make-sm-column(12);
 			background-color: #eee;
 			padding: 0;
-			
-			
+
 			h2 {
-				padding: 10px;
+				padding: @grid-gutter-width / 2;
 				background-color: #d9d9d9;
 				color: #797979;
 				text-transform: none;
-				margin-bottom: 25px;
+				margin-bottom: @line-height-computed;
 			}
-			
+
 			h3 {
-				font-size: 24px;
+				font-size: @font-size-base * 1.33333;
 				font-weight: bold;
 			}
-			
+
 			h4 {
 				font-weight: bold;
 				font-size: 17px;
 				color: #797979;
 			}
-			
+
 			p {
 				font-size: 13px;
 				color: #797979;
@@ -590,19 +580,18 @@ h1,h2,h3,h4,h5,h6 {
 
 			.next-thumb {
 				.make-sm-column(4);
-				
+
 				img {
 					max-width: 100%;
 					height: auto;
 					padding-left: 25px;
 				}
 			}
-			
+
 			.next-desc {
 				.make-sm-column(8);
 				padding-right: 20px;
 			}
-			
 		}
 
 		ul {
@@ -611,19 +600,39 @@ h1,h2,h3,h4,h5,h6 {
 
 			li {
 				margin-bottom: @line-height-computed / 2;
-				padding: @line-height-computed 0;
-				border-top: 2px solid @lightGray;
-				overflow: hidden;
+				.make-row();
 
-				img {
-					max-width: 50px;
-					.pull-left;
-					margin-right: @grid-gutter-width / 2;
-
-					@media screen and (min-width: 480px){
-						max-width: 100px;
-					}
+				.question {
+					.make-xs-column(12);
 				}
+
+				img.correct-choice {
+					.make-xs-column(3);
+					.make-sm-column(2);
+				}
+
+				.choices {
+					.make-xs-column(9);
+					.make-sm-column(10);
+				}
+
+				&:before {
+					display: block;
+					content: ' ';
+					margin: @line-height-computed @grid-gutter-width / 2;
+					border-top: 2px solid @lightGray;
+				}
+
+				// img {
+				// 	max-width: 60px;
+				// 	.pull-left;
+				// 	margin-right: @grid-gutter-width / 2;
+				// 	clear: left;
+
+				// 	@media screen and (min-width: 480px){
+				// 		max-width: 100px;
+				// 	}
+				// }
 
 
 				h2 {
@@ -637,68 +646,74 @@ h1,h2,h3,h4,h5,h6 {
 					margin-right: @grid-gutter-width / 2;
 				}
 
-				.your-answer,
-				.correct-answer {
+				.answer {
 					position: relative;
+					text-align: left;
+					font-size: @font-size-small;
 					margin-bottom: @line-height-computed / 2;
 
 					&:before {
 						font-family: FontAwesome;
 						-webkit-font-smoothing: antialiased;
+						margin-right: 5px;
 					}
-				}
 
-				.your-answer {
-					color: @correct;
-					margin-bottom: 0;
-
-					&:before {
+					&.correct:before {
 						content: '\f00c';
 					}
 
-					&.incorrect {
-						color: @incorrect;
+					&.incorrect:before {
+						content: '\f00d';
+					}
 
-						&:before {
-							content: '\f00d';
+					&.answer-selected {
+						margin-bottom: 0;
+
+						&.correct:before {
+							color: @correct;
+						}
+
+						&.incorrect:before {
+							color: @incorrect;
+						}
+					}
+
+					&.answer-missed {
+						color: @gray-light;
+					}
+				}
+
+				h2 {
+					font-size: @font-size-base;
+					line-height: 1;
+					margin-bottom: @line-height-computed / 2;
+				}
+
+				h3 {
+					font-size: @font-size-large;
+					line-height: 1;
+				}
+
+				&.has-audio {
+					h2,
+					.answer {
+						padding-left: 60px + @grid-gutter-width / 2;
+					}
+
+					&.has-photo {
+						.answer {
+							padding-left: 0;
 						}
 					}
 				}
-			}
 
-			&.audio {
-				h2,
-				.answer {
-					padding-left: 50px + @grid-gutter-width / 2;
-				}
-			}
-
-
-			h2 {
-				font-size: @font-size-base;
-				line-height: 1;
-				margin-bottom: @line-height-computed / 2;
-			}
-
-			h3 {
-				font-size: @font-size-large;
-				line-height: 1;
-			}
-
-			p {
-				text-align: left;
-				font-size: @font-size-small;
-
-				&.your-answer {
-					&:before {
-						font-family: FontAwesome;
-						margin-right: 10px;
-					}
-				}
-
-				&.correct-answer {
-					color: #999;
-				}
+				// &.has-photo {
+				// 	@media screen and (min-width: 480px){
+				// 		.answer {
+				// 			padding-left: 100px + @grid-gutter-width / 2;
+				// 		}
+				// 	}
+				// }
 			}
 		}
 

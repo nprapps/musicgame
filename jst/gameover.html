@@ -16,26 +16,30 @@
 	<div class="row">
 		<ul class="responses list-unstyled <% if (_.where(quizData['questions'], {audio: null}).length < quizData['questions'].length){ %>audio<% } %>">
 		<% _.each(quizData['questions'], function(question, index){ %>
-			<li class="<%= answers[index] === correctAnswers[index] ? 'correct' : 'incorrect' %>">
+			<li class="<%= answers[index] === correctAnswers[index] ? 'correct' : 'incorrect' %><% if (_.where(question['choices'], { correct_answer: true })[0]['photo']) { %> has-photo<% } %><% if (question.audio){ %> has-audio<% } %>">
+				<div class="question">
 				<% if (question.audio){ %>
-                <div id="player_<%= index %>" class="jp-player" data-mp3="<%= question.audio.rendered_mp3_path %>" data-ogg="<%= question.audio.rendered_oga_path %>"></div>
-				<div id="jp_container_<%= index %>" class="jp-audio pull-left">
-				    <div class="jp-controls">
-				        <a href="javascript:;" class="play nav-btn" tabindex="1" title="play"><i class="fa fa-play"></i></i></a>
-				        <a href="javascript:;" class="pause nav-btn" tabindex="1" style="display: none;" title="pause"><i class="fa fa-pause"></i></a>
-				    </div>
-				</div> <!-- end .jp-audio -->
-				<% } %>
-				<h2><%= question.text %></h2>
+	                <div id="player_<%= index %>" class="jp-player" data-mp3="<%= question.audio.rendered_mp3_path %>" data-ogg="<%= question.audio.rendered_oga_path %>"></div>
+					<div id="jp_container_<%= index %>" class="jp-audio pull-left">
+					    <div class="jp-controls">
+					        <a href="javascript:;" class="play nav-btn" tabindex="1" title="play"><i class="fa fa-play"></i></i></a>
+					        <a href="javascript:;" class="pause nav-btn" tabindex="1" style="display: none;" title="pause"><i class="fa fa-pause"></i></a>
+					    </div>
+					</div> <!-- end .jp-audio -->
+					<% } %>
+					<h2><%= question.text %></h2>
+				</div>
 				<% if (_.where(question['choices'], { correct_answer: true })[0]['photo']) { %>
-					<img src="<%= _.where(question['choices'], {correct_answer: true})[0]['photo']['rendered_file_path'] %>">
+					<img class="correct-choice" src="<%= _.where(question['choices'], {correct_answer: true})[0]['photo']['rendered_file_path'] %>">
 				<% } %>
+				<div class="choices">
 				<% if (answers[index] !== correctAnswers[index]){ %>
-					<p class="answer correct-answer"><i class="fa fa-check"></i> <%= _.where(question['choices'], { correct_answer: true })[0]['text'] %></p>
+					<p class="answer answer-missed correct"><%= _.where(question['choices'], { correct_answer: true })[0]['text'] %></p>
 				<% }%>
 				<% if (answers[index] !== ''){ %>
-				<p class="answer your-answer<% if (answers[index] === correctAnswers[index]){ %> correct<% } else { %> incorrect<% }%>"><% if (answers[index] !== correctAnswers[index]){ %>You answered: <% } %><%= _.where(question['choices'], { id: answers[index] })[0]['text'] %> </p>
+				<p class="answer answer-selected <%= answers[index] === correctAnswers[index] ? 'correct' : 'incorrect' %>"><% if (answers[index] !== correctAnswers[index]){ %>You answered: <% } %><%= _.where(question['choices'], { id: answers[index] })[0]['text'] %> </p>
 				<% } %>
+				</div>
 			</li>
 		<% }); %>
 		</ul>
