@@ -24,10 +24,7 @@ var ChangeTrackingModel = Backbone.Model.extend({
                     options.skipped();
                 }
 
-                var deferred = $.Deferred();
-                deferred.resolve();
-
-                return deferred.promise();
+                return $.Deferred().resolve().promise();
             }
         }
 

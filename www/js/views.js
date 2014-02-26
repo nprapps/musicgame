@@ -260,10 +260,10 @@ var QuizDetailView = BaseView.extend({
         var saves = [];
 
         _.each(this.questionViews, function(questionView) {
-            saves.push.apply(saves, questionView.saveQuestion());
+            saves.push(questionView.saveQuestion());
         });
 
-        return $.when(saves);
+        return $.when.apply(this, saves);
     },
 
     saveChoices: function() {
@@ -271,11 +271,11 @@ var QuizDetailView = BaseView.extend({
 
         _.each(this.questionViews, function(questionView) {
             _.each(questionView.choiceViews, function(choiceView) {
-                saves.push.apply(saves, choiceView.saveChoice());
+                saves.push(choiceView.saveChoice());
             });
         });
 
-        return $.when(saves);
+        return $.when.apply(this, saves);
     },
 
     deployQuiz: function() {
@@ -751,7 +751,9 @@ var PhotoView = BaseView.extend({
                     this.model = this.options.parent.model.photo;
                     this.render();
 
-                    this.options.parent.toggleViews();
+                    if (this.options.parent.toggleViews) {
+                        this.options.parent.toggleViews();
+                    }
 
                     this.markNeedsSave();
                 }, this),
@@ -779,7 +781,9 @@ var PhotoView = BaseView.extend({
 
         this.render();
                     
-        this.options.parent.toggleViews();
+        if (this.options.parent.toggleViews) {
+            this.options.parent.toggleViews();
+        }
 
         this.markNeedsSave();
     },
@@ -894,7 +898,9 @@ var AudioView = BaseView.extend({
                     this.model = this.options.parent.model.audio;
                     this.render();
                     
-                    this.options.parent.toggleViews();
+                    if (this.options.parent.toggleViews) {
+                        this.options.parent.toggleViews();
+                    }
 
                     this.markNeedsSave();
                 }, this),
@@ -922,7 +928,9 @@ var AudioView = BaseView.extend({
 
         this.render();
         
-        this.options.parent.toggleViews();
+        if (this.options.parent.toggleViews) {
+            this.options.parent.toggleViews();
+        }
 
         this.markNeedsSave();
     },
