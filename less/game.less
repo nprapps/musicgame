@@ -239,7 +239,8 @@ h1,h2,h3,h4,h5,h6 {
 
 				&:hover {
 					text-decoration: none;
-					background: darken(@lightGray, 10%);
+					background: @primaryControl;
+					color: #fff;
 				}
 
 				&:focus {
@@ -285,6 +286,18 @@ h1,h2,h3,h4,h5,h6 {
 					top: 50%;
 					right: 10px;
 					-webkit-font-smoothing: antialiased;
+				}
+			}
+
+			&.correct,
+			&.incorrect,
+			&.correct a:hover,
+			&.incorrect a:hover {
+				background: @lightGray;
+				color: @primaryControl;
+
+				&.has-cover {
+					background: transparent;
 				}
 			}
 
@@ -343,6 +356,14 @@ h1,h2,h3,h4,h5,h6 {
 								top: 0;
 								right: 0;
 								margin-top: 0;
+							}
+						}
+
+						&:hover {
+							color: @primaryControl;
+
+							.cover {
+								opacity: 0.7;
 							}
 						}
 					}
@@ -544,54 +565,8 @@ h1,h2,h3,h4,h5,h6 {
 			}
 		}
 
-		
 		.responses {
 			.make-xs-column(12);
-		}
-		
-		.next-up {
-			.make-sm-column(12);
-			background-color: #eee;
-			padding: 0;
-
-			h2 {
-				padding: @grid-gutter-width / 2;
-				background-color: #d9d9d9;
-				color: #797979;
-				text-transform: none;
-				margin-bottom: @line-height-computed;
-			}
-
-			h3 {
-				font-size: @font-size-base * 1.33333;
-				font-weight: bold;
-			}
-
-			h4 {
-				font-weight: bold;
-				font-size: 17px;
-				color: #797979;
-			}
-
-			p {
-				font-size: 13px;
-				color: #797979;
-			}
-
-			.next-thumb {
-				.make-sm-column(4);
-
-				img {
-					max-width: 100%;
-					height: auto;
-					padding-left: 25px;
-				}
-			}
-
-			.next-desc {
-				.make-sm-column(8);
-				padding-right: 20px;
-			}
 		}
 
 		ul {
@@ -718,13 +693,47 @@ h1,h2,h3,h4,h5,h6 {
 		}
 
 		.next-up {
+			.make-xs-column(12);
+			background-color: #eee;
 			padding-bottom: @line-height-computed;
 
-			&:before {
+			> a {
+				.make-row();
 				display: block;
-				content: ' ';
-				//border-top: 2px solid @lightGray;
-				//padding-top: @line-height-computed;
+			}
+
+			h2 {
+				padding: @grid-gutter-width / 2;
+				background-color: #d9d9d9;
+				color: #797979;
+				text-transform: none;
+				margin: 0 -@grid-gutter-width / 2 @line-height-computed;
+			}
+
+			h3 {
+				font-size: @font-size-base * 1.33333;
+				font-weight: bold;
+			}
+
+			h4 {
+				font-weight: bold;
+				font-size: @font-size-base * 0.777777778;
+				color: #797979;
+				text-transform: uppercase;
+			}
+
+			p {
+				font-size: 13px;
+				color: #797979;
+			}
+
+			.next-thumb {
+				.make-sm-column(4);
+				margin-bottom: @line-height-computed;
+			}
+
+			.next-desc {
+				.make-sm-column(8);
 			}
 		}
 
