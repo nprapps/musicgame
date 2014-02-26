@@ -260,10 +260,10 @@ var QuizDetailView = BaseView.extend({
         var saves = [];
 
         _.each(this.questionViews, function(questionView) {
-            saves.push.apply(saves, questionView.saveQuestion());
+            saves.push(questionView.saveQuestion());
         });
 
-        return $.when(saves);
+        return $.when.apply(this, saves);
     },
 
     saveChoices: function() {
@@ -271,11 +271,11 @@ var QuizDetailView = BaseView.extend({
 
         _.each(this.questionViews, function(questionView) {
             _.each(questionView.choiceViews, function(choiceView) {
-                saves.push.apply(saves, choiceView.saveChoice());
+                saves.push(choiceView.saveChoice());
             });
         });
 
-        return $.when(saves);
+        return $.when.apply(this, saves);
     },
 
     deployQuiz: function() {
