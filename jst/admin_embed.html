@@ -1,0 +1,23 @@
+<div class="modal fade">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h3>1. Embed your quiz in Seamus</h3>
+                <p><a class="clipper" href="#">Click here</a> to copy this code to your clipboard. Then paste it into a Seamus HTML asset.</p>
+                <textarea id="embed" readonly="readonly" rows="12"><%= embed %></textarea>
+
+                <h3>2. Save your Seamus URL</h3>
+                <p>Paste the URL of your saved Seamus page here.</p>
+                <input type="text" class="seamus-url" value="<%= quiz.get('seamus_url') || '' %>" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary save">Save</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+
+

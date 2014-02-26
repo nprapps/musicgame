@@ -24,10 +24,7 @@ var ChangeTrackingModel = Backbone.Model.extend({
                     options.skipped();
                 }
 
-                var deferred = $.Deferred();
-                deferred.resolve();
-
-                return deferred.promise();
+                return $.Deferred().resolve().promise();
             }
         }
 
@@ -141,10 +138,6 @@ var Quiz = ChangeTrackingModel.extend({
         delete data['updated'];
 
         return data;
-    },
-
-    getPreviewUrl: function() {
-        return '/' + APP_CONFIG['PROJECT_SLUG'] + '/admin/preview.html?quiz=' + this.get('slug');
     },
 
     deploy: function() {

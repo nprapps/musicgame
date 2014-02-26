@@ -1,6 +1,9 @@
 {% extends 'admin/_base.html' %}
 
 {% block extra_foot %}
+<div id="preview-modal"></div>
+<div id="embed-modal"></div>
+
 <script type="text/javascript">
     window.QUIZ_DATA = {{ quiz_json|safe }};
 </script>
@@ -9,6 +12,8 @@
 <!-- JS -->
 {% block extra_js %}
 {{ JS.push('js/lib/jquery.jplayer.js') }}
+{{ JS.push('js/lib/ZeroClipboard.js') }}
+{{ JS.push('js/lib/parent.js') }}
 {{ JS.push('js/admin_detail.js') }}
 {{ JS.render('js/admin-detail.min.js') }}
 {% endblock %}

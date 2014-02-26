@@ -134,7 +134,8 @@ var QuizDetailView = BaseView.extend({
 
     events: {
         'click #save-quiz': 'saveQuiz',
-        'click #preview-publish': 'previewQuiz',
+        'click #preview': 'previewQuiz',
+        'click #publish': 'publishQuiz',
         'click #add-question': 'addQuestionModel',
         'input .title': 'markNeedsSave',
         'input .description': 'markNeedsSave',
@@ -143,6 +144,8 @@ var QuizDetailView = BaseView.extend({
     },
 
     initialize: function() {
+        this.previewModalView = null;
+        this.embedModalView = null;
         this.photoView = null;
         this.questionViews = {};
 
@@ -150,10 +153,19 @@ var QuizDetailView = BaseView.extend({
         this.$photo = null;
         this.$saveButton = null;
         this.$previewButton = null;
+        this.$publishButton = null;
 
         _.bindAll(this);
 
         this.render();
+
+        this.previewModalView = new PreviewModalView({
+            'model': this.model
+        });
+
+        this.embedModalView = new EmbedModalView({
+            'model': this.model
+        });
 
         this.model.questions.each(_.bind(function(question) {
             this.addQuestionView(question);
@@ -173,7 +185,8 @@ var QuizDetailView = BaseView.extend({
         this.$questions = this.$('.questions');
         this.$photo = this.$('.photo');
         this.$saveButton = this.$('#save-quiz');
-        this.$previewButton = this.$('#preview-publish');
+        this.$previewButton = this.$('#preview');
+        this.$publishButton = this.$('#publish');
 
         _.each(this.questionViews, function(view) {
             view.render();
@@ -187,22 +200,36 @@ var QuizDetailView = BaseView.extend({
     markNeedsSave: function() {
         this.$saveButton.removeAttr('disabled');
         this.$previewButton.attr('disabled', 'disabled');
+        this.$publishButton.attr('disabled', 'disabled');
         this.$saveButton.text('Save now');
+    },
+
+    markSaving: function() {
+        this.$saveButton.attr('disabled', 'disabled');
+        this.$previewButton.attr('disabled', 'disabled');
+        this.$publishButton.attr('disabled', 'disabled');
+        this.$saveButton.text('Saving...');
     },
 
     markSaved: function() {
         this.$saveButton.attr('disabled', 'disabled');
         this.$previewButton.removeAttr('disabled');
+        this.$publishButton.removeAttr('disabled');
         this.$saveButton.text('Saved');
     },
 
     previewQuiz: function() {
-        window.location.href = '/' + APP_CONFIG['PROJECT_SLUG'] + '/admin/preview.html?quiz=' + this.model.get('slug');
+        this.previewModalView.show();
+    },
+
+    publishQuiz: function() {
+        this.embedModalView.show();
     },
 
     saveQuiz: function() {
         var properties = this.serialize();
 
+        // Save the quiz
         this.model.save(properties, {
             skipped: function() {
                 console.log('Skipped saving Quiz.');
@@ -216,8 +243,14 @@ var QuizDetailView = BaseView.extend({
         }).then(_.bind(function() {
             // Save All Questions
             this.saveQuestions().then(_.bind(function() {
+                // Save all choices
                 this.saveChoices().then(_.bind(function() {
-                    this.deployQuiz();
+                    // Deploy
+                    this.deployQuiz().then(_.bind(function() {
+                        // Mark as saved
+                        console.log('Save complete.');
+                        this.markSaved();
+                    }, this));;
                 }, this));
             }, this));
         }, this));
@@ -227,10 +260,10 @@ var QuizDetailView = BaseView.extend({
         var saves = [];
 
         _.each(this.questionViews, function(questionView) {
-            saves.push.apply(saves, questionView.saveQuestion());
+            saves.push(questionView.saveQuestion());
         });
 
-        return $.when(saves);
+        return $.when.apply(this, saves);
     },
 
     saveChoices: function() {
@@ -238,17 +271,15 @@ var QuizDetailView = BaseView.extend({
 
         _.each(this.questionViews, function(questionView) {
             _.each(questionView.choiceViews, function(choiceView) {
-                saves.push.apply(saves, choiceView.saveChoice());
+                saves.push(choiceView.saveChoice());
             });
         });
 
-        return $.when(saves);
+        return $.when.apply(this, saves);
     },
 
     deployQuiz: function() {
-        this.model.deploy();
-
-        this.markSaved();
+        return this.model.deploy();
     },
 
     addQuestionModel: function() {
@@ -292,6 +323,114 @@ var QuizDetailView = BaseView.extend({
 });
 
 /*
+ * PreviewModalView
+ */
+var PreviewModalView = BaseView.extend({
+    el: '#preview-modal',
+
+    initialize: function() {
+        this.$preview = null;
+
+        this.urlRoot = '/' + APP_CONFIG['PROJECT_SLUG'];
+
+        if (APP_CONFIG['DEPLOYMENT_TARGET']) {
+            this.urlRoot = APP_CONFIG['S3_BASE_URL']
+        }
+
+        this.render();
+    },
+
+    render: function() {
+        this.$el.html(JST.admin_preview());
+
+        $previewMobile = this.$('.preview-mobile');
+        $previewLarge = this.$('.preview-large');
+    },
+
+    show: function() {
+        var url = this.urlRoot + '/game.html?quiz=' + this.model.get('slug');
+
+        $previewMobile.responsiveIframe({ src: url });
+        $previewLarge.responsiveIframe({ src: url });
+
+        this.$('.modal').modal();
+    }
+});
+
+/*
+ * EmbedModalView
+ */
+var EmbedModalView = BaseView.extend({
+    el: '#embed-modal',
+
+    events: {
+        'click .save': 'onClickSave'
+    },
+
+    initialize: function() {
+        this.$seamusUrl = null;
+
+        this.urlRoot = '/' + APP_CONFIG['PROJECT_SLUG'];
+
+        if (APP_CONFIG['DEPLOYMENT_TARGET']) {
+            this.urlRoot = APP_CONFIG['S3_BASE_URL']
+        }
+
+        this.embedCode = null;
+
+        this.render();
+    },
+
+    render: function() {
+        this.embedCode = JST.embed({
+            'urlRoot': this.urlRoot,
+            'slug': this.model.get('slug')
+        });
+
+        this.$el.html(JST.admin_embed({
+            'quiz': this.model,
+            'embed': this.embedCode
+        }));
+
+        this.$seamusUrl = this.$('.seamus-url');
+
+        ZeroClipboard.setDefaults({
+            moviePath: this.urlRoot + '/js/lib/ZeroClipboard.swf'
+        });
+
+        var clipper = new ZeroClipboard($('.clipper'));
+
+        clipper.on('complete', function() {
+            alert('Embed code copied to your clipboard!');
+        });
+
+        clipper.on('dataRequested', _.bind(function(client, args) {
+            client.setText(this.embedCode);
+        }, this));
+    },
+
+    show: function() {
+        this.$('.modal').modal();
+    },
+
+    onClickSave: function(e) {
+        e.preventDefault();
+
+        $.ajax({
+            'url': '/' + APP_CONFIG['PROJECT_SLUG'] + '/admin/update-seamus-url/' + this.model.get('slug') + '/',
+            'method': 'POST',
+            'data': { 'seamus_url': this.$seamusUrl.val() },
+            'success': function() {
+                console.log('Seamus URL updated.');
+            },
+            'error': function() {
+                console.log('Failed to update Seamus URL.');
+            }
+        });
+    }
+});
+
+/*
  * QuestionView
  */
 var QuestionView = BaseView.extend({
@@ -325,7 +464,8 @@ var QuestionView = BaseView.extend({
         this.model.choices.each(_.bind(function(choice) {
             this.addChoiceView(choice);
         }, this));
-
+        
+        this.toggleViews();
         this.addPhotoView();
         this.addAudioView();
 
@@ -409,6 +549,19 @@ var QuestionView = BaseView.extend({
             'el': this.$audio
         });
         this.audioView.render();
+    },
+
+    toggleViews: function() {
+        if (this.model.photo.id) {
+            this.$audio.hide();
+            this.$photo.show();
+        } else if (this.model.audio.id) {
+            this.$audio.show();
+            this.$photo.hide();
+        } else {
+            this.$audio.show();
+            this.$photo.show();
+        }
     },
 
     saveQuestion: function() {
@@ -598,6 +751,10 @@ var PhotoView = BaseView.extend({
                     this.model = this.options.parent.model.photo;
                     this.render();
 
+                    if (this.options.parent.toggleViews) {
+                        this.options.parent.toggleViews();
+                    }
+
                     this.markNeedsSave();
                 }, this),
                 'error': function() {
@@ -623,6 +780,10 @@ var PhotoView = BaseView.extend({
         this.options.parent.model.setPhoto(this.model);
 
         this.render();
+                    
+        if (this.options.parent.toggleViews) {
+            this.options.parent.toggleViews();
+        }
 
         this.markNeedsSave();
     },
@@ -736,6 +897,10 @@ var AudioView = BaseView.extend({
                     this.options.parent.model.setAudio(new Audio(data));
                     this.model = this.options.parent.model.audio;
                     this.render();
+                    
+                    if (this.options.parent.toggleViews) {
+                        this.options.parent.toggleViews();
+                    }
 
                     this.markNeedsSave();
                 }, this),
@@ -762,6 +927,10 @@ var AudioView = BaseView.extend({
         this.options.parent.model.setAudio(this.model);
 
         this.render();
+        
+        if (this.options.parent.toggleViews) {
+            this.options.parent.toggleViews();
+        }
 
         this.markNeedsSave();
     },
