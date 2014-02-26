@@ -1,7 +1,7 @@
 <% if (photo.id) { %>
 <div class="remove-image">
 	<a href="#" class="remove">
-	<img class="preview" title="<%= photo.get('file_name') || '' %>" src="<%= photo.get('rendered_file_path') %>"></img>
+	<img class="preview" title="<%= photo.get('file_name') || '' %>" src="<%= photo.get('rendered_600_path') %>"></img>
 	<span class="remove-icon"><i class="fa fa-times"></i></span></a>
 </div>
 <% } else { %>
@@ -12,4 +12,3 @@
 	    </span>
 	</div>
 <% } %>
-

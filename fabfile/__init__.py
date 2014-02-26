@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import base64
 import copy
 from glob import glob
 import os
@@ -642,12 +643,16 @@ def _create_photo(path):
 
     image = {
         'file_name': '%s%s' % (file_name, file_extension),
-        'rendered_file_path': path,
         'caption': 'TKTK',
         'credit': 'TKTK'
     }
 
     image = models.Photo(**image)
+
+    with open(path.replace('/musicgame', 'www'), 'rb') as readfile:
+        file_string = ';,%s' % base64.b64encode(readfile.read())
+        image.write_photo(file_string)
+
     image.save()
 
     print "Saved image: %s" % image

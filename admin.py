@@ -117,4 +117,4 @@ def _publish_quiz(quiz_slug):
     quiz = models.Quiz.get(slug=quiz_slug)
     quiz.deploy()
 
-    return ('', 200) 
+    return ('', 200)

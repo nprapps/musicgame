@@ -1,6 +1,8 @@
 import base64
 import datetime
+import glob
 import gzip
+import json
 import os
 import re
 from StringIO import StringIO
@@ -40,10 +42,15 @@ class Photo(PSQLMODEL):
     credit = TextField()
     caption = TextField()
     file_name = TextField(null=True)
-    rendered_file_path = TextField(null=True)
+    rendered_600_path = TextField(null=True)
+    rendered_300_path = TextField(null=True)
 
     def __unicode__(self):
-        return self.rendered_file_path
+        # return json.loads(self.rendered_file_paths)['624']
+        return self.file_name
+
+    def get_rendered_file_paths(self):
+        return json.loads(self.rendered_file_paths)
 
     def write_photo(self, file_string):
         """
@@ -51,48 +58,85 @@ class Photo(PSQLMODEL):
         If s3 buckets are available, deploys to s3.
         If not, deploys to www/live-data/img/.
         """
+
+        timestamp = int(time.mktime(datetime.datetime.now().timetuple()))
+
         file_type, data = file_string.split(';')
         prefix, data = data.split(',')
 
         decoded_file = base64.b64decode(data)
 
-        now = datetime.datetime.now()
-        timestamp = int(time.mktime(now.timetuple()))
         file_name = '%s-%s' % (timestamp, self.file_name)
 
-        rendered_path = 'live-data/img/%s' % (file_name)
+        rendered_path = 'live-data/img'
 
-        # Connect to S3.
-        s3 = boto.connect_s3()
+        if not os.path.exists('/tmp/%s' % app_config.PROJECT_SLUG):
+            os.makedirs('/tmp/%s' % app_config.PROJECT_SLUG)
 
-        # Deployed
-        if app_config.S3_BUCKETS:
-            rendered_path = '%s/%s' % (app_config.PROJECT_SLUG, rendered_path)
+        # Write the initial file.
+        with open('/tmp/%s/%s' % (app_config.PROJECT_SLUG, file_name), 'wb') as writefile:
+            writefile.write(decoded_file)
 
-            for bucket_name in app_config.S3_BUCKETS:
-                bucket = s3.get_bucket(bucket_name)
+        # Write the rendered files.
+        for width in app_config.IMAGE_WIDTHS:
+            os.system('convert -resize %s /tmp/%s/%s /tmp/%s/%spx-%s' % (
+                width,
+                app_config.PROJECT_SLUG,
+                file_name,
+                app_config.PROJECT_SLUG,
+                width,
+                file_name))
 
-                k = Key(bucket, rendered_path)
-                k.set_contents_from_string(decoded_file, headers={
-                    'Cache-Control': 'max-age=5'
-                })
+        # Glob for all of the files.
+        for resized_image in glob.glob('/tmp/%s/*px-%s' % (app_config.PROJECT_SLUG, file_name)):
+            file_path, file_name = os.path.split(resized_image)
+            file_name, file_extension = os.path.splitext(file_name)
 
-                k.set_acl('public-read')
+            with open(resized_image, 'rb') as readfile:
+                decoded_file = readfile.read()
 
-            self.rendered_file_path = 'http://%s.s3.amazonaws.com/%s' % (app_config.S3_BUCKETS[0], rendered_path)
-        # Local
-        else:
-            local_path = 'www/%s' % rendered_path
+            r = '%s/%s%s' % (
+                rendered_path, file_name, file_extension)
 
-            dirname = os.path.dirname(local_path)
+            width = resized_image.split('px')[0].split(file_path)[1].replace('/', '')
 
-            if not os.path.exists(dirname):
-                os.makedirs(dirname)
+            # Deployed
+            if app_config.S3_BUCKETS:
 
-            with open(local_path, 'wb') as writefile:
-                writefile.write(decoded_file)
+                # Connect to S3.
+                s3 = boto.connect_s3()
 
-            self.rendered_file_path = '/%s/%s' % (app_config.PROJECT_SLUG, rendered_path)
+                r = '%s/%s' % (app_config.PROJECT_SLUG, r)
+
+                for bucket_name in app_config.S3_BUCKETS:
+                    bucket = s3.get_bucket(bucket_name)
+
+                    k = Key(bucket, rendered_path)
+                    k.set_contents_from_string(decoded_file, headers={
+                        'Cache-Control': 'max-age=5'
+                    })
+
+                    k.set_acl('public-read')
+
+                setattr(self, 'rendered_%s_path' % width, 'http://%s.s3.amazonaws.com/%s' % (
+                    app_config.S3_BUCKETS[0], r))
+
+            # Local
+            else:
+                local_path = 'www/%s' % r
+
+                dirname = os.path.dirname(local_path)
+
+                if not os.path.exists(dirname):
+                    os.makedirs(dirname)
+
+                with open(local_path, 'wb') as writefile:
+                    writefile.write(decoded_file)
+
+                setattr(self, 'rendered_%s_path' % width, '/%s/%s' % (app_config.PROJECT_SLUG, r))
+
+            os.system('rm -f %s' % resized_image)
+
 
 class Audio(PSQLMODEL):
     """
@@ -112,8 +156,8 @@ class Audio(PSQLMODEL):
         Processes an uploaded file with `self.file_name`, which
         should exist in the temp directory.
         """
-        now = datetime.datetime.now()
-        timestamp = int(time.mktime(now.timetuple()))
+
+        timestamp = int(time.mktime(datetime.datetime.now().timetuple()))
 
         # Determine the extension.
         file_name, file_extension = os.path.splitext(self.file_name)
