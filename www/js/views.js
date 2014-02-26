@@ -751,7 +751,9 @@ var PhotoView = BaseView.extend({
                     this.model = this.options.parent.model.photo;
                     this.render();
 
-                    this.options.parent.toggleViews();
+                    if (this.options.parent.toggleViews) {
+                        this.options.parent.toggleViews();
+                    }
 
                     this.markNeedsSave();
                 }, this),
@@ -779,7 +781,9 @@ var PhotoView = BaseView.extend({
 
         this.render();
                     
-        this.options.parent.toggleViews();
+        if (this.options.parent.toggleViews) {
+            this.options.parent.toggleViews();
+        }
 
         this.markNeedsSave();
     },
@@ -894,7 +898,9 @@ var AudioView = BaseView.extend({
                     this.model = this.options.parent.model.audio;
                     this.render();
                     
-                    this.options.parent.toggleViews();
+                    if (this.options.parent.toggleViews) {
+                        this.options.parent.toggleViews();
+                    }
 
                     this.markNeedsSave();
                 }, this),
@@ -922,7 +928,9 @@ var AudioView = BaseView.extend({
 
         this.render();
         
-        this.options.parent.toggleViews();
+        if (this.options.parent.toggleViews) {
+            this.options.parent.toggleViews();
+        }
 
         this.markNeedsSave();
     },
