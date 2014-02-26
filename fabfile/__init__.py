@@ -719,7 +719,7 @@ def load_quizzes():
                     'audio': None,
                 }
 
-                if choice['text'] == question_json['answer']:
+                if choice_index == question_json['answer']:
                     choice['correct_answer'] = True
 
                 # Create photo
