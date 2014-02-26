@@ -139,8 +139,11 @@ var renderQuestion = function() {
         }
     }
 
-    $currentQuestion.addClass('in');
-    $previousQuestion.addClass('out');
+    // Safari doesn't animate properly without this
+    _.defer(function(){
+        $previousQuestion.removeClass('in').addClass('out');
+        $currentQuestion.addClass('in');
+    });
 
     _.delay(function(){
         $previousQuestion.remove();
