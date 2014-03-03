@@ -9,7 +9,7 @@
 var ChangeTrackingModel = Backbone.Model.extend({
     initialize: function(attributes) {
         this.needsSave = this.isNew();
-        
+
         this.on('change', this.onChange);
     },
   
@@ -45,17 +45,23 @@ var ChangeTrackingModel = Backbone.Model.extend({
  * RelatedPhotoMixin
  */
 var RelatedPhotoMixin = {
-    initialize: function(attributes) {
-        this.setPhoto(new Photo());
-
-       if (attributes) {
-            if ("photo" in attributes) {
-                this.setPhoto(new Photo(attributes.photo));
-            }
+    parse: function(response, options) {
+        if (response['photo']) {
+            var photo = new Photo(response['photo'], { 'parse': true });
+            this.setPhoto(photo);
         }
+
+        if (!this.photo) {
+            this.setPhoto(new Photo());
+        }
+
+        delete response['photo'];
+
+        return response;
     },
 
     onPhotoChange: function(photo) {
+        //console.log(this.get('photo') + ' == ' + this.photo.id);
         this.set('photo', this.photo.id ? this.photo.id : null);
     },
 
@@ -75,14 +81,20 @@ var RelatedPhotoMixin = {
  * RelatedAudioMixin
  */
 var RelatedAudioMixin = {
-    initialize: function(attributes) {
-        this.setAudio(new Audio());
-
-        if (attributes) {
-            if ("audio" in attributes) {
-                this.setAudio(new Audio(attributes.audio));
-            }
+    parse: function(response, options) {
+        if (response['audio']) {
+            var audio = new Audio(response['audio'], { 'parse': true });
+            this.set('audio', response['audio'].id);
+            this.setAudio(audio);
         }
+
+        if (!this.audio) {
+            this.setAudio(new Audio());
+        }
+
+        delete response['audio'];
+
+        return response;
     },
 
     onAudioChange: function(audio) {
@@ -108,20 +120,24 @@ var Quiz = ChangeTrackingModel.extend({
     name: 'Quiz',
 
     initialize: function(attributes) {
-        ChangeTrackingModel.prototype.initialize.apply(this);  
+        ChangeTrackingModel.prototype.initialize.apply(this, [attributes]);  
+    },
 
+    parse: function(response, options) {
         this.questions = new Questions();
 
-        if (attributes) {
-            if ("questions" in attributes) {
-                _.each(attributes.questions, _.bind(function(questionData) {
-                    var question = new Question(questionData);
-                    question.quiz = this;
+        if (response['questions']) {
+            _.each(response['questions'], _.bind(function(questionData) {
+                var question = new Question(questionData, { 'parse': true });
+                question.quiz = this;
 
-                    this.questions.add(question);
-                }, this));
-            }
+                this.questions.add(question);
+            }, this));
         }
+
+        delete response['questions'];
+
+        return response;
     },
 
     url: function() {
@@ -133,7 +149,6 @@ var Quiz = ChangeTrackingModel.extend({
     toJSON: function() {
         var data = _.clone(this.attributes);
 
-        delete data['questions'];
         delete data['created'];
         delete data['updated'];
 
@@ -163,20 +178,24 @@ var Question = ChangeTrackingModel.extend({
     name: 'Question',
 
     initialize: function(attributes) {
-        ChangeTrackingModel.prototype.initialize.apply(this);  
+        ChangeTrackingModel.prototype.initialize.apply(this, [attributes]);  
+    },
 
+    parse: function(response, options) {
         this.choices = new Choices();
 
-        if (attributes) {
-            if ("choices" in attributes) {
-                _.each(attributes.choices, _.bind(function(choiceData) {
-                    var choice = new Choice(choiceData);
-                    choice.question = this;
+        if (response['choices']) {
+            _.each(response['choices'], _.bind(function(choiceData) {
+                var choice = new Choice(choiceData, { 'parse': true });
+                choice.question = this;
 
-                    this.choices.add(choice);
-                }, this));
-            }
+                this.choices.add(choice);
+            }, this));
         }
+
+        delete response['choices'];
+
+        return response;
     },
 
     url: function() {
@@ -188,8 +207,6 @@ var Question = ChangeTrackingModel.extend({
     toJSON: function() {
         var data = _.clone(this.attributes);
 
-        delete data['choices'];
-
         return data;
     }
 });
@@ -199,8 +216,8 @@ Cocktail.mixin(Question, RelatedPhotoMixin, RelatedAudioMixin);
 var Choice = ChangeTrackingModel.extend({
     name: 'Choice',
 
-    initialize: function() {
-        ChangeTrackingModel.prototype.initialize.apply(this);  
+    initialize: function(attributes) {
+        ChangeTrackingModel.prototype.initialize.apply(this, [attributes]);  
     },
 
     url: function() {
@@ -213,8 +230,6 @@ var Choice = ChangeTrackingModel.extend({
         var data = _.clone(this.attributes);
 
         data['question'] = this.question.id;
-        data['photo'] = (this.photo && this.photo.id) ? this.photo.id : null
-        data['audio'] = (this.audio && this.audio.id) ? this.audio.id : null
 
         return data;
     }
@@ -225,8 +240,8 @@ Cocktail.mixin(Choice, RelatedPhotoMixin, RelatedAudioMixin);
 var Audio = ChangeTrackingModel.extend({
     name: 'Audio',
 
-    initialize: function() {
-        ChangeTrackingModel.prototype.initialize.apply(this);  
+    initialize: function(attributes) {
+        ChangeTrackingModel.prototype.initialize.apply(this, [attributes]);  
     },
 
     url: function() {
@@ -243,8 +258,8 @@ var Audio = ChangeTrackingModel.extend({
 var Photo = ChangeTrackingModel.extend({
     name: 'Photo',
 
-    initialize: function() {
-        ChangeTrackingModel.prototype.initialize.apply(this);  
+    initialize: function(attributes) {
+        ChangeTrackingModel.prototype.initialize.apply(this, [attributes]);  
     },
 
     url: function() {
