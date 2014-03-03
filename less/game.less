@@ -113,10 +113,13 @@ h1,h2,h3,h4,h5,h6 {
 		height: 44px;
 		line-height: 44px;
 		padding: 0 @grid-gutter-width / 2;
-		// margin-top: -@grid-gutter-width / 2;
-		margin-bottom: @line-height-computed;
+		margin-bottom: @line-height-computed / 2;
 		position: relative;
 		z-index: 200;
+
+		@media screen and (min-width: @screen-sm){
+			margin-bottom: @line-height-computed;
+		}
 	}
 
 	.progress {
@@ -150,8 +153,11 @@ h1,h2,h3,h4,h5,h6 {
 	.jp-controls {
 		font-size: @font-size-large;
 		float: left;
-		margin-bottom: @line-height-computed;
+		margin-bottom: @line-height-computed / 2;
 
+		@media screen and (min-width: @screen-sm){
+			margin-bottom: @line-height-computed;
+		}
 
 		a {
 			display: block;
@@ -163,6 +169,14 @@ h1,h2,h3,h4,h5,h6 {
 			border-radius: 60px;
 			border: 5px solid #9ba3be;
 
+
+			i {
+				margin-right: -1px;
+
+				&.fa-play {
+					margin-right: -3px;
+				}
+			}
 		}
 	}
 
