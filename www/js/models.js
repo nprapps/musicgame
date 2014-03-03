@@ -142,7 +142,7 @@ var Quiz = ChangeTrackingModel.extend({
 
     deploy: function() {
         return $.ajax({
-            'url': '/' + APP_CONFIG['PROJECT_SLUG'] + '/admin/deploy/' + this.get('slug'),
+            'url': '/' + APP_CONFIG['PROJECT_SLUG'] + '/admin/deploy/' + this.get('slug') + '/',
             'type': 'GET',
             'success': function() {
                 console.log('Quiz deployed.');
