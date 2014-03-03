@@ -35,9 +35,6 @@ var incorrectAnswers = null;
  * Render the start screen.
  */
 var renderStart = function() {
-
-    console.log(quizData);
-
     var html = JST.start(quizData);
 
     $content.html(html);
