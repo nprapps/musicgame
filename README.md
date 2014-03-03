@@ -24,6 +24,7 @@ musicgame
 * [Install cron jobs](#install-cron-jobs)
 * [Install web services](#install-web-services)
 * [Run a remote fab command](#run-a-remote-fab-command)
+* [Redeploy all quizzes](#redeploy-all-quizzes)
 
 What is this?
 -------------
@@ -339,3 +340,12 @@ fab staging master fabcast:deploy
 ```
 
 If any of the commands you run themselves require executing on the server, the server will SSH into itself to run them.
+
+Redeploy all quizzes
+--------------------
+
+You can redeploy all quizzes to staging or production using a single command:
+
+```
+fab staging master fabcast:deploy_quizzes
+```
