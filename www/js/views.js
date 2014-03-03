@@ -462,7 +462,7 @@ var QuestionView = BaseView.extend({
         this.model.choices.each(_.bind(function(choice) {
             this.addChoiceView(choice);
         }, this));
-        
+
         this.toggleViews();
         this.addPhotoView();
         this.addAudioView();
@@ -743,7 +743,6 @@ var PhotoView = BaseView.extend({
                 'type': 'POST',
                 'data': properties,
                 'success': _.bind(function(data) {
-                    console.log('Photo created.');
 
                     this.options.parent.model.setPhoto(new Photo(data));
                     this.model = this.options.parent.model.photo;
@@ -778,7 +777,7 @@ var PhotoView = BaseView.extend({
         this.options.parent.model.setPhoto(this.model);
 
         this.render();
-                    
+
         if (this.options.parent.toggleViews) {
             this.options.parent.toggleViews();
         }
@@ -895,7 +894,7 @@ var AudioView = BaseView.extend({
                     this.options.parent.model.setAudio(new Audio(data));
                     this.model = this.options.parent.model.audio;
                     this.render();
-                    
+
                     if (this.options.parent.toggleViews) {
                         this.options.parent.toggleViews();
                     }
@@ -925,7 +924,7 @@ var AudioView = BaseView.extend({
         this.options.parent.model.setAudio(this.model);
 
         this.render();
-        
+
         if (this.options.parent.toggleViews) {
             this.options.parent.toggleViews();
         }
