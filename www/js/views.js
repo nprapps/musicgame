@@ -184,10 +184,6 @@ var QuizDetailView = BaseView.extend({
         _.each(this.questionViews, function(view) {
             view.render();
         });
-
-        if (this.model.questions.length === 0) {
-            this.addQuestionModel();
-        }
     },
 
     markNeedsSave: function() {
@@ -281,7 +277,7 @@ var QuizDetailView = BaseView.extend({
     },
 
     addQuestionModel: function() {
-        var question = new Question({ quiz: this.model.id });
+        var question = new Question({ quiz: this.model.id }, { 'parse': true });
 
         this.model.questions.add(question);
     },
@@ -541,7 +537,7 @@ var QuestionView = BaseView.extend({
     },
 
     addChoiceModel: function() {
-        var choice = new Choice();
+        var choice = new Choice({}, { 'parse': true });
         choice.question = this.model;
 
         // First choice is always selected
@@ -786,7 +782,7 @@ var PhotoView = BaseView.extend({
                 'data': properties,
                 'success': _.bind(function(data) {
 
-                    this.options.parent.model.setPhoto(new Photo(data));
+                    this.options.parent.model.setPhoto(new Photo(data, { 'parse': true }));
                     this.model = this.options.parent.model.photo;
                     this.render();
 
@@ -815,7 +811,7 @@ var PhotoView = BaseView.extend({
             }
         });
 
-        this.model = new Photo();
+        this.model = new Photo({}, { 'parse': true });
         this.options.parent.model.setPhoto(this.model);
 
         this.render();
@@ -874,7 +870,7 @@ var AudioView = BaseView.extend({
         this.$el.html(JST.admin_audio({ 'audio': this.model }));
 
         this.$audioFile = this.$('input[type="file"]');
-        this.$audioPlayer = this.$('#jp-player-' + this.model.id);
+        this.$audioPlayer = this.$('#jp-player-' + this.model.cid);
         this.$play = this.$('.play');
         this.$stop = this.$('.stop');
 
@@ -933,7 +929,7 @@ var AudioView = BaseView.extend({
                 'success': _.bind(function(data) {
                     console.log('Audio created.');
 
-                    this.options.parent.model.setAudio(new Audio(data));
+                    this.options.parent.model.setAudio(new Audio(data, { 'parse': true }));
                     this.model = this.options.parent.model.audio;
                     this.render();
 
@@ -962,7 +958,7 @@ var AudioView = BaseView.extend({
             }
         });
 
-        this.model = new Audio();
+        this.model = new Audio({}, { 'parse': true });
         this.options.parent.model.setAudio(this.model);
 
         this.render();

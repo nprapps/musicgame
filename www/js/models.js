@@ -48,11 +48,12 @@ var RelatedPhotoMixin = {
     parse: function(response, options) {
         if (response['photo']) {
             var photo = new Photo(response['photo'], { 'parse': true });
+            this.set('photo', response['photo'].id);
             this.setPhoto(photo);
         }
 
         if (!this.photo) {
-            this.setPhoto(new Photo());
+            this.setPhoto(new Photo({}, { 'parse': true }));
         }
 
         delete response['photo'];
@@ -61,7 +62,6 @@ var RelatedPhotoMixin = {
     },
 
     onPhotoChange: function(photo) {
-        //console.log(this.get('photo') + ' == ' + this.photo.id);
         this.set('photo', this.photo.id ? this.photo.id : null);
     },
 
@@ -89,7 +89,7 @@ var RelatedAudioMixin = {
         }
 
         if (!this.audio) {
-            this.setAudio(new Audio());
+            this.setAudio(new Audio({}, { 'parse': true }));
         }
 
         delete response['audio'];
