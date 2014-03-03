@@ -554,6 +554,7 @@ def deploy_quizzes():
     """
     for quiz in models.Quiz.select():
         quiz.deploy()
+        print 'Deployed quiz: %s' % quiz
 
 """
 App-specific jobs
@@ -747,9 +748,10 @@ def load_quizzes():
                 ch = models.Choice(**choice)
                 ch.save()
 
-                print "Saved choice: %s" % ch
+                print 'Saved choice: %s' % ch
 
         qz.deploy()
+        print 'Deployed quiz: %s' % qz
 
 """
 Cron jobs
