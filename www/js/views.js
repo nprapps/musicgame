@@ -462,7 +462,7 @@ var QuestionView = BaseView.extend({
         this.model.choices.each(_.bind(function(choice) {
             this.addChoiceView(choice);
         }, this));
-        
+
         this.toggleViews();
         this.addPhotoView();
         this.addAudioView();
@@ -721,6 +721,9 @@ var PhotoView = BaseView.extend({
     },
 
     render: function() {
+
+        console.log(this.model);
+
         this.$el.html(JST.admin_photo({ 'photo': this.model }));
 
         this.$photoForm = this.$('form');
@@ -778,7 +781,7 @@ var PhotoView = BaseView.extend({
         this.options.parent.model.setPhoto(this.model);
 
         this.render();
-                    
+
         if (this.options.parent.toggleViews) {
             this.options.parent.toggleViews();
         }
@@ -895,7 +898,7 @@ var AudioView = BaseView.extend({
                     this.options.parent.model.setAudio(new Audio(data));
                     this.model = this.options.parent.model.audio;
                     this.render();
-                    
+
                     if (this.options.parent.toggleViews) {
                         this.options.parent.toggleViews();
                     }
@@ -925,7 +928,7 @@ var AudioView = BaseView.extend({
         this.options.parent.model.setAudio(this.model);
 
         this.render();
-        
+
         if (this.options.parent.toggleViews) {
             this.options.parent.toggleViews();
         }
