@@ -721,9 +721,6 @@ var PhotoView = BaseView.extend({
     },
 
     render: function() {
-
-        console.log(this.model);
-
         this.$el.html(JST.admin_photo({ 'photo': this.model }));
 
         this.$photoForm = this.$('form');
@@ -746,7 +743,6 @@ var PhotoView = BaseView.extend({
                 'type': 'POST',
                 'data': properties,
                 'success': _.bind(function(data) {
-                    console.log('Photo created.');
 
                     this.options.parent.model.setPhoto(new Photo(data));
                     this.model = this.options.parent.model.photo;
