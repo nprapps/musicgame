@@ -31,9 +31,7 @@
 
 	<div class="question-info row">
 	        <div class="col-md-12">
-	            <textarea placeholder="Description (appears after a choice is made)" class="form-control after-text" rows="3"><% if (question.attributes['after_text'] == 'null') {
-	                    question.get('after_text')
-	                }%></textarea>
+	            <textarea placeholder="Description (appears after a choice is made)" class="form-control after-text" rows="3"><%= question.get('after_text') || '' %></textarea>
 	        </div>
 	</div><!--/row -->
 </div>	<!--/question-details -->
