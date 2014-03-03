@@ -741,6 +741,8 @@ def load_quizzes():
 
                 print "Saved choice: %s" % ch
 
+        qz.deploy()
+
 """
 Cron jobs
 """
