@@ -85,6 +85,7 @@ cd musicgame
 mkvirtualenv --no-site-packages musicgame
 pip install -r requirements.txt
 fab local_bootstrap
+brew install libjpeg imagemagick
 ```
 
 Last, bootstrap your database:
