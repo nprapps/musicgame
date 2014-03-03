@@ -547,6 +547,14 @@ def deploy(remote='origin'):
     _deploy_to_s3()
     _cleanup_minified_includes()
 
+@task
+def deploy_quizzes():
+    """
+    Deploy/redeploy all quizzes.
+    """
+    for quiz in models.Quiz.select():
+        quiz.deploy()
+
 """
 App-specific jobs
 """
