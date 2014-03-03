@@ -132,7 +132,7 @@ var QuizDetailView = BaseView.extend({
         'click #add-question': 'addQuestionModel',
         'input .title': 'markNeedsSave',
         'input .description': 'markNeedsSave',
-        'change .category': 'markNeedsSave',
+        //'change .category': 'markNeedsSave',
         'input .author': 'markNeedsSave'
     },
 
@@ -312,7 +312,7 @@ var QuizDetailView = BaseView.extend({
         var properties = {
             title: this.$('.title').val(),
             text: this.$('.description').val(),
-            category: this.$('.category option:selected').val(),
+            //category: this.$('.category option:selected').val(),
             author: this.$('.author').val()
         };
 
