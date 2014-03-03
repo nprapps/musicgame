@@ -362,10 +362,15 @@ var EmbedModalView = BaseView.extend({
     el: '#embed-modal',
 
     events: {
-        'click .save': 'onClickSave'
+        'click .continue': 'onClickContinue'
     },
 
     initialize: function() {
+        this.$step1 = null;
+        this.$step2 = null;
+        this.$cancel = null;
+        this.$continue = null;
+        this.$close = null;
         this.$seamusUrl = null;
 
         this.urlRoot = '/' + APP_CONFIG['PROJECT_SLUG'];
@@ -390,7 +395,18 @@ var EmbedModalView = BaseView.extend({
             'embed': this.embedCode
         }));
 
+        this.$step1 = this.$('.step1');
+        this.$step2 = this.$('.step2');
+        this.$cancel = this.$('.cancel');
+        this.$continue = this.$('.continue');
+        this.$close = this.$('.done');
         this.$seamusUrl = this.$('.seamus-url');
+
+        this.$step1.show();
+        this.$step2.hide();
+        this.$cancel.show();
+        this.$continue.show();
+        this.$close.hide();
 
         ZeroClipboard.setDefaults({
             moviePath: this.urlRoot + '/js/lib/ZeroClipboard.swf'
@@ -411,20 +427,31 @@ var EmbedModalView = BaseView.extend({
         this.$('.modal').modal();
     },
 
-    onClickSave: function(e) {
+    onClickContinue: function(e) {
         e.preventDefault();
 
         $.ajax({
             'url': '/' + APP_CONFIG['PROJECT_SLUG'] + '/admin/update-seamus-url/' + this.model.get('slug') + '/',
             'method': 'POST',
             'data': { 'seamus_url': this.$seamusUrl.val() },
-            'success': function() {
+            'success': _.bind(function() {
                 console.log('Seamus URL updated.');
-            },
+
+                this.$step1.hide();
+                this.$step2.show();
+                this.$cancel.hide();
+                this.$continue.hide();
+                this.$close.show();
+            }, this),
             'error': function() {
                 console.log('Failed to update Seamus URL.');
             }
         });
+
+    },
+
+    onClickSave: function(e) {
+        e.preventDefault(); 
     }
 });
 
