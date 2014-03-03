@@ -90,14 +90,7 @@ var QuizListView = BaseView.extend({
     },
 
     serialize: function() {
-        var properties = {
-            title: 'Put Title Here',
-            text: 'Put description here.',
-            category: 'Drum Fill Friday',
-            author: 'Put author name here.'
-        };
-
-        return properties;
+        return {};
     }
 });
 
@@ -228,6 +221,11 @@ var QuizDetailView = BaseView.extend({
 
     saveQuiz: function() {
         var properties = this.serialize();
+
+        if (!properties['title']) {
+            alert('You must specify a title for the quiz before saving.');
+            return;
+        }
 
         // Save the quiz
         this.model.save(properties, {

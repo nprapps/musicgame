@@ -257,9 +257,9 @@ class Quiz(PSQLMODEL):
     Quizzes have Questions.
     """
     category = TextField(null=True)
-    slug = TextField()
-    title = TextField()
-    text = TextField()
+    slug = TextField(null=True)
+    title = TextField(null=True)
+    text = TextField(null=True)
     tags = TextField(null=True)
     created = DateTimeField()
     updated = DateTimeField()
@@ -307,7 +307,7 @@ class Quiz(PSQLMODEL):
         else:
             self.updated = now
 
-        if (not self.slug) or (self.slug == "put-title-here"):
+        if self.title and not self.slug:
             self.slugify()
 
         super(Quiz, self).save(*args, **kwargs)
@@ -316,6 +316,9 @@ class Quiz(PSQLMODEL):
         """
         Deploy this quiz JSON to S3.
         """
+        if not self.slug:
+            return
+
         data = json.dumps(self.flatten())
 
         s3 = boto.connect_s3()
