@@ -307,15 +307,17 @@ h1,h2,h3,h4,h5,h6 {
 			&.incorrect,
 			&.correct a:hover,
 			&.incorrect a:hover {
-				background: @lightGray;
-				color: @primaryControl;
+				.answer {
+					background: @lightGray;
+					color: @primaryControl;
+				}
 
-				&.has-cover {
+				&.has-cover .answer {
 					background: transparent;
 				}
 
-				@media screen and (min-width: @screen-sm){
-					&.has-cover a:hover {
+				@media screen and (min-width: 480px){
+					&.has-cover a:hover .answer {
 						background: transparent;
 					}
 				}
