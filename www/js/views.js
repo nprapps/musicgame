@@ -372,6 +372,7 @@ var EmbedModalView = BaseView.extend({
         this.$continue = null;
         this.$close = null;
         this.$seamusUrl = null;
+        this.$invalidUrl = null;
 
         this.urlRoot = '/' + APP_CONFIG['PROJECT_SLUG'];
 
@@ -401,12 +402,7 @@ var EmbedModalView = BaseView.extend({
         this.$continue = this.$('.continue');
         this.$close = this.$('.done');
         this.$seamusUrl = this.$('.seamus-url');
-
-        this.$step1.show();
-        this.$step2.hide();
-        this.$cancel.show();
-        this.$continue.show();
-        this.$close.hide();
+        this.$invalidUrl = this.$('.invalid-url');
 
         ZeroClipboard.setDefaults({
             moviePath: this.urlRoot + '/js/lib/ZeroClipboard.swf'
@@ -424,24 +420,43 @@ var EmbedModalView = BaseView.extend({
     },
 
     show: function() {
+        this.$step1.show();
+        this.$step2.hide();
+        this.$cancel.show();
+        this.$continue.show();
+        this.$close.hide();
+        this.$invalidUrl.hide();
+        
         this.$('.modal').modal();
+    },
+
+    gotoStep2: function() {
+        this.$step1.hide();
+        this.$step2.show();
+        this.$cancel.hide();
+        this.$continue.hide();
+        this.$close.show();
     },
 
     onClickContinue: function(e) {
         e.preventDefault();
 
+        var seamusUrl = this.$seamusUrl.val();
+
+        if (seamusUrl.indexOf('http://')) {
+            this.$invalidUrl.show();
+
+            return;
+        }
+
         $.ajax({
             'url': '/' + APP_CONFIG['PROJECT_SLUG'] + '/admin/update-seamus-url/' + this.model.get('slug') + '/',
             'method': 'POST',
-            'data': { 'seamus_url': this.$seamusUrl.val() },
+            'data': { 'seamus_url': seamusUrl },
             'success': _.bind(function() {
                 console.log('Seamus URL updated.');
 
-                this.$step1.hide();
-                this.$step2.show();
-                this.$cancel.hide();
-                this.$continue.hide();
-                this.$close.show();
+                this.gotoStep2();
             }, this),
             'error': function() {
                 console.log('Failed to update Seamus URL.');

@@ -3,14 +3,16 @@
         <div class="modal-content">
             <div class="modal-body">
                 <div class="step1">
-                    <h3>2. Save your Seamus URL</h3>
-                    <p>Paste the URL of your saved Seamus page here.</p>
+                    <h3>1. Save your Seamus URL</h3>
+                    <p>Create a post in Seamus for this quiz. Add any context you need, save it (ensuring the final URL is the one you want) and then paste the URL here.</p>
                     <input type="text" class="seamus-url" value="<%= quiz.get('seamus_url') || '' %>" />
+                    <div class="alert alert-danger invalid-url">Please enter a valid URL beginning with "http://".</div>
                 </div>
                 <div class="step2">
                     <h3>2. Embed your quiz in Seamus</h3>
-                    <p><a class="clipper" href="#">Click here</a> to copy this code to your clipboard. Then paste it into a Seamus HTML asset.</p>
+                    <p><a class="clipper" href="#">Click here</a> to copy this code to your clipboard. Then paste it into a Seamus HTML asset and save your post.</p>
                     <textarea id="embed" readonly="readonly" rows="12"><%= embed %></textarea>
+                    <p>If your Seamus post URL changes you will need to complete this process again!</p>
                 </div>
             </div>
             <div class="modal-footer">
