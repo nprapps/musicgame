@@ -111,7 +111,7 @@ class Photo(PSQLMODEL):
                 for bucket_name in app_config.S3_BUCKETS:
                     bucket = s3.get_bucket(bucket_name)
 
-                    k = Key(bucket, rendered_path)
+                    k = Key(bucket, r)
                     k.set_contents_from_string(decoded_file, headers={
                         'Cache-Control': 'max-age=5'
                     })
