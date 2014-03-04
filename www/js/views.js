@@ -530,6 +530,12 @@ var QuestionView = BaseView.extend({
                 this.addChoiceModel();
             }
         }
+
+        var elements = document.querySelectorAll('.editable'),
+            editor = new MediumEditor(elements, {
+                placeholder: 'Description (appears after a choice is made)',
+                buttons: ['bold','italic','anchor']
+            });
     },
 
     onAddChoice: function(e) {
@@ -650,7 +656,7 @@ var QuestionView = BaseView.extend({
         var properties = {
             text: this.$question.val(),
             order: this.model.collection.indexOf(this.model),
-            after_text: this.$afterText.val()
+            after_text: this.$afterText.html()
         };
 
         return properties;
