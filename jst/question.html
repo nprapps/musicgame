@@ -22,7 +22,7 @@
 		<% if (after_text){ %>
 			<div class="after-text">
 				<h3>Quizmaster says:</h3>
-				<p><%= after_text %></p>
+				<%= after_text %>
 			</div>
 		<% } %>
 		<ul class="answers<% if (_.where(choices, { text: "" }).length === choices.length) { %> photo-answers <% } %>">

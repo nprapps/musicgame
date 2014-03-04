@@ -31,6 +31,9 @@
 // File input (from Jasny)
 @import "less/lib/bootstrap/fileinput.less";
 
+// after_text WYSIWYG
+@import "less/lib/medium-editor.less";
+
 // NPR colors
 // -------------------------
 @inlineLink: #4774cc;
@@ -163,6 +166,17 @@
 
 .question-info {
     margin-bottom: 20px;
+
+    .after-text {
+        height: 100px;
+        overflow: auto;
+
+        &:after {
+            padding: 10px 15px;
+            color: @gray-light;
+            font-style: normal;
+        }
+    }
 }
 
 
