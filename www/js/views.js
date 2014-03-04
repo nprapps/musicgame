@@ -348,6 +348,13 @@ var PreviewModalView = BaseView.extend({
         $previewLarge.responsiveIframe({ src: url });
 
         this.$('.modal').modal();
+
+        this.$('.modal').on('hide.bs.modal', this.onModalClosed);
+    },
+
+    onModalClosed: function() {
+        $previewMobile.empty();
+        $previewLarge.empty();
     }
 });
 
@@ -458,11 +465,6 @@ var EmbedModalView = BaseView.extend({
                 console.log('Failed to update Seamus URL.');
             }
         });
-
-    },
-
-    onClickSave: function(e) {
-        e.preventDefault(); 
     }
 });
 
