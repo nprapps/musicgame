@@ -184,6 +184,13 @@ var QuizDetailView = BaseView.extend({
         _.each(this.questionViews, function(view) {
             view.render();
         });
+
+        var editor = new MediumEditor(this.$('.description'), {
+            placeholder: '',
+            buttons: ['bold','italic','anchor'],
+            buttonLabels: 'fontawesome',
+            targetBlank: true
+        });
     },
 
     markNeedsSave: function() {
@@ -307,7 +314,7 @@ var QuizDetailView = BaseView.extend({
     serialize: function() {
         var properties = {
             title: this.$('.title').val(),
-            text: this.$('.description').val(),
+            text: this.$('.description').html(),
             //category: this.$('.category option:selected').val(),
             author: this.$('.author').val()
         };
