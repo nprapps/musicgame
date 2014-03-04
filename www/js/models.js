@@ -151,6 +151,8 @@ var Quiz = ChangeTrackingModel.extend({
 
         delete data['created'];
         delete data['updated'];
+        delete data['seamus_pub_date'];
+        delete data['next_quiz'];
 
         return data;
     },

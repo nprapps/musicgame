@@ -12,7 +12,7 @@ import boto
 from boto.s3.key import Key
 import envoy
 from flask import json
-from peewee import Model, PostgresqlDatabase, BooleanField, DateTimeField, ForeignKeyField, IntegerField, TextField
+from peewee import Model, PostgresqlDatabase, BooleanField, DateField, DateTimeField, ForeignKeyField, IntegerField, TextField
 
 import app_config
 
@@ -30,7 +30,7 @@ class PSQLMODEL(Model):
     Base class for Peewee models. Ensures they all live in the same database.
     """
     def to_dict(self):
-        return self.__dict__['_data']
+        return dict(self.__dict__['_data'])
 
     class Meta:
         database = db
@@ -266,6 +266,7 @@ class Quiz(PSQLMODEL):
     author = TextField(null=True)
     photo = ForeignKeyField(Photo, null=True)
     seamus_url = TextField(null=True)
+    seamus_pub_date = DateField(null=True)
 
     def __unicode__(self):
         return self.title
@@ -284,6 +285,7 @@ class Quiz(PSQLMODEL):
 
         flat['created'] = time.mktime(self.created.timetuple())
         flat['updated'] = time.mktime(self.updated.timetuple())
+        flat['seamus_pub_date'] = time.mktime(self.seamus_pub_date.timetuple()) if self.seamus_pub_date else None
 
         for i, question in enumerate(self.questions):
             question_flat = flat['questions'][i]
@@ -296,7 +298,37 @@ class Quiz(PSQLMODEL):
                 choice_flat['audio'] = choice.audio.to_dict() if choice.audio else None
                 choice_flat['photo'] = choice.photo.to_dict() if choice.photo else None
 
+        next_quiz = self.get_next_quiz()
+
+        if next_quiz:
+            flat['next_quiz'] = {
+                'title': next_quiz.title,
+                'text': next_quiz.text,
+                'photo': next_quiz.photo.to_dict() if next_quiz.photo else None
+            }
+        else:
+            flat['next_quiz'] = None
+
         return flat
+
+    def get_next_quiz(self):
+        quiz = list(Quiz.select().where(Quiz.seamus_pub_date < self.seamus_pub_date).order_by(Quiz.seamus_pub_date.desc()).limit(1))
+
+        if quiz:
+            return quiz[0]
+        else:
+            return None
+
+    def parse_seamus_pub_date(self):
+        """
+        Parse publish date from Seamus url. Example url:
+        
+        http://www.npr.org/blogs/allsongs/2014/03/04/285709660/foo-baz-bing
+        """
+        bits = self.seamus_url.strip('http://').split('/') 
+        year, month, day = map(int, bits[3:6])
+
+        return datetime.date(year, month, day)
 
     def save(self, *args, **kwargs):
         now = datetime.datetime.now()
@@ -309,6 +341,9 @@ class Quiz(PSQLMODEL):
 
         if self.title and not self.slug:
             self.slugify()
+
+        if self.seamus_url:
+            self.seamus_pub_date = self.parse_seamus_pub_date()
 
         super(Quiz, self).save(*args, **kwargs)
 

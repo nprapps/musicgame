@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-import base64
-
 import flask
 from flask import Blueprint, jsonify, render_template, request
 from flask_peewee.serializer import Serializer
