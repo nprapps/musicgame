@@ -283,6 +283,17 @@
     .input-group {
         max-width: 100px;
         cursor: pointer;
+
+        .btn-file {
+            label {
+                color: @gray-light;
+                font-weight: normal;
+            }
+
+            &:hover {
+                label { color: #fff; }
+            }
+        }
     }
 
     .btn {
@@ -351,11 +362,11 @@
         }
 
         .btn-file > input {
-                height: 20px;
-                right: auto;
-                left: 0;
-                transform:inherit;
-            }
+            height: 20px;
+            right: auto;
+            left: 0;
+            transform:inherit;
+        }
 
         .input-group{
             position: relative;
