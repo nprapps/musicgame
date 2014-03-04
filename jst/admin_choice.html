@@ -9,7 +9,7 @@
                     type="radio"
                     id="Q<%= choice.question.cid %>-C<%= choice.cid %>"
                     name="Q<%= choice.question.cid %>"
-                    <% if (choice.get('correct_answer')) { %> checked="checked" <% } %>
+                    <% if (choice.get('correct_answer')) { %> checked <% } %>
                 ></input>
                 <label for="Q<%= choice.question.cid %>-C<%= choice.cid %>">
                     <span></span>
