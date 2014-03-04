@@ -219,7 +219,7 @@ var QuizDetailView = BaseView.extend({
         var properties = this.serialize();
 
         if (!properties['title']) {
-            alert('You must specify a title for the quiz before saving.');
+            bootbox.alert('You must specify a title for the quiz before saving.');
             return;
         }
 
@@ -414,7 +414,7 @@ var EmbedModalView = BaseView.extend({
         var clipper = new ZeroClipboard($('.clipper'));
 
         clipper.on('complete', function() {
-            alert('Embed code copied to your clipboard!');
+            bootbox.alert('Embed code copied to your clipboard!');
         });
 
         clipper.on('dataRequested', _.bind(function(client, args) {
@@ -743,7 +743,7 @@ var ChoiceView = BaseView.extend({
 
     rmChoice: function() {
         if (this.model.collection.length <= 2) {
-            alert('This choice can not be deleted. A question must have at least two choices.');
+            bootbox.alert('This choice can not be deleted. A question must have at least two choices.');
             return;
         }
 
