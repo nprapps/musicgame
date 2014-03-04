@@ -564,6 +564,10 @@ var QuestionView = BaseView.extend({
 
         this.choiceViews[choice.cid] = choiceView;
 
+        if (!choice.id) {
+            this.markNeedsSave();
+        }
+
         if (this.model.choices.length == 4) {
             this.$addChoice.hide();
         }
