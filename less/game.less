@@ -305,6 +305,7 @@ h1,h2,h3,h4,h5,h6 {
 
 			&.correct,
 			&.incorrect,
+			&.fade a:hover,
 			&.correct a:hover,
 			&.incorrect a:hover {
 				.answer {
@@ -320,6 +321,14 @@ h1,h2,h3,h4,h5,h6 {
 					&.has-cover a:hover .answer {
 						background: transparent;
 					}
+				}
+			}
+
+			&.fade,
+			&.correct,
+			&.incorrect {
+				a {
+					cursor: default;
 				}
 			}
 
@@ -342,6 +351,16 @@ h1,h2,h3,h4,h5,h6 {
 			}
 
 			&.has-cover {
+				&.fade,
+				&.correct,
+				&.incorrect {
+					a:hover {
+						.cover {
+							opacity: 1;
+						}
+					}
+				}
+
 				@media screen and (min-width: 480px) and (max-width: @screen-xs-max){
 					width: 25%;
 
@@ -391,6 +410,8 @@ h1,h2,h3,h4,h5,h6 {
 					}
 				}
 			}
+
+
 
 			@media screen and (min-width: 480px){
 				.make-xs-column(6);
