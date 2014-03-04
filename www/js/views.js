@@ -429,7 +429,7 @@ var EmbedModalView = BaseView.extend({
         this.$continue.show();
         this.$close.hide();
         this.$invalidUrl.hide();
-        
+
         this.$('.modal').modal();
     },
 
@@ -446,7 +446,7 @@ var EmbedModalView = BaseView.extend({
 
         var seamusUrl = this.$seamusUrl.val();
 
-        if (seamusUrl.indexOf('http://')) {
+        if (seamusUrl.indexOf('http://www.npr.org/')) {
             this.$invalidUrl.show();
 
             return;
@@ -565,6 +565,10 @@ var QuestionView = BaseView.extend({
 
         this.choiceViews[choice.cid] = choiceView;
 
+        if (!choice.id) {
+            this.markNeedsSave();
+        }
+
         if (this.model.choices.length == 4) {
             this.$addChoice.hide();
         }
@@ -573,8 +577,21 @@ var QuestionView = BaseView.extend({
     rmChoiceView: function(choice) {
         delete this.choiceViews[choice.cid];
 
-        this.$addChoice.show();
+        // Grab the first choice in the list and make it the correct one.
+        // It turns out we need to have a correct choice all the time because
+        // of reasons.
 
+        // Make sure there's at least one choice left.
+        if (this.model.choices.models.length > 0) {
+            // The new correct choice is the first one in the model list.
+            var correct_choice = this.model.choices.models[0]
+
+            // Select it by ID.
+            $('#Q' + correct_choice.question.cid + '-C' + correct_choice.cid)
+                .attr('checked', 'checked');
+        }
+
+        this.$addChoice.show();
         this.markNeedsSave();
     },
 
@@ -661,7 +678,7 @@ var ChoiceView = BaseView.extend({
     className: 'choice',
 
     events: {
-        'click .rm-choice': 'close',
+        'click .rm-choice': 'rmChoice',
         'input .answer': 'markNeedsSave',
         'change input[type="radio"]': 'markNeedsSave'
     },
@@ -723,6 +740,15 @@ var ChoiceView = BaseView.extend({
 
     markNeedsSave: function() {
         quizDetailView.markNeedsSave();
+    },
+
+    rmChoice: function() {
+        if (this.model.collection.length <= 2) {
+            alert('This choice can not be deleted. A question must have at least two choices.');
+            return;
+        }
+
+        this.close();
     },
 
     close: function() {
