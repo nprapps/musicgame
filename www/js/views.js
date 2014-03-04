@@ -102,7 +102,7 @@ var QuizView = BaseView.extend({
     className: 'quiz',
 
     events: {
-        'click .delete-quiz': 'close'
+        'click .delete-quiz': 'rmQuiz'
     },
 
     initialize: function() {
@@ -113,6 +113,14 @@ var QuizView = BaseView.extend({
 
     render: function() {
         this.$el.html(JST.admin_quizzes({'quiz': this.model}));
+    },
+
+    rmQuiz: function() {
+        bootbox.confirm('Are you sure you want to delete the quiz "' + this.model.get('title') + '"?', _.bind(function(result) {
+            if (result) {
+                this.close();
+            }
+        }, this));
     }
 });
 
