@@ -446,7 +446,7 @@ var EmbedModalView = BaseView.extend({
 
         var seamusUrl = this.$seamusUrl.val();
 
-        if (seamusUrl.indexOf('http://')) {
+        if (seamusUrl.indexOf('http://www.npr.org/')) {
             this.$invalidUrl.show();
 
             return;
