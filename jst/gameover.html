@@ -48,25 +48,22 @@
 			</li>
 		<% }); %>
 		</ul>
+        <% if (quizData['next_quiz']) { %>
 		<div class="next-up">
 			<h2>Play another quiz</h2>
-			<a href="http://www.npr.org/blogs/allsongs/2012/05/25/153615297/drum-fill-friday-from-wild-flags-drummer-janet-weiss">
+            <a href="<%= quizData['next_quiz']['seamus_url'] %>">
+                <% if (quizData['next_quiz']['photo']) { %>
 				<div class="next-thumb">
-					<img class="img-responsive" src="http://media.npr.org/assets/img/2012/07/26/michaellerner_sq-9a4fc5090e75efad7373f76dbfedc6c2e34919c6-s2-c85.jpg">
+                    <img class="img-responsive" src="<%= quizData['next_quiz']['photo']['rendered_300_path'] %>">
 				</div>
+                <% } %>
 				<div class="next-desc">
-					<h4>Drum Fill Friday</h4>
-					<h3>Wild Flag's Drummer Janet Weiss</h3>
-					<p>Wild Flag (and former Sleater-Kinney) drummer Janet Weiss shares some of her all-time favorite drum fills and intros. Can you guess what songs they're from?</p>
+                    <h3><%= quizData['next_quiz']['title'] %></h3>
+                    <p><%= quizData['next_quiz']['text'] %></p>
 				</div>
 			</a>
 		</div>
+        <% } %>
 	</div>
-
-
 </div>
-
-
-
-
 
