@@ -539,11 +539,12 @@ var QuestionView = BaseView.extend({
             }
         }
 
-        var elements = document.querySelectorAll('.editable'),
-            editor = new MediumEditor(elements, {
-                placeholder: 'Description (appears after a choice is made)',
-                buttons: ['bold','italic','anchor']
-            });
+        var editor = new MediumEditor(this.$afterText, {
+            placeholder: 'Description (appears after a choice is made)',
+            buttons: ['bold','italic','anchor'],
+            buttonLabels: 'fontawesome',
+            targetBlank: true
+        });
     },
 
     onAddChoice: function(e) {
