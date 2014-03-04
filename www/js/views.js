@@ -677,7 +677,7 @@ var ChoiceView = BaseView.extend({
     className: 'choice',
 
     events: {
-        'click .rm-choice': 'close',
+        'click .rm-choice': 'rmChoice',
         'input .answer': 'markNeedsSave',
         'change input[type="radio"]': 'markNeedsSave'
     },
@@ -739,6 +739,15 @@ var ChoiceView = BaseView.extend({
 
     markNeedsSave: function() {
         quizDetailView.markNeedsSave();
+    },
+
+    rmChoice: function() {
+        if (this.model.collection.length <= 2) {
+            alert('This choice can not be deleted. A question must have at least two choices.');
+            return;
+        }
+
+        this.close();
     },
 
     close: function() {
