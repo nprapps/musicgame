@@ -6,6 +6,7 @@ from glob import glob
 import os
 
 from fabric.api import local, put, require, run, settings, sudo, task
+from fabric.operations import get
 from fabric.state import env
 from flask import json
 from jinja2 import Template
@@ -589,11 +590,11 @@ def init_db():
         service_name = _get_installed_service_name('uwsgi')
         sudo('service %s stop' % service_name)
 
-        run('export PGPASSWORD=$MUSICGAME_POSTGRES_PASSWORD && dropdb %s --u=$MUSICGAME_POSTGRES_USER --host=$MUSICGAME_POSTGRES_HOST --port=$MUSICGAME_POSTGRES_PORT' % (
+        run('export PGPASSWORD=$MUSICGAME_POSTGRES_PASSWORD && dropdb %s --username=$MUSICGAME_POSTGRES_USER --host=$MUSICGAME_POSTGRES_HOST --port=$MUSICGAME_POSTGRES_PORT' % (
             app_config.PROJECT_SLUG
         ))
 
-    run('export PGPASSWORD=$MUSICGAME_POSTGRES_PASSWORD &&  createdb %s --u=$MUSICGAME_POSTGRES_USER --host=$MUSICGAME_POSTGRES_HOST --port=$MUSICGAME_POSTGRES_PORT' % (
+    run('export PGPASSWORD=$MUSICGAME_POSTGRES_PASSWORD && createdb %s --username=$MUSICGAME_POSTGRES_USER --host=$MUSICGAME_POSTGRES_HOST --port=$MUSICGAME_POSTGRES_PORT' % (
         app_config.PROJECT_SLUG
     ))
 
@@ -667,6 +668,23 @@ def _create_photo(path):
     print "Saved image: %s" % image
 
     return image
+
+@task
+def get_snapshot():
+    """
+    Grabs a DB snapshot from prod/staging and loads it locally.
+    """
+    require('settings', provided_by=[production, staging])
+    with settings(warn_only=True):
+        run('export PGPASSWORD=$MUSICGAME_POSTGRES_PASSWORD && pg_dump -f /tmp/%s.sql -Fp -E UTF8 --inserts %s --username=$MUSICGAME_POSTGRES_USER --host=$MUSICGAME_POSTGRES_HOST --port=$MUSICGAME_POSTGRES_PORT' % (
+            app_config.PROJECT_SLUG,
+            app_config.PROJECT_SLUG,
+        ))
+
+    get('/tmp/%s.sql' % app_config.PROJECT_SLUG, '/tmp/%s.sql' % app_config.PROJECT_SLUG)
+
+    local_init_db()
+    local('psql %s < /tmp/%s.sql' % (app_config.PROJECT_SLUG, app_config.PROJECT_SLUG))
 
 @task
 def load_quizzes():
