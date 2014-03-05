@@ -589,11 +589,11 @@ def init_db():
         service_name = _get_installed_service_name('uwsgi')
         sudo('service %s stop' % service_name)
 
-        run('dropdb %s --u=$MUSICGAME_POSTGRES_USER --host=$MUSICGAME_POSTGRES_HOST --port=$MUSICGAME_POSTGRES_PORT' % (
+        run('export PGPASSWORD=$MUSICGAME_POSTGRES_PASSWORD && dropdb %s --u=$MUSICGAME_POSTGRES_USER --host=$MUSICGAME_POSTGRES_HOST --port=$MUSICGAME_POSTGRES_PORT' % (
             app_config.PROJECT_SLUG
         ))
 
-    run('createdb %s --u=$MUSICGAME_POSTGRES_USER --host=$MUSICGAME_POSTGRES_HOST --port=$MUSICGAME_POSTGRES_PORT' % (
+    run('export PGPASSWORD=$MUSICGAME_POSTGRES_PASSWORD &&  createdb %s --u=$MUSICGAME_POSTGRES_USER --host=$MUSICGAME_POSTGRES_HOST --port=$MUSICGAME_POSTGRES_PORT' % (
         app_config.PROJECT_SLUG
     ))
 
