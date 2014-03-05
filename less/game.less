@@ -67,7 +67,6 @@ h1,h2,h3,h4,h5,h6 {
 }
 
 #content {
-	padding-top: @grid-gutter-width / 2;
 
 	.container {
 		.end& {
@@ -181,7 +180,6 @@ h1,h2,h3,h4,h5,h6 {
 	}
 
 	h1 {
-		margin: 15px 0 0 0;
 		font-size: @font-size-base;
 		font-weight: 700;
 		line-height: 1.2;
@@ -508,6 +506,11 @@ h1,h2,h3,h4,h5,h6 {
 
 	&.start,
 	&.end {
+		> .container {
+			padding-top: @grid-gutter-width / 2;
+			padding-bottom: @grid-gutter-width / 2;
+		}
+
 		.category-header {
 			background: @lightGray;
 			padding: 10px;
@@ -520,15 +523,15 @@ h1,h2,h3,h4,h5,h6 {
 
 		.cover {
 			img {
-				.img-circle;
-				margin-bottom: @line-height-computed + @grid-gutter-width / 2;
+				// .img-circle;
+				margin-bottom: @grid-gutter-width / 2;
 			}
 		}
 
 		h1 {
 			text-transform: uppercase;
 			font-weight: bold;
-			margin-bottom: 0;
+			margin-top: 0;
 
 			a {
 				text-transform: uppercase;
@@ -559,6 +562,22 @@ h1,h2,h3,h4,h5,h6 {
 		.quiz-info {
 			.quiz-title {
 				.make-xs-column(12);
+
+				ul {
+					margin-left: 1.2em;
+
+					@media screen and (min-width: @screen-sm){
+						margin-left: 1.7em;
+					}
+				}
+
+				li {
+					font-size: @font-size-base * 0.777777778;
+
+					@media screen and (min-width: @screen-sm){
+						font-size: @font-size-base;
+					}
+				}
 			}
 
 
@@ -566,6 +585,10 @@ h1,h2,h3,h4,h5,h6 {
 				.cover {
 					.make-xs-column(4);
 					.make-sm-column(4);
+
+					img {
+						margin-bottom: 0;
+					}
 				}
 				.quiz-title {
 					.make-xs-column(8);
@@ -588,14 +611,18 @@ h1,h2,h3,h4,h5,h6 {
 
 			&.has-cover {
 				.cover {
-					.make-xs-column(3);
+					.make-xs-column(4);
 					.make-sm-column(3);
 					.make-md-column(2);
 
 					margin-bottom: @line-height-computed;
+
+					img {
+						margin-bottom: 0;
+					}
 				}
 				.quiz-title {
-					.make-xs-column(9);
+					.make-xs-column(8);
 					.make-sm-column(9);
 					.make-md-column(10);
 				}
@@ -617,29 +644,36 @@ h1,h2,h3,h4,h5,h6 {
 
 		.responses {
 			.make-xs-column(12);
-		}
-
-		ul {
 			text-align: left;
 			list-style: none;
 
-			li {
+			> li {
 				margin-bottom: @line-height-computed / 2;
 				.make-row();
+				position: relative;
 
-				.question {
+				.question,
+				.choices {
 					.make-xs-column(12);
 				}
 
-				img.correct-choice {
-					.make-xs-column(3);
-					.make-sm-column(2);
+				&.has-photo {
+					img.correct-choice {
+						.make-xs-column(4);
+						.make-sm-column(3);
+
+						// padding-right: @grid-gutter-width / 4;
+					}
+
+					.choices {
+						.make-xs-column(8);
+						.make-sm-column(9);
+
+						// padding-left: @grid-gutter-width / 4;
+					}
 				}
 
-				.choices {
-					.make-xs-column(9);
-					.make-sm-column(10);
-				}
+
 
 				&:before {
 					display: block;
@@ -648,15 +682,29 @@ h1,h2,h3,h4,h5,h6 {
 					border-top: 2px solid @lightGray;
 				}
 
+				&:first-child:before {
+					margin-top: 0;
+				}
+
 				h2 {
 					text-transform: none;
+					line-height: 1.1;
+					font-size: @font-size-base;
 					font-weight: bold;
-					margin-top: @line-height-computed / 2;
 					margin-bottom: @line-height-computed;
 				}
 
 				.jp-audio {
 					margin-right: @grid-gutter-width / 2;
+				}
+
+				.fa-ul {
+					margin-left: 1.2em;
+					margin-bottom: @line-height-computed;
+
+					@media screen and (min-width: @screen-sm){
+						margin-left: 1.4em;
+					}
 				}
 
 				.answer,
@@ -679,22 +727,14 @@ h1,h2,h3,h4,h5,h6 {
 						margin-right: 5px;
 					}
 
-					&.correct:before {
-						content: '\f00c';
-					}
-
-					&.incorrect:before {
-						content: '\f00d';
-					}
-
 					&.answer-selected {
 						margin-bottom: 0;
 
-						&.correct:before {
+						&.correct i {
 							color: @correct;
 						}
 
-						&.incorrect:before {
+						&.incorrect i {
 							color: @incorrect;
 						}
 					}
@@ -707,9 +747,9 @@ h1,h2,h3,h4,h5,h6 {
 
 				.after-text {
 					display: block;
-					padding: 0;
-					margin: @line-height-computed / 2 0;
 					background: transparent;
+					margin: 0;
+					padding: 0;
 
 					p {
 						color: @text-color;
@@ -720,11 +760,7 @@ h1,h2,h3,h4,h5,h6 {
 					}
 				}
 
-				h2 {
-					font-size: @font-size-base;
-					line-height: 1;
-					margin-bottom: @line-height-computed / 2;
-				}
+
 
 				h3 {
 					font-size: @font-size-large;
@@ -732,6 +768,10 @@ h1,h2,h3,h4,h5,h6 {
 				}
 
 				&.has-audio {
+					h2 {
+						margin-top: @line-height-computed / 2;
+					}
+
 					h2,
 					.answer {
 						padding-left: 60px + @grid-gutter-width / 2;
