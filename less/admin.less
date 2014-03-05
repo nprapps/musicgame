@@ -312,15 +312,10 @@
         max-width: 100px;
         cursor: pointer;
 
-        .btn-file {
-            label {
-                color: @gray-light;
-                font-weight: normal;
-            }
-
-            &:hover {
-                label { color: #fff; }
-            }
+        + .help-block {
+            color: @gray-light;
+            font-weight: normal;
+            font-size: @font-size-base * (12 / @font-size-base);
         }
     }
 
