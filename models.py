@@ -304,7 +304,8 @@ class Quiz(PSQLMODEL):
             flat['next_quiz'] = {
                 'title': next_quiz.title,
                 'text': next_quiz.text,
-                'photo': next_quiz.photo.to_dict() if next_quiz.photo else None
+                'photo': next_quiz.photo.to_dict() if next_quiz.photo else None,
+                'seamus_url': next_quiz.seamus_url
             }
         else:
             flat['next_quiz'] = None
