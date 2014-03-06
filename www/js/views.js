@@ -299,7 +299,7 @@ var QuizDetailView = BaseView.extend({
     },
 
     addQuestionView: function(question) {
-        var questionView = new QuestionView({ model: question });
+        var questionView = new QuestionView({ model: question, parent: this });
 
         this.$questions.append(questionView.el);
         this.questionViews[question.cid] = questionView;
@@ -674,10 +674,13 @@ var QuestionView = BaseView.extend({
     },
 
     serialize: function() {
+        var $questions = this.options.parent.$questions.children('.question');
+        var order = $questions.index(this.$el);
+
         var properties = {
-            text: this.$question.val(),
-            order: this.model.collection.indexOf(this.model),
-            after_text: this.$afterText.html()
+            'text': this.$question.val(),
+            'order': order,
+            'after_text': this.$afterText.html()
         };
 
         return properties;
