@@ -820,7 +820,6 @@ var PhotoView = BaseView.extend({
     },
 
     uploadPhoto: function(e) {
-        debugger;
         var file = this.$photoFile[0].files[0]||this.$photoFile[0].value;
 
         var reader = new FileReader();
