@@ -651,6 +651,46 @@
     }
 }
 
+.bsod {
+    background: blue;
+    text-align: center;
+    color: #fff;
+
+    #admin {
+        display: table;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+
+        .message {
+            display: table-cell;
+            vertical-align: middle;
+            height: 100%;
+            h1 {
+                font-weight: bold;
+            }
+
+            h1,p {
+                font-family: "Lucida Console",sans-serif;
+
+                a {
+                    color: #fff;
+                    text-decoration: underline;
+
+                    &:hover {
+                        color: blue;
+                        background: #fff;
+                    }
+                }
+            }
+        }
+    }
+}
+
 @media (min-width: 1024px) {
     .add-quiz-btn {
         .pull-right();
