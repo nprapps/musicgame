@@ -139,7 +139,7 @@ var QuizDetailView = BaseView.extend({
         'click #publish': 'publishQuiz',
         'click #add-question': 'addQuestionModel',
         'input .title': 'markNeedsSave',
-        'input .description': 'markNeedsSave',
+        'keyup .description': 'markNeedsSave',
         //'change .category': 'markNeedsSave',
         'input .author': 'markNeedsSave'
     },
@@ -496,7 +496,7 @@ var QuestionView = BaseView.extend({
         'click .rm-question': 'close',
         'click #save-quiz': 'saveQuestion',
         'input .interrogative': 'markNeedsSave',
-        'input .after-text': 'markNeedsSave'
+        'keyup .after-text': 'markNeedsSave'
     },
 
     initialize: function() {
