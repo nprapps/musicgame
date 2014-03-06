@@ -9,12 +9,16 @@
 
 			<div class="quiz-title">
 				<h1><%= title %></h1>
-				<% if(timer === true){ %>
-					<p><i class="fa fa-clock-o"></i> You'll have <%= TIMERLENGTH %> seconds to answer each question.</p>
-				<% } %>
+				<% if (timer === true||_.where(quizData['questions'], {audio: null}).length < quizData['questions'].length) { %>
+					<ul class="fa-ul">
+					<% if(timer === true){ %>
+						<li><i class="fa fa-li fa-clock-o"></i> You'll have <%= TIMERLENGTH %> seconds to answer each question.</li>
+					<% } %>
 
-				<% if (_.where(quizData['questions'], {audio: null}).length < quizData['questions'].length){ %>
-					<p><i class="fa fa-headphones"></i> Make sure your speakers or headphones are turned up.</p>
+					<% if (_.where(quizData['questions'], {audio: null}).length < quizData['questions'].length){ %>
+						<li><i class="fa fa-li fa-headphones"></i> Make sure your speakers or headphones are turned up.</li> 
+					<% } %>
+					</ul>
 				<% } %>
 				<a id="start-quiz" class="btn btn-large btn-primary" href="#">Start Quiz</a>
 			</div>

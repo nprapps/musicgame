@@ -8,8 +8,7 @@
 			<% } %>
 
 			<div class="quiz-title">
-				<h1>You scored:</h1>
-				<p class="score"><%= score %>/<%= timer == 'true' ? '100' : quizData['questions'].length %></p>
+				<h1>You scored <%= score %>/<%= timer == 'true' ? '100' : quizData['questions'].length %>!</h1>
 			</div>
 		</div>
 	</div>
@@ -33,17 +32,19 @@
 					<img class="correct-choice" src="<%= _.where(question['choices'], {correct_answer: true})[0]['photo']['rendered_300_path'] %>">
 				<% } %>
 				<div class="choices">
-				<% if (answers[index] !== correctAnswers[index]){ %>
-					<p class="answer answer-missed correct"><%= _.where(question['choices'], { correct_answer: true })[0]['text'] %></p>
-				<% }%>
-				<% if (answers[index] !== ''){ %>
-					<p class="answer answer-selected <%= answers[index] === correctAnswers[index] ? 'correct' : 'incorrect' %>"><% if (answers[index] !== correctAnswers[index]){ %>You answered: <% } %><%= _.where(question['choices'], { id: answers[index] })[0]['text'] %> </p>
-				<% } %>
-				<% if (question['after_text']){ %>
-					<div class="after-text">
-						<p><strong>Quizmaster says:</strong> <%= question['after_text'] %></p>
-					</div>
-				<% } %>
+					<ul class="fa-ul">
+					<% if (answers[index] !== correctAnswers[index]){ %>
+						<li class="answer answer-missed correct"><i class="fa fa-li fa-lg fa-check-circle"></i><%= _.where(question['choices'], { correct_answer: true })[0]['text'] %></li>
+					<% }%>
+					<% if (answers[index] !== ''){ %>
+						<li class="answer answer-selected <%= answers[index] === correctAnswers[index] ? 'correct' : 'incorrect' %>"><% if (answers[index] !== correctAnswers[index]){ %><i class="fa fa-li fa-lg fa-times-circle"></i>You answered: <% } else { %><i class="fa fa-li fa-lg fa-check-circle"></i><% } %><%= _.where(question['choices'], { id: answers[index] })[0]['text'] %> </li>
+					<% } %>
+					</ul>
+					<% if (question['after_text']){ %>
+						<div class="after-text">
+							<p><strong>Quizmaster says:</strong> <%= question['after_text'] %></p>
+						</div>
+					<% } %>
 				</div>
 			</li>
 		<% }); %>

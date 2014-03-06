@@ -390,11 +390,11 @@ var resizeWindow = function(){
 
     if(images.length > 0){
         $(images).load(function(){
-            $content.attr('style','').css('height', $content.children().last().height());
+            $content.attr('style','').css('height', $content.children().last().outerHeight());
             sendHeightToParent();
         });
     } else {
-        $content.attr('style','').css('height', $content.children().last().height());
+        $content.attr('style','').css('height', $content.children().last().outerHeight());
         sendHeightToParent();
     }
 };

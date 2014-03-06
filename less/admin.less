@@ -117,6 +117,12 @@
     .description {
         height: 100px;
         overflow: auto;
+
+        &:after {
+            padding: 7px 11px;
+            color: @gray-light;
+            font-style: normal;
+        }
     }
 }
 
@@ -180,7 +186,7 @@
         overflow: auto;
 
         &:after {
-            padding: 10px 15px;
+            padding: 7px 11px;
             color: @gray-light;
             font-style: normal;
         }
@@ -306,15 +312,10 @@
         max-width: 100px;
         cursor: pointer;
 
-        .btn-file {
-            label {
-                color: @gray-light;
-                font-weight: normal;
-            }
-
-            &:hover {
-                label { color: #fff; }
-            }
+        + .help-block {
+            color: @gray-light;
+            font-weight: normal;
+            font-size: @font-size-base * (12 / @font-size-base);
         }
     }
 
