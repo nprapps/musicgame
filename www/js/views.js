@@ -986,7 +986,6 @@ var AudioView = BaseView.extend({
             this.$helpText.hide();
             this.options.parent.$photo.hide();
             this.$loader.css('display', 'block');
-            debugger;
             $.ajax({
                 'url': '/musicgame/admin/upload-audio/',
                 'type': 'POST',
