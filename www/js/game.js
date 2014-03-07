@@ -258,9 +258,7 @@ var onQuestionComplete = function(points, selectedAnswer, element){
     var $correctAnswer = $answers.filter(function(){
         return $(this).data('choice-id') === currentAnswer;
     });
-    var element = element||$correctAnswer;
-    var scoreOffsetY = $(element).offset().top + $(element).outerHeight() / 2;
-    var scoreOffsetX = $(element).offset().left + $(element).outerWidth() / 2;
+    var element = $(element)||$correctAnswer;
 
     // Push answer and points for the round to our arrays
     correctAnswers.push(currentAnswer);
@@ -269,6 +267,34 @@ var onQuestionComplete = function(points, selectedAnswer, element){
 
     $correctAnswer.addClass('correct');
     $answers.not($correctAnswer).not($(element)).addClass('fade').off("click");
+
+    displayScore(points, element);
+
+    if (currentQuestion + 1 < quizData['questions'].length){
+        $nextQuestionButton.addClass('show');
+    } else {
+        $showScoreButton.addClass('show');
+    }
+
+    resizeWindow();
+};
+
+/*
+* Go to the next question
+*/
+var onNextQuestionClick = function() {
+    currentQuestion++;
+    renderQuestion();
+    return false;
+}
+
+/*
+* Animate our score bubble
+*/
+var displayScore = function(points, $el){
+    var scoreOffsetY = $el.offset().top + $el.outerHeight() / 2;
+    var scoreOffsetX = $el.offset().left + $el.outerWidth() / 2;
+
     $content.after('<div class="score-container"><div id="score"></div></div>');
     $(document).find('#score')
         .addClass(points > 0 ? '' : 'zero')
@@ -293,15 +319,7 @@ var onQuestionComplete = function(points, selectedAnswer, element){
                     }
                 });
         });
-
-    if (currentQuestion + 1 < quizData['questions'].length){
-        $nextQuestionButton.addClass('show');
-    } else {
-        $showScoreButton.addClass('show');
-    }
-
-    resizeWindow();
-};
+}
 
 /*
 * Check if clicked answer is correct
@@ -381,15 +399,6 @@ var runTimer = function() {
         onQuestionComplete(0, '');
     };
 };
-
-/*
-* Go to the next question
-*/
-var onNextQuestionClick = function() {
-    currentQuestion++;
-    renderQuestion();
-    return false;
-}
 
 /*
  * Intelligently load images
