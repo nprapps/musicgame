@@ -534,8 +534,8 @@ def deploy(remote='origin'):
         checkout_latest(remote)
 
         fabcast('update_copy')
-        fabcast('assets.sync')
-        fabcast('update_data')
+        #fabcast('assets.sync')
+        #fabcast('update_data')
 
         if app_config.DEPLOY_CRONTAB:
             install_crontab()
