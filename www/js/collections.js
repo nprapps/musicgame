@@ -17,7 +17,8 @@ var Quizzes = Backbone.Collection.extend({
  */
 var Questions = Backbone.Collection.extend({
     url: '/' + APP_CONFIG['PROJECT_SLUG'] + '/api/question/',
-    model: Question
+    model: Question,
+    sortBy: 'order'
 });
 
 /*
