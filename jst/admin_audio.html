@@ -12,12 +12,15 @@
 </div>
 <% } else { %>
 <div class="input-group">
-    <span class="input-group-addon btn btn-default btn-file">
+    <span class="input-group-addon btn btn-default btn-file audio-uploader">
         <span><i class="fa fa-plus-square"></i> Audio</span>
         <input type="file" accept=".wav,.mp3" name="...">
     </span>
 
-    <div class="loader"></div>
+    <div class="loader-wrapper">
+        <div class="loader"></div>
+        <span class="waiting">Please wait... audio uploading</span>
+    </div>
 </div>
 <span class="help-block">(mp3,wav)</span>
 <% } %>

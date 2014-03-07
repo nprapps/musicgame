@@ -293,13 +293,16 @@ var QuizDetailView = BaseView.extend({
     },
 
     addQuestionModel: function() {
-        var question = new Question({ quiz: this.model.id }, { 'parse': true });
+        var question = new Question({ 'quiz': this.model.id }, { 'parse': true });
 
         this.model.questions.add(question);
     },
 
     addQuestionView: function(question) {
-        var questionView = new QuestionView({ model: question, parent: this });
+        var questionView = new QuestionView({
+            'model': question,
+            'parent': this
+        });
 
         this.$questions.append(questionView.el);
         this.questionViews[question.cid] = questionView;
@@ -493,6 +496,8 @@ var QuestionView = BaseView.extend({
 
     events: {
         'click .add-choice': 'onAddChoice',
+        'click .move-up': 'onMoveUp',
+        'click .move-down': 'onMoveDown',
         'click .rm-question': 'close',
         'click #save-quiz': 'saveQuestion',
         'input .interrogative': 'markNeedsSave',
@@ -510,6 +515,7 @@ var QuestionView = BaseView.extend({
         this.$audio = null;
         this.$question = null;
         this.$afterText = null;
+        this.$order = null;
 
         _.bindAll(this);
 
@@ -528,7 +534,11 @@ var QuestionView = BaseView.extend({
     },
 
     render: function() {
-        this.$el.html(JST.admin_question({ 'question': this.model }));
+        this.$el.html(JST.admin_question({
+            'question': this.model
+        }));
+
+        this.$el.data('cid', this.model.cid);
 
         this.$addChoice = this.$('.add-choice');
         this.$choices = this.$('.choices');
@@ -536,6 +546,7 @@ var QuestionView = BaseView.extend({
         this.$audio = this.$('.audio');
         this.$question = this.$('.interrogative');
         this.$afterText = this.$('.after-text');
+        this.$order = this.$('.order');
 
         _.each(this.choiceViews, function(view) {
             view.render();
@@ -553,6 +564,56 @@ var QuestionView = BaseView.extend({
             buttonLabels: 'fontawesome',
             targetBlank: true
         });
+    },
+
+    onMoveUp: function(e) {
+        // NB: This code is badly factored.
+        // There is some smarter way to do this with binding, but
+        // I don't have time. :-(
+        e.preventDefault();
+        
+        var $questions = this.options.parent.$questions.children('.question');
+        var order = $questions.index(this.$el);
+
+        if (order == 0) {
+            return;
+        }
+        
+        var $prev = $questions.eq(order - 1);
+
+        this.$el.detach();
+        this.$el.insertBefore($prev);
+
+        this.$order.text(order);
+        
+        var prevView = this.options.parent.questionViews[$prev.data('cid')];
+        prevView.$order.text(order + 1);
+
+        this.markNeedsSave();
+    },
+
+    onMoveDown: function(e) {
+        // See comment on `onMoveUp`
+        e.preventDefault();
+        
+        var $questions = this.options.parent.$questions.children('.question');
+        var order = $questions.index(this.$el);
+
+        if (order == $questions.length - 1) {
+            return;
+        }
+        
+        var $next = $questions.eq(order + 1);
+
+        this.$el.detach();
+        this.$el.insertAfter($next);
+
+        this.$order.text(order + 2);
+        
+        var nextView = this.options.parent.questionViews[$next.data('cid')];
+        nextView.$order.text(order + 1);
+
+        this.markNeedsSave();
     },
 
     onAddChoice: function(e) {
@@ -912,6 +973,9 @@ var AudioView = BaseView.extend({
         this.$audioPlayer = null;
         this.$play = null;
         this.$stop = null;
+        this.$loader = null;
+        this.$uploadAudioButton = null;
+        this.$helpText = null;
 
         this.render();
     },
@@ -927,6 +991,9 @@ var AudioView = BaseView.extend({
         this.$audioPlayer = this.$('#jp-player-' + this.model.cid);
         this.$play = this.$('.play');
         this.$stop = this.$('.stop');
+        this.$loader = this.$('.loader-wrapper');
+        this.$uploadAudioButton = this.$('.audio-uploader');
+        this.$helpText = this.$('.help-block');
 
         if (this.model.id){
             this.$audioPlayer.jPlayer({
@@ -976,15 +1043,19 @@ var AudioView = BaseView.extend({
 
         reader.onloadend = _.bind(function() {
             properties['file_string'] = reader.result;
+            this.$uploadAudioButton.hide();
+            this.$helpText.hide();
+            this.options.parent.$photo.hide();
+            this.$loader.css('display', 'block');
             $.ajax({
                 'url': '/musicgame/admin/upload-audio/',
                 'type': 'POST',
                 'data': properties,
                 'success': _.bind(function(data) {
                     console.log('Audio created.');
-
                     this.options.parent.model.setAudio(new Audio(data, { 'parse': true }));
                     this.model = this.options.parent.model.audio;
+                    this.$loader.hide();
                     this.render();
 
                     if (this.options.parent.toggleViews) {
