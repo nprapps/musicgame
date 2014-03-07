@@ -1,6 +1,8 @@
 // Constants
 var TIMERLENGTH = 15; // Seconds allowed to answer per question
 var INTERVAL = 50; // Timout interval in milliseconds
+var PIXEL_RATIO = window.devicePixelRatio;
+var _gaq = window._gaq||[];
 
 // DOM Refs
 var $content = null;
@@ -38,7 +40,6 @@ var renderStart = function() {
     var html = JST.start(quizData);
 
     $content.html(html);
-
     $content.addClass('start');
 
     $startQuizButton = $content.find('#start-quiz');
@@ -98,12 +99,17 @@ var renderQuestion = function() {
     $timer = $currentQuestion.find('#timer');
     $nextQuestionButton = $currentQuestion.find('.next-question');
     $showScoreButton = $currentQuestion.find('.show-score');
+    $aftertext_links = $currentQuestion.find('.after-text a');
 
     $questionPlayButton.on('click', onQuestionPlayButtonClick);
     $questionPauseButton.on('click', onQuestionPauseButtonClick);
     $answers.on('click', onAnswerClick);
     $nextQuestionButton.on('click', onNextQuestionClick);
     $showScoreButton.on('click', renderGameOver);
+    $aftertext_links.on('click', function(){
+        _gaq.push(['_trackEvent', 'Game', 'After-text click from ' + quizData['slug'], APP_CONFIG.PROJECT_NAME, 1]);
+    });
+
 
     $nextQuestionButton.removeClass('show');
 
@@ -176,6 +182,8 @@ var renderGameOver = function() {
     var $players = $content.find('.jp-player')
     var $playButtons = $content.find('.play');
     var $pauseButtons = $content.find('.pause');
+    var $nextup = $content.find('.next-up a');
+
     // Set up question audio players
     $players.jPlayer({
         ready: function () {
@@ -210,6 +218,10 @@ var renderGameOver = function() {
     $pauseButtons.on('click', function(){
         $(this).parents('li').find('.jp-player').jPlayer('pause');
         $(this).hide().siblings('.play').show();
+    });
+
+    $nextup.on('click', function(){
+        _gaq.push(['_trackEvent', 'Game', 'Continuous play click from ' + quizData['slug'], APP_CONFIG.PROJECT_NAME, 1]);
     });
 
     resizeWindow();
@@ -386,12 +398,34 @@ var scrollTo = function($el) {
 };
 
 /*
+ * Intelligently load images
+ */
+var loadImages = function() {
+    var $images = $('.img-responsive');
+
+    $images.each(function(){
+        var $this = $(this);
+        var width = $this.width();
+        var path = PIXEL_RATIO >= 2 ? 'medium' : 'small';
+
+        if (width > 100 && width < 300){
+            path = PIXEL_RATIO >= 2 ? 'large' : 'medium';
+        } else if (width > 300){
+            path = 'large';
+        }
+
+        $this.attr('src', $this.data(path)).addClass('fade-in');
+    });
+};
+
+/*
  * Check for images in content and size window after load
  */
 var resizeWindow = function(){
     var images = $content.find('img');
 
     if(images.length > 0){
+        loadImages();
         $(images).load(function(){
             $content.attr('style','').css('height', $content.children().last().outerHeight());
             sendHeightToParent();
@@ -438,14 +472,6 @@ var onDocumentReady = function() {
             }
         })
     }
-
-    $('div.next-up a').on('click', function(){
-        _gaq.push(['_trackEvent', 'Game', 'Continuous play click from ' + quizData['slug'], APP_CONFIG.PROJECT_NAME, 1]);
-    });
-
-    $('div.after-text a').on('click', function(){
-        _gaq.push(['_trackEvent', 'Game', 'After-text click from ' + quizData['slug'], APP_CONFIG.PROJECT_NAME, 1]);
-    });
 };
 
 /*
@@ -457,4 +483,5 @@ var onWindowLoad = function() {
 
 $(document).ready(onDocumentReady);
 $(window).load(onWindowLoad);
+$(window).on('resize', _.throttle(resizeWindow, 100));
 

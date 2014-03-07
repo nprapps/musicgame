@@ -44,6 +44,7 @@ class Photo(PSQLMODEL):
     file_name = TextField(null=True)
     rendered_600_path = TextField(null=True)
     rendered_300_path = TextField(null=True)
+    rendered_100_path = TextField(null=True)
 
     def __unicode__(self):
         # return json.loads(self.rendered_file_paths)['624']
