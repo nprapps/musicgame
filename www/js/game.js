@@ -1,6 +1,7 @@
 // Constants
 var TIMERLENGTH = 15; // Seconds allowed to answer per question
 var INTERVAL = 50; // Timout interval in milliseconds
+var PIXEL_RATIO = window.devicePixelRatio;
 
 // DOM Refs
 var $content = null;
@@ -38,7 +39,6 @@ var renderStart = function() {
     var html = JST.start(quizData);
 
     $content.html(html);
-
     $content.addClass('start');
 
     $startQuizButton = $content.find('#start-quiz');
@@ -383,12 +383,34 @@ var scrollTo = function($el) {
 };
 
 /*
+ * Intelligently load images
+ */
+var loadImages = function() {
+    var $images = $('.img-responsive');
+
+    $images.each(function(){
+        var $this = $(this);
+        var width = $this.width();
+        var path = PIXEL_RATIO >= 2 ? 'medium' : 'small';
+
+        if (width > 100 && width < 300){
+            path = PIXEL_RATIO >= 2 ? 'large' : 'medium';
+        } else if (width > 300){
+            path = 'large';
+        }
+
+        $this.attr('src', $this.data(path)).addClass('fade-in');
+    });
+};
+
+/*
  * Check for images in content and size window after load
  */
 var resizeWindow = function(){
     var images = $content.find('img');
 
     if(images.length > 0){
+        loadImages();
         $(images).load(function(){
             $content.attr('style','').css('height', $content.children().last().outerHeight());
             sendHeightToParent();
@@ -446,4 +468,5 @@ var onWindowLoad = function() {
 
 $(document).ready(onDocumentReady);
 $(window).load(onWindowLoad);
+$(window).on('resize', _.throttle(resizeWindow, 100));
 

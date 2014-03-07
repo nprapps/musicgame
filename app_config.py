@@ -124,7 +124,7 @@ QUIZ_CATEGORIES = [
     'Puzzler',
     'Sole of a Band',
 ]
-IMAGE_WIDTHS = ['300', '600']
+IMAGE_WIDTHS = ['100', '300', '600']
 
 """
 Utilities

@@ -3,7 +3,7 @@
 		<div class="quiz-info<% if (photo) { %> has-cover<% } %>">
 			<% if (photo){ %>
 				<div class="cover">
-					<img class="img-responsive" src="<%= photo['rendered_300_path'] %>">
+					<img class="img-responsive" src="/<%= APP_CONFIG.PROJECT_SLUG %>/img/transparent.png" data-small="<%= photo['rendered_100_path'] %>" data-medium="<%= photo['rendered_300_path'] %>" data-large="<%= photo['rendered_600_path'] %>">
 				</div>
 			<% } %>
 

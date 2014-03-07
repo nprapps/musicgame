@@ -3,7 +3,7 @@
 		<div class="quiz-info<% if (quizData['photo']){ %> has-cover<% } %>">
 			<% if (quizData['photo']){ %>
 				<div class="cover">
-					<img class="img-responsive" src="<%= quizData['photo']['rendered_300_path'] %>">
+				<img class="img-responsive" src="/<%= APP_CONFIG.PROJECT_SLUG %>/img/transparent.png" data-small="<%= quizData['photo']['rendered_100_path'] %>" data-medium="<%= quizData['photo']['rendered_300_path'] %>" data-large="<%= quizData['photo']['rendered_600_path'] %>">
 				</div>
 			<% } %>
 
@@ -29,7 +29,7 @@
 					<h2><%= question.text %></h2>
 				</div>
 				<% if (_.where(question['choices'], { correct_answer: true })[0]['photo']) { %>
-					<img class="correct-choice" src="<%= _.where(question['choices'], {correct_answer: true})[0]['photo']['rendered_300_path'] %>">
+					<img class="img-responsive correct-choice" src="/<%= APP_CONFIG.PROJECT_SLUG %>/img/transparent.png" data-small="<%= _.where(question['choices'], {correct_answer: true})[0]['photo']['rendered_100_path'] %>" data-medium="<%= _.where(question['choices'], {correct_answer: true})[0]['photo']['rendered_300_path'] %>" data-large="<%= _.where(question['choices'], {correct_answer: true})[0]['photo']['rendered_600_path'] %>">
 				<% } %>
 				<div class="choices">
 					<ul class="fa-ul">
@@ -55,7 +55,7 @@
             <a href="<%= quizData['next_quiz']['seamus_url'] %>">
                 <% if (quizData['next_quiz']['photo']) { %>
 				<div class="next-thumb">
-                    <img class="img-responsive" src="<%= quizData['next_quiz']['photo']['rendered_300_path'] %>">
+                    <img class="img-responsive" src="/<%= APP_CONFIG.PROJECT_SLUG %>/img/transparent.png" data-small="<%= quizData['next_quiz']['photo']['rendered_100_path'] %>" data-medium="<%= quizData['next_quiz']['photo']['rendered_300_path'] %>" data-large="<%= quizData['next_quiz']['photo']['rendered_600_path'] %>">
 				</div>
                 <% } %>
 				<div class="next-desc">
