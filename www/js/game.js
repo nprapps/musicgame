@@ -292,14 +292,13 @@ var onQuestionComplete = function(points, selectedAnswer, element){
                         sendHeightToParent();
                     }
                 });
-                if (currentQuestion + 1 < quizData['questions'].length){
-                    $nextQuestionButton.addClass('show');
-                } else {
-                    $showScoreButton.addClass('show');
-                }
         });
 
-
+    if (currentQuestion + 1 < quizData['questions'].length){
+        $nextQuestionButton.addClass('show');
+    } else {
+        $showScoreButton.addClass('show');
+    }
 
     resizeWindow();
 };

@@ -866,7 +866,7 @@ h1,h2,h3,h4,h5,h6 {
 
 .score-container {
 	position: absolute;
-	top: 0;
+	top: 44px; // Add margin so we don't block clicks on the next question button
 	bottom: 0;
 	left: 0;
 	right: 0;
@@ -879,7 +879,7 @@ h1,h2,h3,h4,h5,h6 {
 		left: 50%;
 		z-index: 20000;
 		margin-left: -75px;
-		margin-top: -75px;
+		margin-top: -75px - 44px;
 		padding: 10px;
 		width: 150px;
 		height: 150px;
