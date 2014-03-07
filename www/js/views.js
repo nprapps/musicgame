@@ -885,6 +885,8 @@ var PhotoView = BaseView.extend({
         this.$loader = this.$('.loader-wrapper');
         this.$uploadPhotoButton = this.$('.photo-uploader');
         this.$helpText = this.$('.help-block');
+
+        this.$uploadPhotoButton.tooltip({container: 'body'});
     },
 
     showLoading: function() {
@@ -1035,6 +1037,8 @@ var AudioView = BaseView.extend({
             this.$play.show();
             this.$stop.hide();
         }
+
+        this.$uploadAudioButton.tooltip({container: 'body'});
     },
 
     play: function() {
