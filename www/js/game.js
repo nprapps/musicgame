@@ -8,9 +8,6 @@ var _gaq = window._gaq||[];
 var $content = null;
 var $answers = null;
 var $answersContainer = null;
-var $questionPlayer = null;
-var $questionPlayButton = null;
-var $questionPauseButton = null;
 var $timerContainer = null;
 var $timerBg = null;
 var $timer = null;
@@ -19,7 +16,6 @@ var $showScoreButton = null;
 var $startQuizButton = null;
 var $progressBar = null;
 var $responses = null;
-var timer = false;
 
 // Game state
 var quizData = null;
@@ -32,6 +28,7 @@ var answers = [];
 var correctAnswers = [];
 var currentAnswer = null;
 var incorrectAnswers = null;
+var timer = false;
 
 /*
  * Render the start screen.
@@ -60,11 +57,9 @@ var renderQuestion = function() {
     var question = quizData['questions'][currentQuestion];
     currentAnswer = _.where(question['choices'], {correct_answer: true})[0]['id'];
 
-
     var context = question;
     context['quizLength'] = quizData['questions'].length;
     context['questionNumber'] = currentQuestion + 1;
-
     var html = JST.question(context);
 
     incorrectAnswers = _.chain(question['choices'])
@@ -236,7 +231,7 @@ var displayScore = function(points, $el){
 }
 
 /*
-* Check if clicked answer is correct
+* Handle choice clicks
 */
 var onAnswerClick = function(){
     var points = 0;
@@ -281,7 +276,7 @@ var trimAnswers = function(){
 }
 
 /*
-* Animate our question timer
+* Animate question timer
 */
 var runTimer = function() {
     var trimInterval = TIMERLENGTH * 1000 / (quizData['questions'][currentQuestion]['choices'].length - 1);
@@ -315,7 +310,7 @@ var runTimer = function() {
 };
 
 /*
-* Setup our audio players
+* Setup audio players
 */
 var setupPlayers = function(question, timer){
     var $players = $content.find('.jp-player')
