@@ -44,7 +44,7 @@ var renderStart = function() {
 
     $startQuizButton = $content.find('#start-quiz');
     $startQuizButton.on('click', function(e){
-        _gaq.push(['_trackEvent', 'Game', 'Started ' + quizData['slug'], APP_CONFIG.PROJECT_NAME, 1]);
+        _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_NAME, 'Game Started', quizData['slug']]);
         $content.empty().removeClass('start');
         renderQuestion();
         return false;
@@ -107,7 +107,7 @@ var renderQuestion = function() {
     $nextQuestionButton.on('click', onNextQuestionClick);
     $showScoreButton.on('click', renderGameOver);
     $aftertext_links.on('click', function(){
-        _gaq.push(['_trackEvent', 'Game', 'After-text click from ' + quizData['slug'], APP_CONFIG.PROJECT_NAME, 1]);
+        _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_NAME, 'Quizmaster Link', quizData['slug']]);
     });
 
 
@@ -163,7 +163,7 @@ var renderQuestion = function() {
  * Render the game over screen.
  */
 var renderGameOver = function() {
-    _gaq.push(['_trackEvent', 'Game', 'Finished ' + quizData['slug'], APP_CONFIG.PROJECT_NAME, 1]);
+    _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_NAME, 'Game Over', quizData['slug']]);
 
     var $showResults = null;
     var context = {
@@ -221,7 +221,7 @@ var renderGameOver = function() {
     });
 
     $nextup.on('click', function(){
-        _gaq.push(['_trackEvent', 'Game', 'Continuous play click from ' + quizData['slug'], APP_CONFIG.PROJECT_NAME, 1]);
+        _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_NAME, 'Continous Play', quizData['slug']]);
     });
 
     resizeWindow();
