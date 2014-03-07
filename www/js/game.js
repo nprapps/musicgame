@@ -12,6 +12,8 @@ var $nextQuestionButton = null;
 var $showScoreButton = null;
 var $startQuizButton = null;
 var $progressBar = null;
+var $currentQuestion = null;
+var $previousQuestion = null;
 
 // Game state
 var quizData = null;
@@ -96,12 +98,10 @@ var renderQuestion = function() {
     $nextQuestionButton.removeClass('show');
 
     if (question['audio']){
-        $previousQuestion.find('.player').jPlayer('destroy');
+        $previousQuestion.find('.jp-player').jPlayer('destroy');
         setupPlayers(true, timer);
-    } else { // Start the timer immediately if no audio.
-        if (timer === 'true'){
-            runTimer();
-        }
+    } else if (timer === 'true') { // Start the timer immediately if no audio.
+        runTimer();
     }
 
     // Safari doesn't animate properly without this
