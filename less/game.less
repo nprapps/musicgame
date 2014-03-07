@@ -616,6 +616,10 @@ h1,h2,h3,h4,h5,h6 {
 					img {
 						margin-bottom: 0;
 					}
+
+					@media screen and (max-width: 480px){
+						padding-right: @grid-gutter-width / 4;
+					}
 				}
 				.quiz-title {
 					.make-xs-column(8);
@@ -623,6 +627,10 @@ h1,h2,h3,h4,h5,h6 {
 
 					h1 {
 						margin-bottom: @line-height-computed / 2;
+					}
+
+					@media screen and (max-width: 480px){
+						padding-left: @grid-gutter-width / 4;
 					}
 				}
 			}
@@ -644,6 +652,10 @@ h1,h2,h3,h4,h5,h6 {
 
 					margin-bottom: @line-height-computed;
 
+					@media screen and (max-width: 480px){
+						padding-right: @grid-gutter-width / 4;
+					}
+
 					img {
 						margin-bottom: 0;
 					}
@@ -652,6 +664,10 @@ h1,h2,h3,h4,h5,h6 {
 					.make-xs-column(8);
 					.make-sm-column(9);
 					.make-md-column(10);
+
+					@media screen and (max-width: 480px){
+						padding-left: @grid-gutter-width / 4;
+					}
 				}
 			}
 
@@ -689,14 +705,18 @@ h1,h2,h3,h4,h5,h6 {
 						.make-xs-column(4);
 						.make-sm-column(3);
 
-						// padding-right: @grid-gutter-width / 4;
+						@media screen and (max-width: 480px){
+							padding-right: @grid-gutter-width / 4;
+						}
 					}
 
 					.choices {
 						.make-xs-column(8);
 						.make-sm-column(9);
 
-						// padding-left: @grid-gutter-width / 4;
+						@media screen and (max-width: 480px){
+							padding-left: @grid-gutter-width / 4;
+						}
 					}
 				}
 
