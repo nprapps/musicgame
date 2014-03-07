@@ -99,7 +99,7 @@ var renderQuestion = function() {
     $timer = $currentQuestion.find('#timer');
     $nextQuestionButton = $currentQuestion.find('.next-question');
     $showScoreButton = $currentQuestion.find('.show-score');
-    $aftertext_links = $currentQuestion.find('.after-text a');
+    var $aftertext_links = $currentQuestion.find('.after-text a');
 
     $questionPlayButton.on('click', onQuestionPlayButtonClick);
     $questionPauseButton.on('click', onQuestionPauseButtonClick);
@@ -107,7 +107,7 @@ var renderQuestion = function() {
     $nextQuestionButton.on('click', onNextQuestionClick);
     $showScoreButton.on('click', renderGameOver);
     $aftertext_links.on('click', function(){
-        _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_NAME, 'Quizmaster Link', quizData['slug']]);
+        _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_NAME, 'Quizmaster Link (Question)', quizData['slug']]);
     });
 
 
@@ -183,6 +183,11 @@ var renderGameOver = function() {
     var $playButtons = $content.find('.play');
     var $pauseButtons = $content.find('.pause');
     var $nextup = $content.find('.next-up a');
+    var $aftertext_links = $content.find('.after-text a');
+
+    $aftertext_links.on('click', function(){
+        _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_NAME, 'Quizmaster Link (Game Over)', quizData['slug']]);
+    });
 
     // Set up question audio players
     $players.jPlayer({
