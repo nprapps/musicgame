@@ -869,6 +869,9 @@ var PhotoView = BaseView.extend({
 
         this.$photoForm = null;
         this.$photoFile = null;
+        this.$loader = null;
+        this.$uploadPhotoButton = null;
+        this.$helpText = null;
 
         this.render();
     },
@@ -878,6 +881,15 @@ var PhotoView = BaseView.extend({
 
         this.$photoForm = this.$('form');
         this.$photoFile = this.$('input[type="file"]');
+        this.$loader = this.$('.loader-wrapper');
+        this.$uploadPhotoButton = this.$('.photo-uploader');
+        this.$helpText = this.$('.help-block');
+    },
+
+    showLoading: function() {
+        this.$uploadPhotoButton.hide();
+        this.$helpText.hide();
+        this.$loader.css('display', 'block');
     },
 
     uploadPhoto: function(e) {
@@ -887,6 +899,9 @@ var PhotoView = BaseView.extend({
         reader.readAsDataURL(file);
 
         var properties = this.serialize();
+
+        this.showLoading();
+        this.options.parent.$audio.hide();
 
         reader.onloadend = _.bind(function() {
             properties['file_string'] = reader.result;
@@ -1033,6 +1048,12 @@ var AudioView = BaseView.extend({
         this.$play.show();
     },
 
+    showLoading: function() {
+        this.$uploadAudioButton.hide();
+        this.$helpText.hide();
+        this.$loader.css('display', 'block');
+    },
+
     uploadAudio: function(e) {
         var file = this.$audioFile[0].files[0];
 
@@ -1041,12 +1062,12 @@ var AudioView = BaseView.extend({
 
         var properties = this.serialize();
 
+        this.showLoading();
+        this.options.parent.$photo.hide();
+
         reader.onloadend = _.bind(function() {
             properties['file_string'] = reader.result;
-            this.$uploadAudioButton.hide();
-            this.$helpText.hide();
-            this.options.parent.$photo.hide();
-            this.$loader.css('display', 'block');
+
             $.ajax({
                 'url': '/musicgame/admin/upload-audio/',
                 'type': 'POST',
@@ -1055,7 +1076,6 @@ var AudioView = BaseView.extend({
                     console.log('Audio created.');
                     this.options.parent.model.setAudio(new Audio(data, { 'parse': true }));
                     this.model = this.options.parent.model.audio;
-                    this.$loader.hide();
                     this.render();
 
                     if (this.options.parent.toggleViews) {

@@ -5,11 +5,17 @@
 	<span class="remove-icon"><i class="fa fa-times"></i></span></a>
 </div>
 <% } else { %>
-	<div class="input-group">
-	    <span class="input-group-addon btn btn-default btn-file">
-	        <span><i class="fa fa-plus-square"></i> Image</span>
-	        <input type="file" accept=".jpg,.jpeg,.png" name="...">
-	    </span>
-	</div>
-    <span class="help-block">Square crop (jpg,png)</span>
+<div class="input-group">
+    <span class="input-group-addon btn btn-default btn-file photo-uploader">
+        <span><i class="fa fa-plus-square"></i> Image</span>
+        <input type="file" accept=".jpg,.jpeg,.png" name="...">
+    </span>
+
+    <div class="loader-wrapper">
+        <div class="loader"></div>
+        <span class="waiting">Please wait... photo uploading</span>
+    </div>
+</div>
+
+<span class="help-block">Square crop (jpg,png)</span>
 <% } %>
