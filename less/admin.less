@@ -146,6 +146,7 @@
 
     .question-settings {
         position: relative;
+        white-space: collapse;
 
         h5 {
             float: left;
@@ -156,6 +157,24 @@
             font-size: 14px;
             text-transform: uppercase;
             font-weight: bold;
+        }
+
+        .move-up,
+        .move-down {
+            float: left;
+            height: 31px;
+            width: 31px;
+            line-height: 31px;
+            text-align: center;
+            padding: 0;
+            margin-left: 2px;
+            background: #bbb;
+            color: #fff;
+            border-width: 0;
+
+            &:hover {
+                background: @brand-primary;
+            }
         }
 
         .rm-question {
