@@ -590,6 +590,8 @@ var QuestionView = BaseView.extend({
         var prevView = this.options.parent.questionViews[$prev.data('cid')];
         prevView.$order.text(order + 1);
 
+        scrollTo(this.$el);
+
         this.markNeedsSave();
     },
 
@@ -613,6 +615,8 @@ var QuestionView = BaseView.extend({
         
         var nextView = this.options.parent.questionViews[$next.data('cid')];
         nextView.$order.text(order + 1);
+
+        scrollTo(this.$el);
 
         this.markNeedsSave();
     },

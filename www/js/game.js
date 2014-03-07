@@ -393,16 +393,6 @@ var onNextQuestionClick = function() {
 }
 
 /*
- * Scroll to a given element.
- */
-var scrollTo = function($el) {
-    var top = $el.offset().top;
-    $('html,body').animate({
-        scrollTop: top
-    }, 1000);
-};
-
-/*
  * Intelligently load images
  */
 var loadImages = function() {
