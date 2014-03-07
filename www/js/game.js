@@ -91,9 +91,6 @@ var renderQuestion = function() {
     $answers = $currentQuestion.find('.answers li');
     $answersContainer = $currentQuestion.find('.answers');
     $progressBar = $currentQuestion.find('.progress .bar');
-    $questionPlayer = $currentQuestion.find('.player');
-    $questionPlayButton = $currentQuestion.find('.jp-play');
-    $questionPauseButton = $currentQuestion.find('.jp-pause');
     $timerContainer = $currentQuestion.find('.timer-container');
     $timerBg = $currentQuestion.find('#timer-bg');
     $timer = $currentQuestion.find('#timer');
@@ -101,8 +98,6 @@ var renderQuestion = function() {
     $showScoreButton = $currentQuestion.find('.show-score');
     var $aftertext_links = $currentQuestion.find('.after-text a');
 
-    $questionPlayButton.on('click', onQuestionPlayButtonClick);
-    $questionPauseButton.on('click', onQuestionPauseButtonClick);
     $answers.on('click', onAnswerClick);
     $nextQuestionButton.on('click', onNextQuestionClick);
     $showScoreButton.on('click', renderGameOver);
@@ -114,32 +109,8 @@ var renderQuestion = function() {
     $nextQuestionButton.removeClass('show');
 
     if (question['audio']){
-
         $previousQuestion.find('.player').jPlayer('destroy');
-        $questionPlayer.jPlayer({
-            ready: function () {
-                $(this).jPlayer('setMedia', {
-                    mp3: question['audio']['rendered_mp3_path'],
-                    oga: question['audio']['rendered_oga_path']
-                }).jPlayer('play');
-            },
-            play: function() {
-                if (timer === 'true'){
-                    runTimer();
-                }
-
-                $questionPauseButton.show();
-                $questionPlayButton.hide();
-            },
-            ended: function() {
-                $questionPauseButton.hide();
-                $questionPlayButton.show();
-            },
-            swfPath: 'js/lib',
-            supplied: 'mp3, oga',
-            loop: false
-        });
-
+        setupPlayers(true, timer);
     } else { // Start the timer immediately if no audio.
         if (timer === 'true'){
             runTimer();
@@ -155,8 +126,6 @@ var renderQuestion = function() {
     _.delay(function(){
         $previousQuestion.remove();
     }, 500);
-
-
 };
 
 /*
@@ -179,9 +148,6 @@ var renderGameOver = function() {
     $content.html(html);
     $content.removeClass().addClass('end');
     $responses = $content.find('.responses');
-    var $players = $content.find('.jp-player')
-    var $playButtons = $content.find('.play');
-    var $pauseButtons = $content.find('.pause');
     var $nextup = $content.find('.next-up a');
     var $aftertext_links = $content.find('.after-text a');
 
@@ -189,41 +155,7 @@ var renderGameOver = function() {
         _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_NAME, 'Quizmaster Link (Game Over)', quizData['slug']]);
     });
 
-    // Set up question audio players
-    $players.jPlayer({
-        ready: function () {
-            $(this).jPlayer('setMedia', {
-                mp3: $(this).data('mp3'),
-                oga: $(this).data('ogg')
-            });
-        },
-        ended: function(){
-            // Reset media because of webkit audio bug
-            $(this).jPlayer('setMedia', {
-                mp3: $(this).data('mp3'),
-                oga: $(this).data('ogg')
-            });
-
-            $pauseButtons.hide();
-            $playButtons.show();
-        },
-        swfPath: 'js/lib',
-        supplied: 'mp3, oga',
-        loop: false
-    });
-
-    $playButtons.on('click', function(){
-        $pauseButtons.hide();
-        $playButtons.show();
-        $players.jPlayer('pause');
-        $(this).parents('li').find('.jp-player').jPlayer('play');
-        $(this).hide().siblings('.pause').show();
-    });
-
-    $pauseButtons.on('click', function(){
-        $(this).parents('li').find('.jp-player').jPlayer('pause');
-        $(this).hide().siblings('.play').show();
-    });
+    setupPlayers();
 
     $nextup.on('click', function(){
         _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_NAME, 'Continous Play', quizData['slug']]);
@@ -234,31 +166,13 @@ var renderGameOver = function() {
 };
 
 /*
-* Click handler for the question player "play" button.
-*/
-var onQuestionPlayButtonClick = function(e){
-    // $questionPlayer.jPlayer('play');
-    $questionPlayButton.hide();
-    $questionPauseButton.show();
-};
-
-/*
-* Click handler for the question player "stop" button.
-*/
-var onQuestionPauseButtonClick = function(e){
-    // $questionPlayer.jPlayer('pause');
-    $questionPauseButton.hide();
-    $questionPlayButton.show();
-};
-
-/*
 * Answer clicked or timer ran out
 */
 var onQuestionComplete = function(points, selectedAnswer, element){
     var $correctAnswer = $answers.filter(function(){
         return $(this).data('choice-id') === currentAnswer;
     });
-    var element = $(element)||$correctAnswer;
+    var element = selectedAnswer === '' ? $correctAnswer: $(element);
 
     // Push answer and points for the round to our arrays
     correctAnswers.push(currentAnswer);
@@ -399,6 +313,59 @@ var runTimer = function() {
         onQuestionComplete(0, '');
     };
 };
+
+/*
+* Setup our audio players
+*/
+var setupPlayers = function(question, timer){
+    var $players = $content.find('.jp-player')
+    var $playButtons = $content.find('.play');
+    var $pauseButtons = $content.find('.pause');
+
+    $players.jPlayer({
+        ready: function () {
+            $(this).jPlayer('setMedia', {
+                mp3: $(this).data('mp3'),
+                oga: $(this).data('ogg')
+            });
+
+            if (question === true){
+                $(this).jPlayer('play');
+            }
+        },
+        play: function() {
+            if (timer === 'true'){
+                runTimer();
+            }
+        },
+        ended: function(){
+            // Reset media because of webkit audio bug
+            $(this).jPlayer('setMedia', {
+                mp3: $(this).data('mp3'),
+                oga: $(this).data('ogg')
+            });
+
+            $pauseButtons.hide();
+            $playButtons.show();
+        },
+        swfPath: 'js/lib',
+        supplied: 'mp3, oga',
+        loop: false
+    });
+
+    $playButtons.on('click', function(){
+        $pauseButtons.hide();
+        $playButtons.show();
+        $players.jPlayer('pause');
+        $(this).parents('.jp-audio').prev('.jp-player').jPlayer('play');
+        $(this).hide().siblings('.pause').show();
+    });
+
+    $pauseButtons.on('click', function(){
+        $(this).parents('.jp-audio').prev('.jp-player').jPlayer('pause');
+        $(this).hide().siblings('.play').show();
+    });
+}
 
 /*
  * Intelligently load images
