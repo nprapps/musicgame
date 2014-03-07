@@ -8,14 +8,10 @@ var _gaq = window._gaq||[];
 var $content = null;
 var $answers = null;
 var $answersContainer = null;
-var $timerContainer = null;
-var $timerBg = null;
-var $timer = null;
 var $nextQuestionButton = null;
 var $showScoreButton = null;
 var $startQuizButton = null;
 var $progressBar = null;
-var $responses = null;
 
 // Game state
 var quizData = null;
@@ -86,9 +82,6 @@ var renderQuestion = function() {
     $answers = $currentQuestion.find('.answers li');
     $answersContainer = $currentQuestion.find('.answers');
     $progressBar = $currentQuestion.find('.progress .bar');
-    $timerContainer = $currentQuestion.find('.timer-container');
-    $timerBg = $currentQuestion.find('#timer-bg');
-    $timer = $currentQuestion.find('#timer');
     $nextQuestionButton = $currentQuestion.find('.next-question');
     $showScoreButton = $currentQuestion.find('.show-score');
     var $aftertext_links = $currentQuestion.find('.after-text a');
@@ -99,7 +92,6 @@ var renderQuestion = function() {
     $aftertext_links.on('click', function(){
         _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_NAME, 'Quizmaster Link (Question)', quizData['slug']]);
     });
-
 
     $nextQuestionButton.removeClass('show');
 
@@ -142,7 +134,6 @@ var renderGameOver = function() {
 
     $content.html(html);
     $content.removeClass().addClass('end');
-    $responses = $content.find('.responses');
     var $nextup = $content.find('.next-up a');
     var $aftertext_links = $content.find('.after-text a');
 
@@ -239,7 +230,6 @@ var onAnswerClick = function(){
 
     // Stop the timer
     stopTimer = true;
-    $timerContainer.attr('class', 'timer-container fade');
 
     if ($this.data('choice-id') == currentAnswer){
         $this.addClass('correct');
