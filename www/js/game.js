@@ -43,6 +43,7 @@ var renderStart = function() {
 
     $startQuizButton = $content.find('#start-quiz');
     $startQuizButton.on('click', function(e){
+        _gaq.push(['_trackEvent', 'Game', 'Started ' + quizData['slug'], APP_CONFIG.PROJECT_NAME, 1]);
         $content.empty().removeClass('start');
         renderQuestion();
         return false;
@@ -156,6 +157,8 @@ var renderQuestion = function() {
  * Render the game over screen.
  */
 var renderGameOver = function() {
+    _gaq.push(['_trackEvent', 'Game', 'Finished ' + quizData['slug'], APP_CONFIG.PROJECT_NAME, 1]);
+
     var $showResults = null;
     var context = {
         'quizData': quizData,
@@ -435,6 +438,14 @@ var onDocumentReady = function() {
             }
         })
     }
+
+    $('div.next-up a').on('click', function(){
+        _gaq.push(['_trackEvent', 'Game', 'Continuous play click from ' + quizData['slug'], APP_CONFIG.PROJECT_NAME, 1]);
+    });
+
+    $('div.after-text a').on('click', function(){
+        _gaq.push(['_trackEvent', 'Game', 'After-text click from ' + quizData['slug'], APP_CONFIG.PROJECT_NAME, 1]);
+    });
 };
 
 /*

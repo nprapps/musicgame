@@ -973,6 +973,9 @@ var AudioView = BaseView.extend({
         this.$audioPlayer = null;
         this.$play = null;
         this.$stop = null;
+        this.$loader = null;
+        this.$uploadAudioButton = null;
+        this.$helpText = null;
 
         this.render();
     },
@@ -988,6 +991,9 @@ var AudioView = BaseView.extend({
         this.$audioPlayer = this.$('#jp-player-' + this.model.cid);
         this.$play = this.$('.play');
         this.$stop = this.$('.stop');
+        this.$loader = this.$('.loader-wrapper');
+        this.$uploadAudioButton = this.$('.audio-uploader');
+        this.$helpText = this.$('.help-block');
 
         if (this.model.id){
             this.$audioPlayer.jPlayer({
@@ -1037,15 +1043,19 @@ var AudioView = BaseView.extend({
 
         reader.onloadend = _.bind(function() {
             properties['file_string'] = reader.result;
+            this.$uploadAudioButton.hide();
+            this.$helpText.hide();
+            this.options.parent.$photo.hide();
+            this.$loader.css('display', 'block');
             $.ajax({
                 'url': '/musicgame/admin/upload-audio/',
                 'type': 'POST',
                 'data': properties,
                 'success': _.bind(function(data) {
                     console.log('Audio created.');
-
                     this.options.parent.model.setAudio(new Audio(data, { 'parse': true }));
                     this.model = this.options.parent.model.audio;
+                    this.$loader.hide();
                     this.render();
 
                     if (this.options.parent.toggleViews) {
