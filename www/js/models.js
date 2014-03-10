@@ -46,14 +46,16 @@ var ChangeTrackingModel = Backbone.Model.extend({
  */
 var RelatedPhotoMixin = {
     parse: function(response, options) {
-        if (response['photo']) {
-            var photo = new Photo(response['photo'], { 'parse': true });
+        // During bootstrap this is an object containing
+        // Photo data, but during save it's an id we already have
+        if (_.isObject(response['photo'])) {
+            var photo = new Photo(response['photo']);
             this.set('photo', response['photo'].id);
             this.setPhoto(photo);
         }
 
         if (!this.photo) {
-            this.setPhoto(new Photo({}, { 'parse': true }));
+            this.setPhoto(new Photo({}));
         }
 
         delete response['photo'];
@@ -82,14 +84,17 @@ var RelatedPhotoMixin = {
  */
 var RelatedAudioMixin = {
     parse: function(response, options) {
-        if (response['audio']) {
-            var audio = new Audio(response['audio'], { 'parse': true });
+        // During bootstrap this is an object containing
+        // Audio data, but during save it's an id we already have
+        if (_.isObject(response['audio'])) {
+            console.log(response['audio']);
+            var audio = new Audio(response['audio']);
             this.set('audio', response['audio'].id);
             this.setAudio(audio);
         }
 
         if (!this.audio) {
-            this.setAudio(new Audio({}, { 'parse': true }));
+            this.setAudio(new Audio({}));
         }
 
         delete response['audio'];

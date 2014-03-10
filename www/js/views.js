@@ -927,7 +927,7 @@ var PhotoView = BaseView.extend({
                 'data': properties,
                 'success': _.bind(function(data) {
 
-                    this.options.parent.model.setPhoto(new Photo(data, { 'parse': true }));
+                    this.options.parent.model.setPhoto(new Photo(data));
                     this.model = this.options.parent.model.photo;
                     this.render();
 
@@ -956,7 +956,7 @@ var PhotoView = BaseView.extend({
             }
         });
 
-        this.model = new Photo({}, { 'parse': true });
+        this.model = new Photo({});
         this.options.parent.model.setPhoto(this.model);
 
         this.render();
@@ -1091,7 +1091,7 @@ var AudioView = BaseView.extend({
                 'data': properties,
                 'success': _.bind(function(data) {
                     console.log('Audio created.');
-                    this.options.parent.model.setAudio(new Audio(data, { 'parse': true }));
+                    this.options.parent.model.setAudio(new Audio(data));
                     this.model = this.options.parent.model.audio;
                     this.render();
 

@@ -80,7 +80,7 @@ class Photo(PSQLMODEL):
 
         # Write the rendered files.
         for width in app_config.IMAGE_WIDTHS:
-            os.system('convert -resize %s /tmp/%s/%s /tmp/%s/%spx-%s' % (
+            os.system('convert -resize %s "/tmp/%s/%s" "/tmp/%s/%spx-%s"' % (
                 width,
                 app_config.PROJECT_SLUG,
                 file_name,
