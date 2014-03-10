@@ -326,12 +326,10 @@ var setupPlayers = function(question, timer){
                     mp3: $(this).data('mp3'),
                     oga: $(this).data('ogg')
                 });
+                $this.next('.jp-audio').find('.jp-pause i').removeClass('fa-pause').addClass('fa-spinner fa-spin');
                 if (question === true){
                     $(this).jPlayer('play');
                 }
-            },
-            loadstart: function(){
-                $this.next('.jp-audio').find('.jp-pause i').removeClass('fa-pause').addClass('fa-spinner fa-spin');
             },
             play: function() {
                 $this.next('.jp-audio').find('.jp-pause i').removeClass('fa-spinner fa-spin').addClass('fa-pause');
