@@ -31,14 +31,19 @@
   $.fn.smartquotes = function(fn) {
     if (!fn) fn = $.smartquotes;
 
-    var nodes = getTextNodesIn(this), len = nodes.length;
-    for (var i=0; i<len; i++) {
-      var node = nodes[i];
-      node.nodeValue = fn(node.nodeValue);
-    }
 
-    $(this).find('input[type="text"]').each(function(){
-      this.value = fn(this.value);
-    });
+    $(this).each(function(){
+      if(this.value){
+        this.value = fn(this.value);
+      } else {
+        var nodes = getTextNodesIn(this), len = nodes.length;
+        for (var i=0; i<len; i++) {
+          var node = nodes[i];
+          node.nodeValue = fn(node.nodeValue);
+        }
+      }
+    })
+
+
   };
 })(jQuery);

@@ -231,7 +231,7 @@ var QuizDetailView = BaseView.extend({
     },
 
     saveQuiz: function() {
-        $('.editable, .input-group').smartquotes();
+        $('.editable, input[type="text"]').smartquotes();
         var properties = this.serialize();
 
         if (!properties['title']) {
