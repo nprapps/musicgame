@@ -293,7 +293,12 @@ var QuizDetailView = BaseView.extend({
     },
 
     addQuestionModel: function() {
-        var question = new Question({ 'quiz': this.model.id }, { 'parse': true });
+        var question = new Question({
+            'quiz': this.model.id,
+            'order': _.size(this.questionViews)
+        }, { 
+            'parse': true
+        });
 
         this.model.questions.add(question);
     },
@@ -908,7 +913,10 @@ var PhotoView = BaseView.extend({
         var properties = this.serialize();
 
         this.showLoading();
-        this.options.parent.$audio.hide();
+        
+        if (this.options.parent.$audio) {
+            this.options.parent.$audio.hide();
+        }
 
         reader.onloadend = _.bind(function() {
             properties['file_string'] = reader.result;
