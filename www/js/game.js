@@ -316,54 +316,37 @@ var runTimer = function() {
 */
 var setupPlayers = function(question, timer){
     var $players = $content.find('.jp-player')
-    var $playButtons = $content.find('.play');
-    var $pauseButtons = $content.find('.pause');
 
     // Initialize the players
-    $players.jPlayer({
-        ready: function () {
-            $(this).jPlayer('setMedia', {
-                mp3: $(this).data('mp3'),
-                oga: $(this).data('ogg')
-            });
+    $players.each(function(){
+        var $this = $(this);
+        $this.jPlayer({
+            ready: function () {
+                $(this).jPlayer('setMedia', {
+                    mp3: $(this).data('mp3'),
+                    oga: $(this).data('ogg')
+                });
+                if (question === true){
+                    $(this).jPlayer('play');
+                }
+            },
+            loadstart: function(){
+                $this.next('.jp-audio').find('.jp-pause i').removeClass('fa-pause').addClass('fa-spinner fa-spin');
+            },
+            play: function() {
+                $this.next('.jp-audio').find('.jp-pause i').removeClass('fa-spinner fa-spin').addClass('fa-pause');
+                $(this).jPlayer('pauseOthers');
 
-            if (question === true){
-                $(this).jPlayer('play');
-            }
-        },
-        play: function() {
-            if (timer === 'true'){
-                runTimer();
-            }
-        },
-        ended: function(){
-            // Reset media because of webkit audio bug
-            $(this).jPlayer('setMedia', {
-                mp3: $(this).data('mp3'),
-                oga: $(this).data('ogg')
-            });
-
-            $pauseButtons.hide();
-            $playButtons.show();
-        },
-        swfPath: 'js/lib',
-        supplied: 'mp3, oga',
-        loop: false
-    });
-
-    // Event bindings
-    $playButtons.on('click', function(){
-        $pauseButtons.hide();
-        $playButtons.show();
-        $players.jPlayer('pause');
-        $(this).parents('.jp-audio').prev('.jp-player').jPlayer('play');
-        $(this).hide().siblings('.pause').show();
-    });
-
-    $pauseButtons.on('click', function(){
-        $(this).parents('.jp-audio').prev('.jp-player').jPlayer('pause');
-        $(this).hide().siblings('.play').show();
-    });
+                if (timer === 'true'){
+                    runTimer();
+                }
+            },
+            cssSelectorAncestor: "#jp_container_" + $this.attr('id').slice(-1),
+            swfPath: 'js/lib',
+            supplied: 'mp3, oga',
+            loop: false
+        });
+    })
 }
 
 /*
