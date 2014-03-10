@@ -98,7 +98,7 @@ var renderQuestion = function() {
 
     // Initialize timer and audio player
     if (question['audio']){
-        $previousQuestion.find('.jp-player').jPlayer('destroy');
+        $previousQuestion.find('.jp-player').jPlayer('destroy').remove();
         setupPlayers(true, timer);
     } else if (timer === 'true') { // Start the timer immediately if no audio.
         runTimer();
