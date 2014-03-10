@@ -148,11 +148,14 @@ var renderGameOver = function() {
         _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_NAME, 'Continous Play', quizData['slug']]);
     });
 
-    setupPlayers();
     resizeWindow();
+
+    // Mobile Safari screws up building the players unless we wait until the call stack is empty.
+    _.defer(setupPlayers);
 
     // Animate in
     $content.find('.container').addClass('in');
+
 };
 
 /*
@@ -320,6 +323,7 @@ var setupPlayers = function(question, timer){
     // Initialize the players
     $players.each(function(){
         var $this = $(this);
+        $this.jPlayer('destroy');
         $this.jPlayer({
             ready: function () {
                 $(this).jPlayer('setMedia', {
