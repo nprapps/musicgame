@@ -913,7 +913,10 @@ var PhotoView = BaseView.extend({
         var properties = this.serialize();
 
         this.showLoading();
-        this.options.parent.$audio.hide();
+        
+        if (this.options.parent.$audio) {
+            this.options.parent.$audio.hide();
+        }
 
         reader.onloadend = _.bind(function() {
             properties['file_string'] = reader.result;
