@@ -293,7 +293,12 @@ var QuizDetailView = BaseView.extend({
     },
 
     addQuestionModel: function() {
-        var question = new Question({ 'quiz': this.model.id }, { 'parse': true });
+        var question = new Question({
+            'quiz': this.model.id,
+            'order': _.size(this.questionViews)
+        }, { 
+            'parse': true
+        });
 
         this.model.questions.add(question);
     },
