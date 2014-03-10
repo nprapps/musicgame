@@ -148,11 +148,14 @@ var renderGameOver = function() {
         _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_NAME, 'Continous Play', quizData['slug']]);
     });
 
-    setupPlayers();
     resizeWindow();
+
+    // Mobile Safari screws up building the players unless we wait until the call stack is empty.
+    _.defer(setupPlayers);
 
     // Animate in
     $content.find('.container').addClass('in');
+
 };
 
 /*
@@ -320,21 +323,22 @@ var setupPlayers = function(question, timer){
     // Initialize the players
     $players.each(function(){
         var $this = $(this);
+        $this.jPlayer('destroy');
         $this.jPlayer({
             ready: function () {
                 $(this).jPlayer('setMedia', {
                     mp3: $(this).data('mp3'),
                     oga: $(this).data('ogg')
                 });
+                $(this).next('.jp-audio').find('.jp-pause i').removeClass('fa-pause').addClass('fa-spinner fa-spin');
                 if (question === true){
                     $(this).jPlayer('play');
                 }
             },
-            loadstart: function(){
-                $this.next('.jp-audio').find('.jp-pause i').removeClass('fa-pause').addClass('fa-spinner fa-spin');
+            canplay: function(){
+                $(this).next('.jp-audio').find('.jp-pause i').removeClass('fa-spinner fa-spin').addClass('fa-pause');
             },
             play: function() {
-                $this.next('.jp-audio').find('.jp-pause i').removeClass('fa-spinner fa-spin').addClass('fa-pause');
                 $(this).jPlayer('pauseOthers');
 
                 if (timer === 'true'){
