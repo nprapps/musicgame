@@ -87,7 +87,6 @@ var RelatedAudioMixin = {
         // During bootstrap this is an object containing
         // Audio data, but during save it's an id we already have
         if (_.isObject(response['audio'])) {
-            console.log(response['audio']);
             var audio = new Audio(response['audio']);
             this.set('audio', response['audio'].id);
             this.setAudio(audio);
