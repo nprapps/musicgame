@@ -124,7 +124,9 @@ var Quiz = ChangeTrackingModel.extend({
     },
 
     parse: function(response, options) {
-        this.questions = new Questions();
+        if (!this.questions) {
+            this.questions = new Questions();
+        }
 
         if (response['questions']) {
             _.each(response['questions'], _.bind(function(questionData) {
@@ -184,7 +186,9 @@ var Question = ChangeTrackingModel.extend({
     },
 
     parse: function(response, options) {
-        this.choices = new Choices();
+        if (!this.choices) {
+            this.choices = new Choices();
+        }
 
         if (response['choices']) {
             _.each(response['choices'], _.bind(function(choiceData) {
