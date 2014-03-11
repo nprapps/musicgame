@@ -1,0 +1,50 @@
+from peewee import PostgresqlDatabase
+from playhouse import migrate
+
+secrets = app_config.get_secrets()
+db = PostgresqlDatabase(
+    app_config.PROJECT_SLUG,
+    user=secrets.get('MUSICGAME_POSTGRES_USER', app_config.PROJECT_SLUG),
+    password=secrets.get('MUSICGAME_POSTGRES_PASSWORD', None),
+    host=secrets.get('MUSICGAME_POSTGRES_HOST', 'localhost'),
+    port=secrets.get('MUSICGAME_POSTGRES_PORT', 5432)
+)
+
+migrator = migrate.Migrator(db)
+
+# Start migration here.
+# http://peewee.readthedocs.org/en/latest/peewee/playhouse.html#migrate
+#
+# Examples:
+#
+# Add a field to a model.
+#
+# # declare a field instance
+# new_pubdate_field = DateTimeField(null=True)
+#
+# # in a transaction, add the column to your model
+# with my_db.transaction():
+#   migrator.add_column(Story, new_pubdate_field, 'pub_date')
+#
+# Rename a field.
+#
+# # specify the original name of the field and its new name
+# with my_db.transaction():
+#     migrator.rename_column(Story, 'pub_date', 'publish_date')
+#
+# Drop a field.
+#
+# # specify the field name to drop
+# with my_db.transaction():
+#     migrator.drop_column(Story, 'some_old_field')
+#
+# Nullable/Not nullable
+#
+# with my_db.transaction():
+#     # make pubdate not nullable
+#     migrator.set_nullable(Story, Story.pub_date, False)
+#
+# Rename a table
+#
+# with my_db.transaction():
+#     migrator.rename_table(Story, 'stories')

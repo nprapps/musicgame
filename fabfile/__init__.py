@@ -771,6 +771,21 @@ def load_quizzes():
         qz.deploy()
         print 'Deployed quiz: %s' % qz
 
+@task
+def new_migration():
+    previous_migrations = glob('migrations/migration_*.py')
+
+    current_migration = 1
+
+    if len(previous_migrations) > 0:
+        current_migration = len(previous_migrations) + 1
+
+    with open('migrations/template', 'rb') as readfile:
+        template_text = readfile.read()
+
+        with open('migrations/migration_%s.py' % str(current_migration).zfill(4), 'wb') as writefile:
+            writefile.write(template_text)
+
 """
 Cron jobs
 """
