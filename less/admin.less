@@ -109,6 +109,14 @@
     margin-top: 50px;
 }
 
+.editable {
+    &:after {
+        padding: 7px 11px;
+        color: @gray-light;
+        font-style: normal;
+    }
+}
+
 .game-attributes {
     padding-bottom: 30px;
     border-bottom: 4px solid #333;
@@ -204,12 +212,6 @@
     .after-text {
         height: 100px;
         overflow: auto;
-
-        &:after {
-            padding: 7px 11px;
-            color: @gray-light;
-            font-style: normal;
-        }
     }
 }
 

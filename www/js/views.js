@@ -553,6 +553,7 @@ var QuestionView = BaseView.extend({
         this.$question = this.$('.interrogative');
         this.$afterText = this.$('.after-text');
         this.$order = this.$('.order');
+        this.$editable = this.$('.editable');
 
         _.each(this.choiceViews, function(view) {
             view.render();
@@ -564,8 +565,16 @@ var QuestionView = BaseView.extend({
             }
         }
 
-        var editor = new MediumEditor(this.$afterText, {
-            placeholder: 'Description (appears after a choice is made)',
+        var questionEditor = new MediumEditor(this.$question, {
+            placeholder: $(this).data('placeholder'),
+            buttons: ['bold','italic'],
+            buttonLabels: 'fontawesome',
+            disableReturn: true,
+            targetBlank: true
+        });
+
+        var aftertextEditor = new MediumEditor(this.$afterText, {
+            placeholder: $(this).data('placeholder'),
             buttons: ['bold','italic','anchor'],
             buttonLabels: 'fontawesome',
             targetBlank: true
@@ -749,7 +758,7 @@ var QuestionView = BaseView.extend({
         var order = $questions.index(this.$el);
 
         var properties = {
-            'text': this.$question.val(),
+            'text': this.$question.html(),
             'order': order,
             'after_text': this.$afterText.html()
         };
@@ -789,9 +798,18 @@ var ChoiceView = BaseView.extend({
 
         this.$photo = this.$('.choice-files .photo');
         this.$audio = this.$('.choice-files .audio');
+        this.$editable = this.$('.editable');
 
         this.addPhotoView();
         this.addAudioView();
+
+        var editor = new MediumEditor(this.$editable, {
+            placeholder: $(this).data('placeholder'),
+            buttons: ['bold','italic'],
+            buttonLabels: 'fontawesome',
+            disableReturn: true,
+            targetBlank: true
+        });
     },
 
     saveChoice: function() {
@@ -850,7 +868,7 @@ var ChoiceView = BaseView.extend({
 
     serialize: function() {
         var properties = {
-            'text': this.$('.answer').val(),
+            'text': this.$('.answer').html(),
             'correct_answer': false,
             'order': this.model.collection.indexOf(this.model),
         };

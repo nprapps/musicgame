@@ -15,12 +15,7 @@
                     <span></span>
                 </label>
             </span>
-            <input
-                type="text"
-                class="form-control answer"
-                placeholder="Choice"
-                value="<%= choice.get('text') || '' %>"
-            ></input>
+            <div class="editable form-control answer" data-placeholder="Choice"><%= choice.get('text') || '' %></div>
         </div>
 
     </div>

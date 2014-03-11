@@ -9,7 +9,7 @@
 <div class="question-details">
 	<div class="question-title row">
 	    <div class="col-md-12">
-	        	<input type="text" class="form-control interrogative" placeholder="Question" value="<%= question.get('text') || '' %>">
+	    		<div class="editable form-control interrogative" data-placeholder="Question"><%= question.get('text') || '' %></div>
 	    </div>
 	</div> <!--/row -->
 	
@@ -33,7 +33,7 @@
 
 	<div class="question-info row">
 	        <div class="col-md-12">
-	            <div class="editable form-control after-text"><%= question.get('after_text') || '' %></div>
+	            <div class="editable form-control after-text" data-placeholder="Description (appears after a choice is made)"><%= question.get('after_text') || '' %></div>
 	        </div>
 	</div><!--/row -->
 </div>	<!--/question-details -->
