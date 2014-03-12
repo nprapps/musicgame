@@ -41,26 +41,38 @@ def upload_photo():
     """
     data = request.form
 
-    # We have two paths; update a photo (the credit, really) or add one from scratch.
-    if data.get('id', None):
-
-        # Get the photo.
-        photo = models.Photo.get(models.Photo.id == int(data['id']))
-        photo.credit = data.get('credit', None)
-
-    else:
-
-        # Create a new photo.
-        photo = {
-            'credit': data.get('credit', ''),
-            'caption': data.get('caption', ''),
-            'file_name': data.get('file_name', ''),
-        }
-        photo = models.Photo(**photo)
+    # Create a new photo.
+    photo = {
+        'credit': data.get('credit', ''),
+        'caption': data.get('caption', ''),
+        'file_name': data.get('file_name', ''),
+    }
+    photo = models.Photo(**photo)
 
     # Get the data.
     if data.get('file_string', None):
         photo.write_photo(data['file_string'])
+
+    # Do the save.
+    photo.save()
+
+    # Return data.
+    serializer = Serializer()
+    data = serializer.serialize_object(photo)
+    return jsonify(data)
+
+@admin.route('/update-photo-credit/', methods=['POST'])
+def update_photo_credit():
+    """
+    Update a photo, bypassing the API for cleaner invocation.
+    """
+    data = request.form
+
+    # Get the photo.
+    photo = models.Photo.get(models.Photo.id == int(data['id']))
+    photo.credit = data.get('credit', None)
+
+    print photo.credit
 
     # Do the save.
     photo.save()

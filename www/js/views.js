@@ -255,12 +255,15 @@ var QuizDetailView = BaseView.extend({
             this.saveQuestions().then(_.bind(function() {
                 // Save all choices
                 this.saveChoices().then(_.bind(function() {
-                    // Deploy
-                    this.deployQuiz().then(_.bind(function() {
-                        // Mark as saved
-                        console.log('Save complete.');
-                        this.markSaved();
-                    }, this));;
+                    // Save all photos
+                    this.savePhotos().then(_.bind(function() {
+                        // Deploy
+                        this.deployQuiz().then(_.bind(function() {
+                            // Mark as saved
+                            console.log('Save complete.');
+                            this.markSaved();
+                        }, this));
+                    }, this));
                 }, this));
             }, this));
         }, this));
@@ -272,6 +275,22 @@ var QuizDetailView = BaseView.extend({
         _.each(this.questionViews, function(questionView) {
             saves.push(questionView.saveQuestion());
         });
+
+        return $.when.apply(this, saves);
+    },
+
+    savePhotos: function() {
+        var saves = [];
+
+        saves.push(this.photoView.uploadPhotoCredit());
+
+        _.each(this.questionViews, function(questionView){
+            saves.push(questionView.photoView.uploadPhotoCredit());
+
+            _.each(questionView.choiceViews, function(choiceView){
+                saves.push(choiceView.photoView.uploadPhotoCredit());
+            })
+        })
 
         return $.when.apply(this, saves);
     },
@@ -890,7 +909,7 @@ var PhotoView = BaseView.extend({
     events: {
         'change input[type="file"]': 'uploadPhoto',
         'click .remove': 'removePhoto',
-        'change .photo-credit': 'uploadPhotoCredit'
+        'keyup .photo-credit': 'markNeedsSave'
     },
 
     initialize: function() {
@@ -902,7 +921,6 @@ var PhotoView = BaseView.extend({
         this.$uploadPhotoButton = null;
         this.$helpText = null;
         this.$photoCredit = null;
-        this.$photoId = null;
 
         this.render();
     },
@@ -917,7 +935,6 @@ var PhotoView = BaseView.extend({
         this.$helpText = this.$('.help-block');
 
         this.$photoCredit = this.$('.photo-credit');
-        this.$photoId = this.$('.photo-id');
 
         this.$uploadPhotoButton.tooltip({container: 'body'});
     },
@@ -929,20 +946,36 @@ var PhotoView = BaseView.extend({
     },
 
     uploadPhotoCredit: function(e) {
-        var properties = {
-            credit: this.$photoCredit.val(),
-            id: this.$photoId.val()
+        /*
+         * Not this function is a horrible kludge to work
+         * around bizarre JS errors.
+         *
+         * It simulates the function of Photo.save()
+         * and generate responses to be compatible with
+         * behavior of ChangeTrackingModel.
+         */
+        var credit = this.$photoCredit.val();
+
+        if (!this.model.id || credit == this.model.get('credit')) {
+            console.log('Skipped saving Photo.');
+
+            return $.Deferred().resolve().promise();
         }
 
+        this.model.set('credit', credit, { silent: true });
+
         $.ajax({
-            'url': '/musicgame/admin/upload-photo/',
+            'url': '/musicgame/admin/update-photo-credit/',
             'type': 'POST',
-            'data': properties,
+            'data': {
+                'id': this.model.id,
+                'credit': this.model.get('credit')
+            },
             'success': _.bind(function(data) {
-                this.markNeedsSave();
+                console.log('Saved Photo.');
             }, this),
             'error': function() {
-                console.log('Failed to update photo.');
+                console.log('Error saving Photo.');
             }
         });
     },
