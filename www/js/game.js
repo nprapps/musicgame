@@ -93,6 +93,7 @@ var renderQuestion = function() {
     $answers.on('click', onAnswerClick);
     $nextQuestionButton.on('click', onNextQuestionClick);
     $showScoreButton.on('click', renderGameOver);
+    $(window).on("resize.movePhotoCredits", _.throttle(movePhotoCredits, 100));
     $aftertext_links.on('click', function(){
         _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_NAME, 'Quizmaster Link (Question)', quizData['slug']]);
     });
@@ -178,19 +179,6 @@ var onQuestionComplete = function(points, selectedAnswer, element){
     $correctAnswer.addClass('correct');
     $answers.not($correctAnswer).not($(element)).addClass('fade').off("click");
 
-    // Show photo credits
-    $content.find('.credit').slideDown({
-        duration: 'fast',
-        progress: function(){
-            $content.attr('style','').css('height', $currentQuestion.height());
-            sendHeightToParent();
-        },
-        done: function(){
-            $content.attr('style','').css('height', $currentQuestion.height());
-            sendHeightToParent();
-        }
-    });
-
     // Show the points awarded for the round
     displayScore(points, element);
 
@@ -203,6 +191,26 @@ var onQuestionComplete = function(points, selectedAnswer, element){
 
     resizeWindow();
 };
+
+/*
+* Shuffle photo credits around based on our layout
+*/
+var movePhotoCredits = function(){
+    var currentChoices = quizData['questions'][currentQuestion]['choices'];
+    var photoAnswers = _.where(currentChoices, { text: "" }).length === currentChoices.length;
+
+    if (photoAnswers || $(window).outerWidth() <= 480){
+        $answers.each(function(){
+            var credit = $(this).find('.credit').remove();
+            $(this).append(credit);
+        });
+    } else {
+        $answers.each(function(){
+            var credit = $(this).find('.credit').remove();
+            $(this).find('.answer').before(credit);
+        });
+    }
+}
 
 /*
 * Go to the next question
@@ -232,7 +240,21 @@ var displayScore = function(points, $el){
         .bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",
             function(){
                 $(this).parent().remove();
-                $content.find('.after-text').slideDown({
+                $el.parents('.question-wrapper').find('.after-text').slideDown({
+                    duration: 'fast',
+                    progress: function(){
+                        $content.attr('style','').css('height', $currentQuestion.height());
+                        sendHeightToParent();
+                    },
+                    done: function(){
+                        $content.attr('style','').css('height', $currentQuestion.height());
+                        sendHeightToParent();
+                    }
+                });
+
+                // Show photo credits
+                movePhotoCredits();
+                $content.find('.credit').slideDown({
                     duration: 'fast',
                     progress: function(){
                         $content.attr('style','').css('height', $currentQuestion.height());
@@ -371,8 +393,8 @@ var updateQuestionPlayer = function(question) {
 /*
 * Setup audio players
 */
-var setupGameOverPlayers = function(question){
-    var $players = $content.find('.jp-player')
+var setupGameOverPlayers = function(){
+    var $players = $content.find('.jp-player');
 
     // Initialize the players
     $players.each(function(){
@@ -387,9 +409,6 @@ var setupGameOverPlayers = function(question){
                 $(this).next('.jp-audio').find('.jp-pause i')
                     .removeClass('fa-pause')
                     .addClass('fa-spinner fa-spin');
-                if (question === true){
-                    $(this).jPlayer('play');
-                }
             },
             canplay: function(){
                 $(this).next('.jp-audio').find('.jp-pause i')
@@ -398,10 +417,6 @@ var setupGameOverPlayers = function(question){
             },
             play: function() {
                 $(this).jPlayer('pauseOthers');
-
-                if (useTimer){
-                    runTimer();
-                }
             },
             cssSelectorAncestor: "#jp_container_" + $this.attr('id').slice(-1),
             swfPath: 'js/lib',
@@ -498,5 +513,5 @@ var onWindowLoad = function() {
 
 $(document).ready(onDocumentReady);
 $(window).load(onWindowLoad);
-$(window).on('resize', _.throttle(resizeWindow, 100));
+$(window).on('resize.sizeIframe', _.throttle(resizeWindow, 100));
 
