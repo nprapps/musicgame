@@ -65,9 +65,6 @@ var RelatedPhotoMixin = {
     },
 
     onPhotoChange: function(photo) {
-        //console.log(this);
-        //console.log(this.photo);
-        //console.log(photo);
         this.set('photo', this.photo.id ? this.photo.id : null);
     },
 

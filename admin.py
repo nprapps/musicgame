@@ -70,6 +70,25 @@ def upload_photo():
     data = serializer.serialize_object(photo)
     return jsonify(data)
 
+@admin.route('/update-photo-credit/', methods=['POST'])
+def update_photo_credit():
+    """
+    Update a photo, bypassing the API for cleaner invocation.
+    """
+    data = request.form
+
+    # Get the photo.
+    photo = models.Photo.get(models.Photo.id == int(data['id']))
+    photo.credit = data.get('credit', None)
+
+    # Do the save.
+    photo.save()
+
+    # Return data.
+    serializer = Serializer()
+    data = serializer.serialize_object(photo)
+    return jsonify(data)
+
 @admin.route('/upload-audio/', methods=['POST'])
 def upload_audio():
     """

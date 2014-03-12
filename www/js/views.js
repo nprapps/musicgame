@@ -944,20 +944,35 @@ var PhotoView = BaseView.extend({
     },
 
     uploadPhotoCredit: function(e) {
-        var properties = this.serializeCredit();
+        /*
+         * Not this function is a horrible kludge to work
+         * around bizarre JS errors.
+         *
+         * It simulates the function of Photo.save()
+         * and generate responses to be compatible with
+         * behavior of ChangeTrackingModel.
+         */
+        var credit = this.$photoCredit.val();
 
-        if (!this.model.id) {
+        if (!this.model.id || credit == this.model.get('credit')) {
+            console.log('Skipped saving Photo.');
+            
             return $.Deferred().resolve().promise();
         }
 
-        return this.model.save(properties, {
-            skipped: function() {
-                console.log('Skipped saving Photo.');
+        this.model.set('credit', credit, { silent: true });
+
+        $.ajax({
+            'url': '/musicgame/admin/update-photo-credit/',
+            'type': 'POST',
+            'data': { 
+                'id': this.model.id,
+                'credit': this.model.get('credit')
             },
-            success: function() {
+            'success': _.bind(function(data) {
                 console.log('Saved Photo.');
-            },
-            error: function() {
+            }, this),
+            'error': function() {
                 console.log('Error saving Photo.');
             }
         });
@@ -1029,14 +1044,6 @@ var PhotoView = BaseView.extend({
 
     markNeedsSave: function() {
         quizDetailView.markNeedsSave();
-    },
-
-    serializeCredit: function() {
-        var properties = {
-            credit: this.$photoCredit.val()
-        }
-
-        return properties;
     },
 
     serialize: function() {
