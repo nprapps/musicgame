@@ -254,7 +254,7 @@ var displayScore = function(points, $el){
 
                 // Show photo credits
                 movePhotoCredits();
-                $content.find('.credit').slideDown({
+                $el.parents('.question-wrapper').find('.credit').slideDown({
                     duration: 'fast',
                     progress: function(){
                         $content.attr('style','').css('height', $currentQuestion.height());
