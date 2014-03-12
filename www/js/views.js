@@ -255,12 +255,15 @@ var QuizDetailView = BaseView.extend({
             this.saveQuestions().then(_.bind(function() {
                 // Save all choices
                 this.saveChoices().then(_.bind(function() {
-                    // Deploy
-                    this.deployQuiz().then(_.bind(function() {
-                        // Mark as saved
-                        console.log('Save complete.');
-                        this.markSaved();
-                    }, this));;
+                    // Save all photos
+                    this.savePhotos().then(_.bind(function() {
+                        // Deploy
+                        this.deployQuiz().then(_.bind(function() {
+                            // Mark as saved
+                            console.log('Save complete.');
+                            this.markSaved();
+                        }, this));
+                    }, this));
                 }, this));
             }, this));
         }, this));
@@ -272,6 +275,19 @@ var QuizDetailView = BaseView.extend({
         _.each(this.questionViews, function(questionView) {
             saves.push(questionView.saveQuestion());
         });
+
+        return $.when.apply(this, saves);
+    },
+
+    savePhotos: function() {
+        var saves = [];
+
+        _.each(this.questionViews, function(questionView){
+            saves.push(questionView.photoView.uploadPhotoCredit());
+            _.each(questionView.choiceViews, function(choiceView){
+                saves.push(choiceView.photoView.uploadPhotoCredit());
+            })
+        })
 
         return $.when.apply(this, saves);
     },
@@ -890,7 +906,7 @@ var PhotoView = BaseView.extend({
     events: {
         'change input[type="file"]': 'uploadPhoto',
         'click .remove': 'removePhoto',
-        'change .photo-credit': 'uploadPhotoCredit'
+        'keyup .photo-credit': 'markNeedsSave'
     },
 
     initialize: function() {
@@ -939,10 +955,22 @@ var PhotoView = BaseView.extend({
             'type': 'POST',
             'data': properties,
             'success': _.bind(function(data) {
-                this.markNeedsSave();
+                console.log('Updated photo.')
             }, this),
             'error': function() {
                 console.log('Failed to update photo.');
+            }
+        });
+
+        return this.model.save(properties, {
+            skipped: function() {
+                console.log('Skipped saving Photo.');
+            },
+            success: function() {
+                console.log('Saved Photo.');
+            },
+            error: function() {
+                console.log('Error saving Photo.');
             }
         });
     },

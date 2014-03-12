@@ -12,7 +12,7 @@ var ChangeTrackingModel = Backbone.Model.extend({
 
         this.on('change', this.onChange);
     },
-  
+
     onChange: function() {
         this.needsSave = true;
     },
@@ -29,16 +29,16 @@ var ChangeTrackingModel = Backbone.Model.extend({
         }
 
         options = options || {};
-        
+
         var success = options.success;
-        
+
         options.success = function(resp) {
             success && success(resp);
             model.needsSave = false;
         };
-        
+
         return Backbone.sync(method, model, options);
-    } 
+    }
 });
 
 /*
@@ -48,6 +48,7 @@ var RelatedPhotoMixin = {
     parse: function(response, options) {
         // During bootstrap this is an object containing
         // Photo data, but during save it's an id we already have
+
         if (_.isObject(response['photo'])) {
             var photo = new Photo(response['photo']);
             this.set('photo', response['photo'].id);
@@ -124,7 +125,7 @@ var Quiz = ChangeTrackingModel.extend({
     name: 'Quiz',
 
     initialize: function(attributes) {
-        ChangeTrackingModel.prototype.initialize.apply(this, [attributes]);  
+        ChangeTrackingModel.prototype.initialize.apply(this, [attributes]);
     },
 
     parse: function(response, options) {
@@ -186,7 +187,7 @@ var Question = ChangeTrackingModel.extend({
     name: 'Question',
 
     initialize: function(attributes) {
-        ChangeTrackingModel.prototype.initialize.apply(this, [attributes]);  
+        ChangeTrackingModel.prototype.initialize.apply(this, [attributes]);
     },
 
     parse: function(response, options) {
@@ -212,7 +213,7 @@ var Question = ChangeTrackingModel.extend({
         // Rewrite urls to include a trailing slash so flask doesn't freak out
         var origUrl = Backbone.Model.prototype.url.call(this);
         return origUrl + (origUrl.charAt(origUrl.length - 1) == '/' ? '' : '/');
-    }, 
+    },
 
     toJSON: function() {
         var data = _.clone(this.attributes);
@@ -227,7 +228,7 @@ var Choice = ChangeTrackingModel.extend({
     name: 'Choice',
 
     initialize: function(attributes) {
-        ChangeTrackingModel.prototype.initialize.apply(this, [attributes]);  
+        ChangeTrackingModel.prototype.initialize.apply(this, [attributes]);
     },
 
     url: function() {
@@ -251,7 +252,7 @@ var Audio = ChangeTrackingModel.extend({
     name: 'Audio',
 
     initialize: function(attributes) {
-        ChangeTrackingModel.prototype.initialize.apply(this, [attributes]);  
+        ChangeTrackingModel.prototype.initialize.apply(this, [attributes]);
     },
 
     url: function() {
@@ -269,7 +270,7 @@ var Photo = ChangeTrackingModel.extend({
     name: 'Photo',
 
     initialize: function(attributes) {
-        ChangeTrackingModel.prototype.initialize.apply(this, [attributes]);  
+        ChangeTrackingModel.prototype.initialize.apply(this, [attributes]);
     },
 
     url: function() {
