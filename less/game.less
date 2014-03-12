@@ -248,12 +248,13 @@ h1,h2,h3,h4,h5,h6 {
 		background: rgba(68, 77, 88,0.9);
 		display:none;
 		clear: both;
-		padding: @line-height-computed / 2;
+		padding: @grid-gutter-width / 2;
 		overflow: hidden;
 		margin: 0 -@grid-gutter-width / 2 @line-height-computed;
 
 		h3 {
 			font-weight: bold;
+			font-family: @font-family-headline;
 			font-size: @font-size-base;
 			text-transform: uppercase;
 			color: #fff;
@@ -289,6 +290,7 @@ h1,h2,h3,h4,h5,h6 {
 				overflow: hidden;
 				min-height: 60px;
 				background: @lightGray;
+				text-decoration: none;
 
 				&:hover {
 					text-decoration: none;
@@ -532,6 +534,9 @@ h1,h2,h3,h4,h5,h6 {
 				}
 
 				.cover {
+					display: block;
+					width: auto;
+
 					&:after {
 						font-family: FontAwesome;
 						font-size: 100%;
@@ -819,6 +824,8 @@ h1,h2,h3,h4,h5,h6 {
 					margin-left: 1.2em;
 					margin-bottom: @line-height-computed;
 
+					.clearfix;
+
 					@media screen and (min-width: @screen-sm){
 						margin-left: 1.4em;
 					}
@@ -867,6 +874,14 @@ h1,h2,h3,h4,h5,h6 {
 					background: transparent;
 					margin: 0;
 					padding: 0;
+
+					h4 {
+						font-family: @font-family-headline;
+						color: @text-color;
+						font-size: @font-size-small;
+						text-transform: uppercase;
+						font-weight: bold;
+					}
 
 					p {
 						color: @text-color;
