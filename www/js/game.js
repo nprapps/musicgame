@@ -176,6 +176,19 @@ var onQuestionComplete = function(points, selectedAnswer, element){
     $correctAnswer.addClass('correct');
     $answers.not($correctAnswer).not($(element)).addClass('fade').off("click");
 
+    // Show photo credits
+    $content.find('.credit').slideDown({
+        duration: 'fast',
+        progress: function(){
+            $content.attr('style','').css('height', $currentQuestion.height());
+            sendHeightToParent();
+        },
+        done: function(){
+            $content.attr('style','').css('height', $currentQuestion.height());
+            sendHeightToParent();
+        }
+    });
+
     // Show the points awarded for the round
     displayScore(points, element);
 

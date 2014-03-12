@@ -232,6 +232,16 @@ h1,h2,h3,h4,h5,h6 {
 		}
 	}
 
+	.credit {
+		font-weight: normal;
+		font-style: italic;
+		font-size: @font-size-base * 0.611111111;
+		color: @gray-light;
+		display: none;
+		overflow: hidden;
+		line-height: 15px;
+	}
+
 
 
 	.after-text {
@@ -272,8 +282,8 @@ h1,h2,h3,h4,h5,h6 {
 
 			.transition(opacity .4s ease);
 
-			&.fade {
-				opacity: 0.1;
+			&.fade a {
+				opacity: 0.3;
 			}
 
 			a {
@@ -365,23 +375,27 @@ h1,h2,h3,h4,h5,h6 {
 				}
 			}
 
-			&.correct {
-				.answer {
-					&:after {
-						content: "\f00c";
-						color: @correct;
+			@media screen and (max-width: 480px){
+				&.correct {
+					.answer {
+						&:after {
+							content: "\f00c";
+							color: @correct;
+						}
+					}
+				}
+
+				&.incorrect {
+					.answer {
+						&:after {
+							content: "\f00d";
+							color: @incorrect;
+						}
 					}
 				}
 			}
 
-			&.incorrect {
-				.answer {
-					&:after {
-						content: "\f00d";
-						color: @incorrect;
-					}
-				}
-			}
+
 
 			&.has-cover {
 				&.fade,
@@ -390,6 +404,44 @@ h1,h2,h3,h4,h5,h6 {
 					a:hover {
 						.cover {
 							opacity: 1;
+						}
+					}
+				}
+
+
+				@media screen and (min-width: 481px){
+					.cover {
+						position: relative;
+
+						&:after {
+							font-family: FontAwesome;
+							font-size: 100%;
+							position: absolute;
+							bottom: 0;
+							right: 0;
+							-webkit-font-smoothing: antialiased;
+							color: #fff;
+							.square(35px);
+							line-height: 35px;
+							text-align: center;
+						}
+					}
+
+					&.correct {
+						.cover {
+							&:after {
+								content: "\f00c";
+								background: @correct;
+							}
+						}
+					}
+
+					&.incorrect {
+						.cover {
+							&:after {
+								content: "\f00d";
+								background: @incorrect;
+							}
 						}
 					}
 				}
@@ -560,6 +612,10 @@ h1,h2,h3,h4,h5,h6 {
 			img {
 				// .img-circle;
 				margin-bottom: @grid-gutter-width / 2;
+			}
+
+			.credit {
+				display: block;
 			}
 		}
 
