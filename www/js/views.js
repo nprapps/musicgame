@@ -284,6 +284,7 @@ var QuizDetailView = BaseView.extend({
 
         _.each(this.questionViews, function(questionView){
             saves.push(questionView.photoView.uploadPhotoCredit());
+
             _.each(questionView.choiceViews, function(choiceView){
                 saves.push(choiceView.photoView.uploadPhotoCredit());
             })
@@ -918,7 +919,6 @@ var PhotoView = BaseView.extend({
         this.$uploadPhotoButton = null;
         this.$helpText = null;
         this.$photoCredit = null;
-        this.$photoId = null;
 
         this.render();
     },
@@ -933,7 +933,6 @@ var PhotoView = BaseView.extend({
         this.$helpText = this.$('.help-block');
 
         this.$photoCredit = this.$('.photo-credit');
-        this.$photoId = this.$('.photo-id');
 
         this.$uploadPhotoButton.tooltip({container: 'body'});
     },
@@ -946,6 +945,10 @@ var PhotoView = BaseView.extend({
 
     uploadPhotoCredit: function(e) {
         var properties = this.serializeCredit();
+
+        if (!this.model.id) {
+            return $.Deferred().resolve().promise();
+        }
 
         return this.model.save(properties, {
             skipped: function() {
@@ -1030,8 +1033,7 @@ var PhotoView = BaseView.extend({
 
     serializeCredit: function() {
         var properties = {
-            credit: this.$photoCredit.val(),
-            id: this.$photoId.val()
+            credit: this.$photoCredit.val()
         }
 
         return properties;
