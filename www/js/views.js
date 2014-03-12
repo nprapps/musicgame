@@ -282,6 +282,8 @@ var QuizDetailView = BaseView.extend({
     savePhotos: function() {
         var saves = [];
 
+        saves.push(this.photoView.uploadPhotoCredit());
+
         _.each(this.questionViews, function(questionView){
             saves.push(questionView.photoView.uploadPhotoCredit());
 
@@ -956,7 +958,7 @@ var PhotoView = BaseView.extend({
 
         if (!this.model.id || credit == this.model.get('credit')) {
             console.log('Skipped saving Photo.');
-            
+
             return $.Deferred().resolve().promise();
         }
 
@@ -965,7 +967,7 @@ var PhotoView = BaseView.extend({
         $.ajax({
             'url': '/musicgame/admin/update-photo-credit/',
             'type': 'POST',
-            'data': { 
+            'data': {
                 'id': this.model.id,
                 'credit': this.model.get('credit')
             },
