@@ -131,6 +131,9 @@ var renderGameOver = function() {
     };
     var html = JST.gameover(context);
 
+    // Remove the question player
+    $questionPlayer.remove();
+
     // Render template
     $content.html(html);
     $content.removeClass().addClass('end');
@@ -332,6 +335,16 @@ var runTimer = function() {
 var setupQuestionPlayer = function(){
     // Initialize the players
     $questionPlayer.jPlayer({
+        loadstart: function () {
+            $($(this).jPlayer('option', 'cssSelectorAncestor')).find('.jp-pause i')
+                .removeClass('fa-pause')
+                .addClass('fa-spinner fa-spin');
+        },
+        canplay: function(){
+            $($(this).jPlayer('option', 'cssSelectorAncestor')).find('.jp-pause i')
+                .removeClass('fa-spinner fa-spin')
+                .addClass('fa-pause');
+        },
         play: function() {
             if (useTimer){
                 runTimer();
@@ -344,12 +357,15 @@ var setupQuestionPlayer = function(){
 }
 
 var updateQuestionPlayer = function(question) {
-    $questionPlayer.jPlayer('option', 'cssSelectorAncestor', '.question-' + question.id + ' .jp-audio');
-    $questionPlayer.jPlayer('setMedia', {
-        mp3: question['audio']['rendered_mp3_path'],
-        oga: question['audio']['rendered_oga_path']
-    });
-    $questionPlayer.jPlayer('play');
+    var selector = '.question-' + question.id;
+
+    $questionPlayer
+        .jPlayer('option', 'cssSelectorAncestor', selector + ' .jp-audio')
+        .jPlayer('setMedia', {
+            mp3: question['audio']['rendered_mp3_path'],
+            oga: question['audio']['rendered_oga_path']
+        })
+        .jPlayer('play');
 }
 
 /*
