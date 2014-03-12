@@ -396,7 +396,7 @@ var setupQuestionPlayer = function(){
 }
 
 var updateQuestionPlayer = function(question) {
-    var selector = '.question-' + question.id;
+    var selector = '.question-' + (currentQuestion + 1);
 
     $questionPlayer
         .jPlayer('option', 'cssSelectorAncestor', selector + ' .jp-audio')
