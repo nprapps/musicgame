@@ -1,4 +1,3 @@
-<input class="form-control photo-credit" value="<%= photo.get('credit') || '' %>" type="text" style="display:block; margin-bottom:10px;" placeholder="Photo credit ...">
 
 <% if (photo && photo.id) { %>
 <div class="remove-image">
@@ -6,6 +5,8 @@
     <img class="preview" title="<%= photo.get('file_name') || '' %>" src="<%= photo.get('rendered_100_path') %>"></img>
     <span class="remove-icon"><i class="fa fa-times"></i></span></a>
 </div>
+
+    <input class="form-control photo-credit" value="<%= photo.get('credit') || '' %>" type="text" style="display:block; margin-bottom:10px;" placeholder="Image credit...">
 <% } else { %>
 <div class="input-group">
     <span class="input-group-addon btn btn-default btn-file photo-uploader" data-toggle="tooltip" data-placement="right" title="Square crop, prefer 600px or larger (jpg,png)">
