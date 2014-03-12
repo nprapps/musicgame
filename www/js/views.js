@@ -945,22 +945,7 @@ var PhotoView = BaseView.extend({
     },
 
     uploadPhotoCredit: function(e) {
-        var properties = {
-            credit: this.$photoCredit.val(),
-            id: this.$photoId.val()
-        }
-
-        $.ajax({
-            'url': '/musicgame/admin/upload-photo/',
-            'type': 'POST',
-            'data': properties,
-            'success': _.bind(function(data) {
-                console.log('Updated photo.')
-            }, this),
-            'error': function() {
-                console.log('Failed to update photo.');
-            }
-        });
+        var properties = this.serializeCredit();
 
         return this.model.save(properties, {
             skipped: function() {
@@ -1041,6 +1026,15 @@ var PhotoView = BaseView.extend({
 
     markNeedsSave: function() {
         quizDetailView.markNeedsSave();
+    },
+
+    serializeCredit: function() {
+        var properties = {
+            credit: this.$photoCredit.val(),
+            id: this.$photoId.val()
+        }
+
+        return properties;
     },
 
     serialize: function() {
