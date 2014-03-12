@@ -3,7 +3,10 @@
 		<div class="quiz-info<% if (quizData['photo']){ %> has-cover<% } %>">
 			<% if (quizData['photo']){ %>
 				<div class="cover">
-				<img class="img-responsive" src="/<%= APP_CONFIG.PROJECT_SLUG %>/img/transparent.png" data-small="<%= quizData['photo']['rendered_100_path'] %>" data-medium="<%= quizData['photo']['rendered_300_path'] %>" data-large="<%= quizData['photo']['rendered_600_path'] %>">
+					<img class="img-responsive" src="/<%= APP_CONFIG.PROJECT_SLUG %>/img/transparent.png" data-small="<%= quizData['photo']['rendered_100_path'] %>" data-medium="<%= quizData['photo']['rendered_300_path'] %>" data-large="<%= quizData['photo']['rendered_600_path'] %>">
+					<% if (quizData['photo']['credit']){ %>
+					<div class="credit">Photo: <%= quizData['photo']['credit'] %></div>
+					<% } %>
 				</div>
 			<% } %>
 
@@ -36,7 +39,7 @@
 					<% if (answers[index] !== correctAnswers[index]){ %>
 						<li class="answer answer-missed correct"><i class="fa fa-li fa-lg fa-check-circle"></i><%= _.where(question['choices'], { correct_answer: true })[0]['text'] %></li>
 					<% }%>
-					<% if (answers[index] !== ''){ %>
+					<% if (answers[index] !== '' && _.where(question['choices'], { id: answers[index] })[0]['text']){ %>
 						<li class="answer answer-selected <%= answers[index] === correctAnswers[index] ? 'correct' : 'incorrect' %>"><% if (answers[index] !== correctAnswers[index]){ %><i class="fa fa-li fa-lg fa-times-circle"></i>You answered: <% } else { %><i class="fa fa-li fa-lg fa-check-circle"></i><% } %><%= _.where(question['choices'], { id: answers[index] })[0]['text'] %> </li>
 					<% } %>
 					</ul>
