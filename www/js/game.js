@@ -14,10 +14,11 @@ var $startQuizButton = null;
 var $progressBar = null;
 var $currentQuestion = null;
 var $previousQuestion = null;
+var $questionPlayer = null;
 
 // Game state
 var quizData = null;
-var timer = false;
+var useTimer = false;
 var timeLeft = TIMERLENGTH * 1000;
 var stopTimer = false;
 var currentQuestion = 0;
@@ -98,9 +99,8 @@ var renderQuestion = function() {
 
     // Initialize timer and audio player
     if (question['audio']){
-        $previousQuestion.find('.jp-player').jPlayer('destroy').remove();
-        setupPlayers(true, timer);
-    } else if (timer === 'true') { // Start the timer immediately if no audio.
+        updateQuestionPlayer(question);
+    } else if (useTimer) { // Start the timer immediately if no audio.
         runTimer();
     }
 
@@ -131,6 +131,9 @@ var renderGameOver = function() {
     };
     var html = JST.gameover(context);
 
+    // Remove the question player
+    $questionPlayer.remove();
+
     // Render template
     $content.html(html);
     $content.removeClass().addClass('end');
@@ -151,11 +154,10 @@ var renderGameOver = function() {
     resizeWindow();
 
     // Mobile Safari screws up building the players unless we wait until the call stack is empty.
-    _.defer(setupPlayers);
+    _.defer(setupGameOverPlayers);
 
     // Animate in
     $content.find('.container').addClass('in');
-
 };
 
 /*
@@ -260,7 +262,7 @@ var onAnswerClick = function(){
         // If the timer is running, 100 possible points are divided evenly among the quiz questions.
         // Points awarded for a correct answer will be reduced based on the time elapsed.
         // Otherwise, each question is worth one point.
-        if(timer === 'true'){
+        if(useTimer){
             points = 100 / quizData['questions'].length * (timeLeft / (TIMERLENGTH * 1000));
         } else {
             points = 1;
@@ -319,7 +321,7 @@ var runTimer = function() {
             $progressBar.removeClass('safe warning').addClass('danger');
         }
 
-        var timer = setTimeout(runTimer, INTERVAL);
+        setTimeout(runTimer, INTERVAL);
         timeLeft -= INTERVAL;
     } else {
         $progressBar.css('width', '100%');
@@ -328,9 +330,48 @@ var runTimer = function() {
 };
 
 /*
+* Setup question audio player
+*/
+var setupQuestionPlayer = function(){
+    // Initialize the players
+    $questionPlayer.jPlayer({
+        loadstart: function () {
+            $($(this).jPlayer('option', 'cssSelectorAncestor')).find('.jp-pause i')
+                .removeClass('fa-pause')
+                .addClass('fa-spinner fa-spin');
+        },
+        canplay: function(){
+            $($(this).jPlayer('option', 'cssSelectorAncestor')).find('.jp-pause i')
+                .removeClass('fa-spinner fa-spin')
+                .addClass('fa-pause');
+        },
+        play: function() {
+            if (useTimer){
+                runTimer();
+            }
+        },
+        swfPath: 'js/lib',
+        supplied: 'mp3, oga',
+        loop: false
+    });
+}
+
+var updateQuestionPlayer = function(question) {
+    var selector = '.question-' + question.id;
+
+    $questionPlayer
+        .jPlayer('option', 'cssSelectorAncestor', selector + ' .jp-audio')
+        .jPlayer('setMedia', {
+            mp3: question['audio']['rendered_mp3_path'],
+            oga: question['audio']['rendered_oga_path']
+        })
+        .jPlayer('play');
+}
+
+/*
 * Setup audio players
 */
-var setupPlayers = function(question, timer){
+var setupGameOverPlayers = function(question){
     var $players = $content.find('.jp-player')
 
     // Initialize the players
@@ -358,7 +399,7 @@ var setupPlayers = function(question, timer){
             play: function() {
                 $(this).jPlayer('pauseOthers');
 
-                if (timer === 'true'){
+                if (useTimer){
                     runTimer();
                 }
             },
@@ -416,12 +457,11 @@ var resizeWindow = function(){
  */
 var onDocumentReady = function() {
     $content = $('#content');
+    $questionPlayer = $('#question_player');
     var slug = getParameterByName('quiz');
 
-    if (getParameterByName('timer') !== ""){
-        timer = getParameterByName('timer');
-    }
-
+    timer = (getParameterByName('timer') == 'true');
+    
     if (slug !== null) {
         var url = '/' + APP_CONFIG['PROJECT_SLUG'] + '/quiz/' + slug + '/';
 
@@ -439,6 +479,7 @@ var onDocumentReady = function() {
             jsonp: false,
             success: function(data){
                 quizData = data;
+                setupQuestionPlayer();
                 renderStart();
             },
             error: function(error){
