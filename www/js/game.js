@@ -182,6 +182,12 @@ var onQuestionComplete = function(points, selectedAnswer, element){
     // Show the points awarded for the round
     displayScore(points, element);
 
+    // Show after text and photo credits if no css animation
+    if (!Modernizr.cssanimations){
+        showPhotoCredits(element);
+        showAfterText(element);
+    }
+
     // If there are more questions, show the link, otherwise show link to the 'game over' view
     if (currentQuestion + 1 < quizData['questions'].length){
         $nextQuestionButton.addClass('show');
@@ -212,6 +218,37 @@ var movePhotoCredits = function(){
     }
 }
 
+
+var showPhotoCredits = function($el){
+    // Show photo credits
+    movePhotoCredits();
+    $el.parents('.question-wrapper').find('.credit').slideDown({
+        duration: 'fast',
+        progress: function(){
+            $content.attr('style','').css('height', $currentQuestion.height());
+            sendHeightToParent();
+        },
+        done: function(){
+            $content.attr('style','').css('height', $currentQuestion.height());
+            sendHeightToParent();
+        }
+    });
+};
+
+var showAfterText = function($el){
+    $el.parents('.question-wrapper').find('.after-text').slideDown({
+        duration: 'fast',
+        progress: function(){
+            $content.attr('style','').css('height', $currentQuestion.height());
+            sendHeightToParent();
+        },
+        done: function(){
+            $content.attr('style','').css('height', $currentQuestion.height());
+            sendHeightToParent();
+        }
+    });
+};
+
 /*
 * Go to the next question
 */
@@ -240,31 +277,11 @@ var displayScore = function(points, $el){
         .bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",
             function(){
                 $(this).parent().remove();
-                $el.parents('.question-wrapper').find('.after-text').slideDown({
-                    duration: 'fast',
-                    progress: function(){
-                        $content.attr('style','').css('height', $currentQuestion.height());
-                        sendHeightToParent();
-                    },
-                    done: function(){
-                        $content.attr('style','').css('height', $currentQuestion.height());
-                        sendHeightToParent();
-                    }
-                });
 
-                // Show photo credits
-                movePhotoCredits();
-                $el.parents('.question-wrapper').find('.credit').slideDown({
-                    duration: 'fast',
-                    progress: function(){
-                        $content.attr('style','').css('height', $currentQuestion.height());
-                        sendHeightToParent();
-                    },
-                    done: function(){
-                        $content.attr('style','').css('height', $currentQuestion.height());
-                        sendHeightToParent();
-                    }
-                });
+                if (Modernizr.cssanimations){
+                    showPhotoCredits($el);
+                    showAfterText($el);
+                }
         });
 }
 
