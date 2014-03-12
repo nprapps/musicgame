@@ -72,8 +72,6 @@ def update_photo_credit():
     photo = models.Photo.get(models.Photo.id == int(data['id']))
     photo.credit = data.get('credit', None)
 
-    print photo.credit
-
     # Do the save.
     photo.save()
 
