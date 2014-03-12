@@ -296,7 +296,7 @@ var QuizDetailView = BaseView.extend({
         var question = new Question({
             'quiz': this.model.id,
             'order': _.size(this.questionViews)
-        }, { 
+        }, {
             'parse': true
         });
 
@@ -586,21 +586,21 @@ var QuestionView = BaseView.extend({
         // There is some smarter way to do this with binding, but
         // I don't have time. :-(
         e.preventDefault();
-        
+
         var $questions = this.options.parent.$questions.children('.question');
         var order = $questions.index(this.$el);
 
         if (order == 0) {
             return;
         }
-        
+
         var $prev = $questions.eq(order - 1);
 
         this.$el.detach();
         this.$el.insertBefore($prev);
 
         this.$order.text(order);
-        
+
         var prevView = this.options.parent.questionViews[$prev.data('cid')];
         prevView.$order.text(order + 1);
 
@@ -612,21 +612,21 @@ var QuestionView = BaseView.extend({
     onMoveDown: function(e) {
         // See comment on `onMoveUp`
         e.preventDefault();
-        
+
         var $questions = this.options.parent.$questions.children('.question');
         var order = $questions.index(this.$el);
 
         if (order == $questions.length - 1) {
             return;
         }
-        
+
         var $next = $questions.eq(order + 1);
 
         this.$el.detach();
         this.$el.insertAfter($next);
 
         this.$order.text(order + 2);
-        
+
         var nextView = this.options.parent.questionViews[$next.data('cid')];
         nextView.$order.text(order + 1);
 
@@ -889,7 +889,8 @@ Cocktail.mixin(ChoiceView, ModelViewMixin);
 var PhotoView = BaseView.extend({
     events: {
         'change input[type="file"]': 'uploadPhoto',
-        'click .remove': 'removePhoto'
+        'click .remove': 'removePhoto',
+        'change .photo-credit': 'uploadPhotoCredit'
     },
 
     initialize: function() {
@@ -900,6 +901,8 @@ var PhotoView = BaseView.extend({
         this.$loader = null;
         this.$uploadPhotoButton = null;
         this.$helpText = null;
+        this.$photoCredit = null;
+        this.$photoId = null;
 
         this.render();
     },
@@ -913,6 +916,9 @@ var PhotoView = BaseView.extend({
         this.$uploadPhotoButton = this.$('.photo-uploader');
         this.$helpText = this.$('.help-block');
 
+        this.$photoCredit = this.$('.photo-credit');
+        this.$photoId = this.$('.photo-id');
+
         this.$uploadPhotoButton.tooltip({container: 'body'});
     },
 
@@ -920,6 +926,25 @@ var PhotoView = BaseView.extend({
         this.$uploadPhotoButton.hide();
         this.$helpText.hide();
         this.$loader.css('display', 'block');
+    },
+
+    uploadPhotoCredit: function(e) {
+        var properties = {
+            credit: this.$photoCredit.val(),
+            id: this.$photoId.val()
+        }
+
+        $.ajax({
+            'url': '/musicgame/admin/upload-photo/',
+            'type': 'POST',
+            'data': properties,
+            'success': _.bind(function(data) {
+                this.markNeedsSave();
+            }, this),
+            'error': function() {
+                console.log('Failed to update photo.');
+            }
+        });
     },
 
     uploadPhoto: function(e) {
@@ -931,7 +956,7 @@ var PhotoView = BaseView.extend({
         var properties = this.serialize();
 
         this.showLoading();
-        
+
         if (this.options.parent.$audio) {
             this.options.parent.$audio.hide();
         }
@@ -992,7 +1017,7 @@ var PhotoView = BaseView.extend({
 
     serialize: function() {
         var properties = {
-            credit: 'TKTK',
+            credit: this.$photoCredit.val(),
             caption: 'TKTK',
             file_name: this.$photoFile[0].files[0].name
         };

@@ -1,8 +1,11 @@
+<input class="form-control photo-credit" value="<%= photo.get('credit') || '' %>" type="text" style="display:block; margin-bottom:10px;" placeholder="Photo credit ...">
+
 <% if (photo && photo.id) { %>
 <div class="remove-image">
-	<a href="#" class="remove">
-	<img class="preview" title="<%= photo.get('file_name') || '' %>" src="<%= photo.get('rendered_100_path') %>"></img>
-	<span class="remove-icon"><i class="fa fa-times"></i></span></a>
+    <a href="#" class="remove">
+    <img class="preview" title="<%= photo.get('file_name') || '' %>" src="<%= photo.get('rendered_100_path') %>"></img>
+    <span class="remove-icon"><i class="fa fa-times"></i></span></a>
+    <input class="photo-id" type="hidden" value="<%= photo.get('id') %>">
 </div>
 <% } else { %>
 <div class="input-group">
@@ -15,7 +18,6 @@
         <div class="loader"></div>
         <span class="waiting">Please wait... photo uploading</span>
     </div>
+    <span class="help-block"></span>
 </div>
-
-<span class="help-block"></span>
 <% } %>

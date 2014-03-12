@@ -41,20 +41,33 @@ def upload_photo():
     """
     data = request.form
 
-    photo = {
-        'credit': data.get('credit', ''),
-        'caption': data.get('caption', ''),
-        'file_name': data.get('file_name', ''),
-    }
+    # We have two paths; update a photo (the credit, really) or add one from scratch.
+    if data.get('id', None):
 
-    photo = models.Photo(**photo)
-    photo.write_photo(data['file_string'])
+        # Get the photo.
+        photo = models.Photo.get(models.Photo.id == int(data['id']))
+        photo.credit = data.get('credit', None)
 
+    else:
+
+        # Create a new photo.
+        photo = {
+            'credit': data.get('credit', ''),
+            'caption': data.get('caption', ''),
+            'file_name': data.get('file_name', ''),
+        }
+        photo = models.Photo(**photo)
+
+    # Get the data.
+    if data.get('file_string', None):
+        photo.write_photo(data['file_string'])
+
+    # Do the save.
     photo.save()
 
+    # Return data.
     serializer = Serializer()
     data = serializer.serialize_object(photo)
-
     return jsonify(data)
 
 @admin.route('/upload-audio/', methods=['POST'])
