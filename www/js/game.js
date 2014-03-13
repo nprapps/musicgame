@@ -163,8 +163,13 @@ var renderGameOver = function() {
     // Animate in
     $content.find('.question-wrapper').removeClass('in').addClass('out');
     $content.find('.container').addClass('in');
+    
+    // Ensure height is updated after all transition animations are complete
+    _.delay(function() {
+        sendHeightToParent();
+    }, 300);
 
-    _.delay(function(){
+    _.delay(function() {
         $content.find('.question-wrapper').remove();
     }, 500);
 };
@@ -172,7 +177,7 @@ var renderGameOver = function() {
 /*
 * Answer clicked or timer ran out
 */
-var onQuestionComplete = function(points, selectedAnswer, element){
+var onQuestionComplete = function(points, selectedAnswer, element) {
     var $correctAnswer = $answers.filter(function() {
         return $(this).data('choice-id') === currentAnswer;
     });
@@ -497,7 +502,7 @@ var resizeWindow = function(){
     if(images.length > 0) {
         loadImages();
 
-        $(images).load(function(){
+        $(images).load(function() {
             $content.attr('style','').css('height', $content.children().last().outerHeight());
             sendHeightToParent();
         });
