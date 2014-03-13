@@ -165,6 +165,9 @@ var renderGameOver = function() {
     $content.find('.container').addClass('in');
 
     _.delay(function(){
+        // Abort after-text and credit animations before removing the div
+        $content.find('.question-wrapper').find('.credit, .after-text').stop(true, false);
+
         $content.find('.question-wrapper').remove();
     }, 500);
 };
@@ -202,8 +205,6 @@ var onQuestionComplete = function(points, selectedAnswer, element){
     } else {
         $showScoreButton.addClass('show');
     }
-
-    resizeWindow();
 };
 
 /*
