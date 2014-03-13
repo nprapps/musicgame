@@ -54,9 +54,11 @@ var renderStart = function() {
  */
 var renderQuestion = function() {
     var question = quizData['questions'][currentQuestion];
+
     timeLeft = TIMERLENGTH * 1000;
     stopTimer = false;
-    currentAnswer = _.where(question['choices'], {correct_answer: true})[0]['id'];
+    currentAnswer = _.where(question['choices'], { correct_answer: true })[0]['id'];
+
     incorrectAnswers = _.chain(question['choices'])
         .filter(function(choice){
             return !choice['correct_answer'];
@@ -65,8 +67,9 @@ var renderQuestion = function() {
         .value();
 
     var context = question;
-        context['quizLength'] = quizData['questions'].length;
-        context['questionNumber'] = currentQuestion + 1;
+    context['quizLength'] = quizData['questions'].length;
+    context['questionNumber'] = currentQuestion + 1;
+    
     var html = JST.question(context);
 
     // Render template
@@ -99,7 +102,7 @@ var renderQuestion = function() {
     });
 
     // Initialize timer and audio player
-    if (question['audio']){
+    if (question['audio']) {
         updateQuestionPlayer(question);
     } else if (useTimer) { // Start the timer immediately if no audio.
         runTimer();
@@ -122,7 +125,6 @@ var renderQuestion = function() {
 var renderGameOver = function() {
     _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_NAME, 'Game Over', quizData['slug']]);
 
-    var $showResults = null;
     var context = {
         'quizData': quizData,
         'score': totalScore,
@@ -130,6 +132,7 @@ var renderGameOver = function() {
         'points': granularPoints,
         'correct_answers': correctAnswers
     };
+
     var html = JST.gameover(context);
 
     // Remove the question player
@@ -170,10 +173,10 @@ var renderGameOver = function() {
 * Answer clicked or timer ran out
 */
 var onQuestionComplete = function(points, selectedAnswer, element){
-    var $correctAnswer = $answers.filter(function(){
+    var $correctAnswer = $answers.filter(function() {
         return $(this).data('choice-id') === currentAnswer;
     });
-    var element = selectedAnswer === '' ? $correctAnswer: $(element);
+    var $element = selectedAnswer === '' ? $correctAnswer: $(element);
 
     // Push answer and points for the round to arrays
     correctAnswers.push(currentAnswer);
@@ -182,15 +185,15 @@ var onQuestionComplete = function(points, selectedAnswer, element){
 
     // Highlight the correct answer and fade the others
     $correctAnswer.addClass('correct');
-    $answers.not($correctAnswer).not($(element)).addClass('fade').off("click");
+    $answers.not($correctAnswer).not($element).addClass('fade').off('click');
 
     // Show the points awarded for the round
-    displayScore(points, element);
+    displayScore(points, $element);
 
     // Show after text and photo credits if no css animation
     if (!Modernizr.cssanimations){
-        showPhotoCredits(element);
-        showAfterText(element);
+        showPhotoCredits($element);
+        showAfterText($element);
     }
 
     // If there are more questions, show the link, otherwise show link to the 'game over' view
@@ -208,7 +211,7 @@ var onQuestionComplete = function(points, selectedAnswer, element){
 */
 var movePhotoCredits = function(){
     var currentChoices = quizData['questions'][currentQuestion]['choices'];
-    var photoAnswers = _.where(currentChoices, { text: "" }).length === currentChoices.length;
+    var photoAnswers = _.where(currentChoices, { text: '' }).length === currentChoices.length;
 
     if (photoAnswers || $(window).outerWidth() <= 480){
         $answers.each(function(){
@@ -229,6 +232,7 @@ var movePhotoCredits = function(){
 var showPhotoCredits = function($el){
     // Show photo credits
     movePhotoCredits();
+
     $el.parents('.question-wrapper').find('.credit').slideDown({
         duration: 'fast',
         progress: function(){
@@ -265,17 +269,19 @@ var showAfterText = function($el){
 var onNextQuestionClick = function() {
     currentQuestion++;
     renderQuestion();
+
     return false;
 }
 
 /*
 * Animate in score bubble
 */
-var displayScore = function(points, $el){
+var displayScore = function(points, $el) {
     var scoreOffsetY = $el.offset().top + $el.outerHeight() / 2;
     var scoreOffsetX = $el.offset().left + $el.outerWidth() / 2;
 
     $content.after('<div class="score-container"><div id="score"></div></div>');
+
     $(document).find('#score')
         .addClass(points > 0 ? '' : 'zero')
         .html('+' + points)
@@ -305,13 +311,13 @@ var onAnswerClick = function(){
     // Stop the timer
     stopTimer = true;
 
-    if ($this.data('choice-id') == currentAnswer){
+    if ($this.data('choice-id') == currentAnswer) {
         $this.addClass('correct');
 
         // If the timer is running, 100 possible points are divided evenly among the quiz questions.
         // Points awarded for a correct answer will be reduced based on the time elapsed.
         // Otherwise, each question is worth one point.
-        if(useTimer){
+        if (useTimer) {
             points = 100 / quizData['questions'].length * (timeLeft / (TIMERLENGTH * 1000));
         } else {
             points = 1;
@@ -323,9 +329,10 @@ var onAnswerClick = function(){
         $this.addClass('incorrect');
     }
 
-    $answers.off("click");
+    $answers.off('click');
 
     onQuestionComplete(points, $this.data('choice-id'), this);
+
     return false;
 };
 
@@ -382,7 +389,6 @@ var runTimer = function() {
 * Setup question audio player
 */
 var setupQuestionPlayer = function(){
-    // Initialize the players
     $questionPlayer.jPlayer({
         loadstart: function () {
             $($(this).jPlayer('option', 'cssSelectorAncestor')).find('.jp-pause i')
@@ -451,7 +457,7 @@ var setupGameOverPlayers = function(){
             play: function() {
                 $(this).jPlayer('pauseOthers');
             },
-            cssSelectorAncestor: "#jp_container_" + (index + 1),
+            cssSelectorAncestor: '#jp_container_' + (index + 1),
             swfPath: 'js/lib',
             supplied: 'mp3, oga',
             loop: false
@@ -488,8 +494,9 @@ var loadImages = function() {
 var resizeWindow = function(){
     var images = $content.find('img');
 
-    if(images.length > 0){
+    if(images.length > 0) {
         loadImages();
+
         $(images).load(function(){
             $content.attr('style','').css('height', $content.children().last().outerHeight());
             sendHeightToParent();
@@ -505,7 +512,8 @@ var resizeWindow = function(){
  */
 var onDocumentReady = function() {
     $content = $('#content');
-    $questionPlayer = $('#question_player');
+    $questionPlayer = $('#question-player');
+
     var slug = getParameterByName('quiz');
 
     timer = (getParameterByName('timer') == 'true');
