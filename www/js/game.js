@@ -136,7 +136,7 @@ var renderGameOver = function() {
     $questionPlayer.remove();
 
     // Render template
-    $content.html(html);
+    $content.append(html);
     $content.removeClass().addClass('end');
 
     // DOM refs
@@ -158,7 +158,12 @@ var renderGameOver = function() {
     _.defer(setupGameOverPlayers);
 
     // Animate in
+    $content.find('.question-wrapper').removeClass('in').addClass('out');
     $content.find('.container').addClass('in');
+
+    _.delay(function(){
+        $content.find('.question-wrapper').remove();
+    }, 500);
 };
 
 /*
@@ -218,7 +223,9 @@ var movePhotoCredits = function(){
     }
 }
 
-
+/*
+* Animate in photo credits
+*/
 var showPhotoCredits = function($el){
     // Show photo credits
     movePhotoCredits();
@@ -235,6 +242,9 @@ var showPhotoCredits = function($el){
     });
 };
 
+/*
+* Animate in after text
+*/
 var showAfterText = function($el){
     $el.parents('.question-wrapper').find('.after-text').slideDown({
         duration: 'fast',
@@ -259,7 +269,7 @@ var onNextQuestionClick = function() {
 }
 
 /*
-* Animate our score bubble
+* Animate in score bubble
 */
 var displayScore = function(points, $el){
     var scoreOffsetY = $el.offset().top + $el.outerHeight() / 2;
