@@ -498,14 +498,22 @@ var loadImages = function() {
  * Check for images in content and size window after load
  */
 var resizeWindow = function(){
-    var images = $content.find('img');
+    var $images = $content.find('img');
 
-    if(images.length > 0) {
+    if($images.length > 0) {
         loadImages();
 
-        $(images).load(function() {
+        $images.load(function() {
             $content.attr('style','').css('height', $content.children().last().outerHeight());
             sendHeightToParent();
+        });
+
+        // Fix for load never firing via:
+        // http://stackoverflow.com/a/5624901/24608
+        $images.each(function(i, image) {
+            if (image.complete) {
+                $(image).trigger('load');
+            }
         });
     } else {
         $content.attr('style','').css('height', $content.children().last().outerHeight());
