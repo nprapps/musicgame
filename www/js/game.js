@@ -424,15 +424,21 @@ var setupGameOverPlayers = function(){
     var $players = $content.find('.jp-player');
 
     // Initialize the players
-    $players.each(function(){
-        var $this = $(this);
-        $this.jPlayer('destroy');
-        $this.jPlayer({
+    _.each(quizData['questions'], function(element, index){
+        var $player = $content.find('#jp_player_' + (index + 1));
+
+        var setMedia = function(){
+            $player.jPlayer('setMedia', {
+                mp3: $player.data('mp3'),
+                oga: $player.data('ogg')
+            });
+        }
+
+        $player.jPlayer({
             ready: function () {
-                $(this).jPlayer('setMedia', {
-                    mp3: $(this).data('mp3'),
-                    oga: $(this).data('ogg')
-                });
+                _.defer(setMedia);
+            },
+            loadstart: function(){
                 $(this).next('.jp-audio').find('.jp-pause i')
                     .removeClass('fa-pause')
                     .addClass('fa-spinner fa-spin');
@@ -445,12 +451,12 @@ var setupGameOverPlayers = function(){
             play: function() {
                 $(this).jPlayer('pauseOthers');
             },
-            cssSelectorAncestor: "#jp_container_" + $this.attr('id').slice(-1),
+            cssSelectorAncestor: "#jp_container_" + (index + 1),
             swfPath: 'js/lib',
             supplied: 'mp3, oga',
             loop: false
         });
-    })
+    });
 }
 
 /*

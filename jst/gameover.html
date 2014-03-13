@@ -21,8 +21,8 @@
 			<li class="<%= answers[index] === correctAnswers[index] ? 'correct' : 'incorrect' %><% if (_.where(question['choices'], { correct_answer: true })[0]['photo']) { %> has-photo<% } %><% if (question.audio){ %> has-audio<% } %>">
 				<div class="question">
 				<% if (question.audio){ %>
-	                <div id="jp_player_<%= index %>" class="jp-player" data-mp3="<%= question.audio.rendered_mp3_path %>" data-ogg="<%= question.audio.rendered_oga_path %>"></div>
-					<div id="jp_container_<%= index %>" class="jp-audio pull-left">
+	                <div id="jp_player_<%= index + 1 %>" class="jp-player" data-mp3="<%= question.audio.rendered_mp3_path %>" data-ogg="<%= question.audio.rendered_oga_path %>"></div>
+					<div id="jp_container_<%= index + 1 %>" class="jp-audio pull-left">
 					    <div class="jp-controls">
 					        <a href="javascript:;" class="jp-play nav-btn" tabindex="1" title="play"><i class="fa fa-play"></i></i></a>
 					        <a href="javascript:;" class="jp-pause nav-btn" tabindex="1" style="display: none;" title="pause"><i class="fa fa-pause"></i></a>
