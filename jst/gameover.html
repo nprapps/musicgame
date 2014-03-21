@@ -56,10 +56,10 @@
         <% if (quizData['next_quiz']) { %>
 		<div class="next-up">
 			<h2>Play another quiz</h2>
-            <a href="<%= quizData['next_quiz']['seamus_url'] %>">
+            <a href="<%= quizData['next_quiz']['seamus_url'] %>" target="_top">
                 <% if (quizData['next_quiz']['photo']) { %>
 				<div class="next-thumb">
-                    <img class="img-responsive" src="/<%= APP_CONFIG.PROJECT_SLUG %>/img/transparent.png" data-small="<%= quizData['next_quiz']['photo']['rendered_100_path'] %>" data-medium="<%= quizData['next_quiz']['photo']['rendered_300_path'] %>" data-large="<%= quizData['next_quiz']['photo']['rendered_600_path'] %>">
+                    <img class="img-responsive" src="<%= quizData['next_quiz']['photo']['rendered_300_path'] %>">
 				</div>
                 <% } %>
 				<div class="next-desc">
