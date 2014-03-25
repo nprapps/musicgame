@@ -33,7 +33,7 @@
 								<img class="img-responsive" src="/<%= APP_CONFIG.PROJECT_SLUG %>/img/transparent.png" data-small="<%= choice['photo']['rendered_100_path'] %>" data-medium="<%= choice['photo']['rendered_300_path'] %>" data-large="<%= choice['photo']['rendered_600_path'] %>">
 							</div>
 						<% } %>
-						<% if (choice['photo']['credit']) { %>
+						<% if (choice['photo']) { %>
 							<div class="credit">Photo: <%= choice['photo']['credit'] %></div>
 						<% } %>
 						<% if (choice['text']) { %>
