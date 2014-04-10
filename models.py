@@ -188,11 +188,11 @@ class Audio(PSQLMODEL):
             wav_location = '/tmp/%s/%s' % (app_config.PROJECT_SLUG, self.file_name)
 
         # Encode an OGA.
-        os.system('oggenc -m 96 -M 96 -o "/tmp/%s/%s.oga" --downmix "%s"' % (
+        os.system('oggenc -m 128 -M 128 -o "/tmp/%s/%s.oga" "%s"' % (
             app_config.PROJECT_SLUG, file_name, wav_location))
 
         # No matter what, process to 96kb mp3.
-        os.system('lame -m m -b 96 "%s" "/tmp/%s/%s.mp3"' % (
+        os.system('lame -m s -b 128 "%s" "/tmp/%s/%s.mp3"' % (
             wav_location, app_config.PROJECT_SLUG, file_name))
 
         # Remove the WAV file now that we've processed it.
