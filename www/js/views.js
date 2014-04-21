@@ -488,6 +488,7 @@ var EmbedModalView = BaseView.extend({
         e.preventDefault();
 
         var seamusUrl = this.$seamusUrl.val();
+        seamusUrl = $.trim(seamusUrl);
 
         // http://www.npr.org/blogs/thetwo-way/2014/01/14/262385659/8-excerpts-that-explain-the-alex-rodriguez-doping-scandal?foo
         if (!seamusUrl.match(/http:\/\/www\.npr\.org\/.*\/.*\/\d{4}\/\d{2}\/\d{2}\/\d+\/*/)) {
