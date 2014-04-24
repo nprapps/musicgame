@@ -888,7 +888,7 @@ var ChoiceView = BaseView.extend({
 
     serialize: function() {
         var properties = {
-            'text': this.$('.answer').html(),
+            'text': this.$('.answer').html().trim(),
             'correct_answer': false,
             'order': this.model.collection.indexOf(this.model),
         };
@@ -1051,7 +1051,7 @@ var PhotoView = BaseView.extend({
 
     serialize: function() {
         var properties = {
-            credit: this.$photoCredit.val(),
+            credit: this.$photoCredit.val().trim(),
             caption: 'TKTK',
             file_name: this.$photoFile[0].files[0].name
         };
