@@ -18,7 +18,8 @@
 	<div class="row">
 		<ul class="responses list-unstyled <% if (_.where(quizData['questions'], {audio: null}).length < quizData['questions'].length){ %>audio<% } %>">
 		<% _.each(quizData['questions'], function(question, index){ %>
-			<li class="<%= answers[index] === correctAnswers[index] ? 'correct' : 'incorrect' %><% if (_.where(question['choices'], { correct_answer: true })[0]['photo']) { %> has-photo<% } %><% if (question.audio){ %> has-audio<% } %>">
+            <% var correctChoice = (_.where(question['choices'], { correct_answer: true })[0]); %> 
+			<li class="<%= answers[index] === correctAnswers[index] ? 'correct' : 'incorrect' %><% if (correctChoice['photo']) { %> has-photo<% } %><% if (question.audio){ %> has-audio<% } %>">
 				<div class="question">
 				<% if (question.audio){ %>
 	                <div id="jp_player_<%= index + 1 %>" class="jp-player" data-mp3="<%= question.audio.rendered_mp3_path %>" data-ogg="<%= question.audio.rendered_oga_path %>"></div>
@@ -31,8 +32,13 @@
 					<% } %>
 					<h2><%= question.text %></h2>
 				</div>
-				<% if (_.where(question['choices'], { correct_answer: true })[0]['photo']) { %>
-					<img class="img-responsive correct-choice" src="/<%= APP_CONFIG.PROJECT_SLUG %>/img/transparent.png" data-small="<%= _.where(question['choices'], {correct_answer: true})[0]['photo']['rendered_100_path'] %>" data-medium="<%= _.where(question['choices'], {correct_answer: true})[0]['photo']['rendered_300_path'] %>" data-large="<%= _.where(question['choices'], {correct_answer: true})[0]['photo']['rendered_600_path'] %>">
+				<% if (correctChoice['photo']) { %>
+                    <div class="photo-wrapper">
+                        <img class="img-responsive" src="/<%= APP_CONFIG.PROJECT_SLUG %>/img/transparent.png" data-small="<%= correctChoice['photo']['rendered_100_path'] %>" data-medium="<%= correctChoice['photo']['rendered_300_path'] %>" data-large="<%= correctChoice['photo']['rendered_600_path'] %>">
+                        <% if (correctChoice['photo']['credit']){ %>
+                        <div class="credit">Photo: <%= correctChoice['photo']['credit'] %></div>
+                        <% } %>
+                    </div>
 				<% } %>
 				<div class="choices">
 					<ul class="fa-ul">
