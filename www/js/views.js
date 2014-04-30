@@ -1050,10 +1050,14 @@ var PhotoView = BaseView.extend({
 
     serialize: function() {
         var properties = {
-            credit: this.$photoCredit.val().trim(),
+            credit: this.$photoCredit.val(),
             caption: 'TKTK',
             file_name: this.$photoFile[0].files[0].name
         };
+
+        if (properties['credit']) {
+            properties['credit'] = properties['credit'].trim();
+        }
 
         return properties;
     }
