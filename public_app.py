@@ -5,7 +5,7 @@ import datetime
 import logging
 
 from flask import Flask, jsonify, redirect, render_template, url_for
-from flask_peewee.rest import RestAPI, Authentication
+from flask_peewee.rest import RestAPI, RestResource, Authentication
 
 import admin
 import app_config
@@ -45,11 +45,14 @@ class AuthorizeEveryone(Authentication):
         """
         return True
 
+class QuizResource(RestResource):
+    paginate_by = False
+
 authorize_everyone = AuthorizeEveryone()
 
 api = RestAPI(app, default_auth=authorize_everyone, prefix="/%s/api" % app_config.PROJECT_SLUG)
 
-api.register(models.Quiz, allowed_methods=['GET', 'POST', 'PUT', 'DELETE'])
+api.register(models.Quiz, QuizResource, allowed_methods=['GET', 'POST', 'PUT', 'DELETE'])
 api.register(models.Question, allowed_methods=['GET', 'POST', 'PUT', 'DELETE'])
 api.register(models.Choice, allowed_methods=['GET', 'POST', 'PUT', 'DELETE'])
 api.register(models.Photo, allowed_methods=['GET', 'POST', 'PUT', 'DELETE'])
