@@ -265,7 +265,10 @@ var showPhotoCredits = function($el){
 */
 var showAfterText = function($el){
     $questionPlayer.jPlayer('stop');
-    $answerPlayer.jPlayer('play');
+
+    if (_.where(quizData['questions'][currentQuestion]['choices'], { correct_answer: true})[0]['audio'] !== null){
+        $answerPlayer.jPlayer('play');
+    }
 
     $el.parents('.question-wrapper').find('.after-text').slideDown({
         duration: 'fast',
