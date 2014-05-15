@@ -15,6 +15,7 @@ var $progressBar = null;
 var $currentQuestion = null;
 var $previousQuestion = null;
 var $questionPlayer = null;
+var $answerPlayer = null;
 
 // Game state
 var quizData = null;
@@ -137,6 +138,7 @@ var renderGameOver = function() {
 
     // Remove the question player
     $questionPlayer.remove();
+    $answerPlayer.remove();
 
     // Render template
     $content.append(html);
@@ -256,6 +258,9 @@ var showPhotoCredits = function($el){
 * Animate in after text
 */
 var showAfterText = function($el){
+    $questionPlayer.jPlayer('stop');
+    $answerPlayer.jPlayer('play');
+
     $el.parents('.question-wrapper').find('.after-text').slideDown({
         duration: 'fast',
         progress: function(){
@@ -415,6 +420,27 @@ var setupQuestionPlayer = function(){
         supplied: 'mp3, oga',
         loop: false
     });
+
+    $answerPlayer.jPlayer({
+        loadstart: function () {
+            $($(this).jPlayer('option', 'cssSelectorAncestor')).find('.jp-pause i')
+                .removeClass('fa-pause')
+                .addClass('fa-spinner fa-spin');
+        },
+        canplay: function(){
+            $($(this).jPlayer('option', 'cssSelectorAncestor')).find('.jp-pause i')
+                .removeClass('fa-spinner fa-spin')
+                .addClass('fa-pause');
+        },
+        play: function() {
+            if (useTimer){
+                runTimer();
+            }
+        },
+        swfPath: 'js/lib',
+        supplied: 'mp3, oga',
+        loop: false
+    });
 }
 
 var updateQuestionPlayer = function(question) {
@@ -427,6 +453,14 @@ var updateQuestionPlayer = function(question) {
             oga: question['audio']['rendered_oga_path']
         })
         .jPlayer('play');
+
+    $answerPlayer
+        .jPlayer('option', 'cssSelectorAncestor', selector + ' .jp-audio-answer')
+        .jPlayer('setMedia', {
+            mp3: _.where(question['choices'], { correct_answer: true })[0]['audio']['rendered_mp3_path'],
+            oga: _.where(question['choices'], { correct_answer: true })[0]['audio']['rendered_oga_path']
+        })
+        .jPlayer('stop');
 }
 
 /*
@@ -527,6 +561,7 @@ var resizeWindow = function(){
 var onDocumentReady = function() {
     $content = $('#content');
     $questionPlayer = $('#question-player');
+    $answerPlayer = $('#answer-player');
 
     var slug = getParameterByName('quiz');
 

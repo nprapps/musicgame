@@ -18,12 +18,22 @@
 			</div> <!-- end .jp-audio -->
 		<% } %>
 		<h1 class="question-text"><%= text %></h1>
+
 		<% if (after_text){ %>
 			<div class="after-text">
 				<h3>Quizmaster says:</h3>
+				<% if (_.where(choices, { correct_answer: true })[0]['audio']){ %>
+					<div class="jp-after-text-audio jp-audio-answer pull-left">
+					    <div class="jp-controls">
+					        <a href="javascript:;" class="jp-play nav-btn" tabindex="1" title="play"><i class="fa fa-play"></i></i></a>
+					        <a href="javascript:;" class="jp-pause nav-btn" tabindex="1" style="display: none;" title="pause"><i class="fa fa-pause"></i></a>
+					    </div>
+					</div> <!-- end .jp-audio -->
+				<% } %>
 				<%= after_text %>
 			</div>
 		<% } %>
+
 		<ul class="answers<% if (_.where(choices, { text: "" }).length === choices.length) { %> photo-answers <% } %>">
 			<% _.each(_.shuffle(choices), function(choice){ %>
 					<li<% if (choice['photo']) { %> class="has-cover"<% } %> data-choice-id="<%= choice.id %>">
