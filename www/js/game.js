@@ -109,7 +109,7 @@ var renderQuestion = function() {
         runTimer();
     }
 
-    if (_.where(question['choices'], { correct_answer: true })[0]['audio']){
+    if (_.where(question['choices'], { correct_answer: true })[0]['audio'] !== null){
         updateAnswerPlayer(question);
     }
 
@@ -428,21 +428,6 @@ var setupQuestionPlayer = function(){
 
 var setupAnswerPlayer = function(){
     $answerPlayer.jPlayer({
-        loadstart: function () {
-            $($(this).jPlayer('option', 'cssSelectorAncestor')).find('.jp-pause i')
-                .removeClass('fa-pause')
-                .addClass('fa-spinner fa-spin');
-        },
-        canplay: function(){
-            $($(this).jPlayer('option', 'cssSelectorAncestor')).find('.jp-pause i')
-                .removeClass('fa-spinner fa-spin')
-                .addClass('fa-pause');
-        },
-        play: function() {
-            if (useTimer){
-                runTimer();
-            }
-        },
         swfPath: 'js/lib',
         supplied: 'mp3, oga',
         loop: false
@@ -595,6 +580,7 @@ var onDocumentReady = function() {
             success: function(data){
                 quizData = data;
                 setupQuestionPlayer();
+                setupAnswerPlayer();
                 renderStart();
             },
             error: function(error){
