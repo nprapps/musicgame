@@ -19,7 +19,7 @@ var $answerPlayer = null;
 
 // Game state
 var quizData = null;
-var useTimer = false;
+var useTimer = true;
 var timeLeft = TIMERLENGTH * 1000;
 var stopTimer = false;
 var currentQuestion = 0;
@@ -107,6 +107,10 @@ var renderQuestion = function() {
         updateQuestionPlayer(question);
     } else if (useTimer) { // Start the timer immediately if no audio.
         runTimer();
+    }
+
+    if (_.where(question['choices'], { correct_answer: true })[0]['audio']){
+        updateAnswerPlayer(question);
     }
 
     // Safari doesn't animate properly without this
@@ -420,7 +424,9 @@ var setupQuestionPlayer = function(){
         supplied: 'mp3, oga',
         loop: false
     });
+}
 
+var setupAnswerPlayer = function(){
     $answerPlayer.jPlayer({
         loadstart: function () {
             $($(this).jPlayer('option', 'cssSelectorAncestor')).find('.jp-pause i')
@@ -453,6 +459,10 @@ var updateQuestionPlayer = function(question) {
             oga: question['audio']['rendered_oga_path']
         })
         .jPlayer('play');
+}
+
+var updateAnswerPlayer = function(question) {
+    var selector = '.question-' + (currentQuestion + 1);
 
     $answerPlayer
         .jPlayer('option', 'cssSelectorAncestor', selector + ' .jp-audio-answer')

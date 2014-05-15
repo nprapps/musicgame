@@ -1,6 +1,6 @@
 <div class="question-wrapper question-<%= questionNumber %><% if (questionNumber === quizData['questions'].length){ %> last<% } %>">
 	<div class="question-header">
-		<% if (timer === 'true'){ %>
+		<% if (useTimer === true){ %>
 		<div class="progress"><div class="bar" style="width: 0%;"></div></div>
 		<% } %>
 
