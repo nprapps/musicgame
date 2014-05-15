@@ -109,6 +109,8 @@ var renderQuestion = function() {
         runTimer();
     }
 
+    $answerPlayer.jPlayer('stop');
+
     if (_.where(question['choices'], { correct_answer: true })[0]['audio'] !== null){
         updateAnswerPlayer(question);
     }
