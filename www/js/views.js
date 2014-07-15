@@ -419,6 +419,7 @@ var EmbedModalView = BaseView.extend({
         this.$close = null;
         this.$seamusUrl = null;
         this.$invalidUrl = null;
+        this.$embedArea = null;
 
         this.urlRoot = '/' + APP_CONFIG['PROJECT_SLUG'];
 
@@ -432,14 +433,8 @@ var EmbedModalView = BaseView.extend({
     },
 
     render: function() {
-        this.embedCode = JST.embed({
-            'urlRoot': this.urlRoot,
-            'slug': this.model.get('slug')
-        });
-
         this.$el.html(JST.admin_embed({
-            'quiz': this.model,
-            'embed': this.embedCode
+            'quiz': this.model
         }));
 
         this.$step1 = this.$('.step1');
@@ -449,6 +444,7 @@ var EmbedModalView = BaseView.extend({
         this.$close = this.$('.done');
         this.$seamusUrl = this.$('.seamus-url');
         this.$invalidUrl = this.$('.invalid-url');
+        this.$embedArea = this.$('#embed');
 
         ZeroClipboard.setDefaults({
             moviePath: this.urlRoot + '/js/lib/ZeroClipboard.swf'
@@ -477,6 +473,13 @@ var EmbedModalView = BaseView.extend({
     },
 
     gotoStep2: function() {
+        this.embedCode = JST.embed({
+            'urlRoot': this.urlRoot,
+            'slug': this.model.get('slug')
+        });
+
+        this.$embedArea.text(this.embedCode);
+
         this.$step1.hide();
         this.$step2.show();
         this.$cancel.hide();
