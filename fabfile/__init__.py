@@ -184,7 +184,7 @@ def render():
     """
     from flask import g
 
-    update_copy()
+    #update_copy()
     assets.sync()
     update_data()
     less()
@@ -382,7 +382,7 @@ def bootstrap():
     local('npm install less universal-jst -g --prefix node_modules')
 
     assets.sync()
-    update_copy()
+    #update_copy()
     update_data()
 
 """
@@ -533,7 +533,7 @@ def deploy(remote='origin'):
     if app_config.DEPLOY_TO_SERVERS:
         checkout_latest(remote)
 
-        fabcast('update_copy')
+        #fabcast('update_copy')
         #fabcast('assets.sync')
         #fabcast('update_data')
 
