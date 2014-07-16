@@ -57,6 +57,11 @@ def staging():
     app_config.configure_targets(env.settings)
 
 @task
+def tools():
+    env.settings = 'production'
+    app_config.configure_targets(env.settings)
+
+@task
 def fabcast(command):
     """
     Actually run specified commands on the server specified
