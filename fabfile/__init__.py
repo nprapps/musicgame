@@ -69,7 +69,7 @@ def fabcast(command):
 
         return
 
-    run('cd %s && bash run_on_server.sh fab %s $DEPLOYMENT_TARGET %s' % (app_config.SERVER_REPOSITORY_PATH, env.branch, command))
+    run('cd %s && bash run_on_server.sh fab branch:%s $DEPLOYMENT_TARGET %s' % (app_config.SERVER_REPOSITORY_PATH, env.branch, command))
 
 """
 Branches
