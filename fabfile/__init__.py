@@ -28,7 +28,7 @@ Base configuration
 env.user = app_config.SERVER_USER
 env.forward_agent = True
 
-env.hosts = []
+env.hosts = app_config.SERVERS
 env.settings = None
 
 model_names = ['Photo', 'Audio', 'Quiz', 'Question', 'Choice']
@@ -47,7 +47,6 @@ def production():
     """
     env.settings = 'production'
     app_config.configure_targets(env.settings)
-    env.hosts = app_config.SERVERS
 
 @task
 def staging():
@@ -56,7 +55,6 @@ def staging():
     """
     env.settings = 'staging'
     app_config.configure_targets(env.settings)
-    env.hosts = app_config.SERVERS
 
 @task
 def fabcast(command):
@@ -534,8 +532,8 @@ def deploy(remote='origin'):
         checkout_latest(remote)
 
         #fabcast('update_copy')
-        #fabcast('assets.sync')
-        #fabcast('update_data')
+        fabcast('assets.sync')
+        fabcast('update_data')
 
         if app_config.DEPLOY_CRONTAB:
             install_crontab()

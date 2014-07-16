@@ -38,8 +38,8 @@ PRODUCTION_S3_BUCKETS = ['apps.npr.org', 'apps2.npr.org']
 STAGING_S3_BUCKETS = ['stage-apps.npr.org']
 ASSETS_S3_BUCKET = 'assets.apps.npr.org'
 
-PRODUCTION_SERVERS = ['cron.nprapps.org']
-STAGING_SERVERS = ['public-staging.nprapps.org']
+SERVERS = ['tools.apps.npr.org']
+SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
 
 # Should code be deployed to the web/cron servers?
 DEPLOY_TO_SERVERS = True
@@ -74,8 +74,6 @@ SERVER_SERVICES = [
 # These variables will be set at runtime. See configure_targets() below
 S3_BUCKETS = []
 S3_BASE_URL = ''
-SERVERS = []
-SERVER_BASE_URL = ''
 DEBUG = True
 
 """
@@ -154,8 +152,6 @@ def configure_targets(deployment_target):
     """
     global S3_BUCKETS
     global S3_BASE_URL
-    global SERVERS
-    global SERVER_BASE_URL
     global DEBUG
     global DEPLOYMENT_TARGET
     global APP_LOG_PATH
@@ -163,22 +159,15 @@ def configure_targets(deployment_target):
     if deployment_target == 'production':
         S3_BUCKETS = PRODUCTION_S3_BUCKETS
         S3_BASE_URL = 'http://%s/%s' % (S3_BUCKETS[0], PROJECT_SLUG)
-        SERVERS = PRODUCTION_SERVERS
-        SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
         DEBUG = False
 
     elif deployment_target == 'staging':
         S3_BUCKETS = STAGING_S3_BUCKETS
         S3_BASE_URL = 'http://%s/%s' % (S3_BUCKETS[0], PROJECT_SLUG)
-        SERVERS = STAGING_SERVERS
-        SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
         DEBUG = True
-
     else:
         S3_BUCKETS = []
         S3_BASE_URL = 'http://127.0.0.1:8000'
-        SERVERS = []
-        SERVER_BASE_URL = 'http://127.0.0.1:8000/%s' % PROJECT_SLUG
         DEBUG = True
         APP_LOG_PATH = '/tmp/%s.app.log' % PROJECT_SLUG
 
