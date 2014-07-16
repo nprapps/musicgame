@@ -159,7 +159,7 @@ def configure_targets(deployment_target):
     if deployment_target in ['production', 'tools']:
         S3_BUCKETS = PRODUCTION_S3_BUCKETS
         S3_BASE_URL = 'http://%s/%s' % (S3_BUCKETS[0], PROJECT_SLUG)
-        DEBUG = False
+        DEBUG = True 
 
     elif deployment_target == 'staging':
         S3_BUCKETS = STAGING_S3_BUCKETS
