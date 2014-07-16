@@ -58,7 +58,7 @@ def staging():
 
 @task
 def tools():
-    env.settings = 'production'
+    env.settings = 'tools'
     app_config.configure_targets(env.settings)
 
 @task

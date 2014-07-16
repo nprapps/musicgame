@@ -156,7 +156,7 @@ def configure_targets(deployment_target):
     global DEPLOYMENT_TARGET
     global APP_LOG_PATH
 
-    if deployment_target == 'production':
+    if deployment_target in ['production', 'tools']:
         S3_BUCKETS = PRODUCTION_S3_BUCKETS
         S3_BASE_URL = 'http://%s/%s' % (S3_BUCKETS[0], PROJECT_SLUG)
         DEBUG = False
